@@ -48,7 +48,9 @@ class SurveyMaker(object):
                  output_file=None,
                  questionnaire=None,
                  preamble=None,
-                 pdf=False
+                 info_items=None,
+                 pdf=False,
+                 n_compile=1
                  ):
 
         logger.info("Starting Survey Maker")
@@ -61,21 +63,23 @@ class SurveyMaker(object):
             questionnaire=questionnaire,
             title=preamble.get("title"),
             author=preamble.get("author"),
-            version=preamble.get("version")
+            version=preamble.get("version"),
+            info_items=info_items
         )
 
         if pdf:
-            self.document.generate_pdf(filepath=self.output_file.name, clean_tex=False)
+            for cnt in range(n_compile):
+                if n_compile == 2 and cnt == 0:
+                    clean = False
+                else:
+                    clean = True
+
+                self.document.generate_pdf(filepath=self.output_file.name,
+                                           clean_tex=False,
+                                           clean=clean,
+                                           compiler="xelatex",
+                                           silent=False
+                                           )
         else:
             self.document.generate_tex(filepath=self.output_file.name)
-
-    def fill_document(self):
-        """
-        Create the latex ouput
-        """
-
-        logger.info("Filling the document")
-
-        self.document.create(Section("My first section"))
-
 

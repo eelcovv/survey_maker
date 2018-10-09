@@ -61,6 +61,7 @@ def _parse_the_command_line_arguments(args):
                         help="Force to process company table, even if they have been marked "
                              "as processes")
     parser.add_argument("--pdf", action="store_true", help="Create the pdf output")
+    parser.add_argument("--twice", action="store_true", help="Compile two times for the labels")
 
     # parse the command line
     parsed_arguments = parser.parse_args(args)
@@ -132,9 +133,16 @@ def main(args_in):
     output_directory = general["output_directory"]
     preamble = general["preamble"]
 
+    info_items = general.get("info_items")
+
     questionnaire = settings["questionnaire"]
 
     output_file = os.path.splitext(args.survey_settings)[0]
+
+    if args.twice:
+        n_compile = 2
+    else:
+        n_compile = 1
 
     # create the KvKUrl object, but first move to the workding directory, so everything we do
     # is with respect to this directory
@@ -148,7 +156,9 @@ def main(args_in):
             output_file=output_file,
             questionnaire=questionnaire,
             preamble=preamble,
-            pdf=args.pdf
+            pdf=args.pdf,
+            info_items=info_items,
+            n_compile=n_compile
         )
 
 

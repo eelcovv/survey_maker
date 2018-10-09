@@ -5,10 +5,17 @@ general:
     title: ICT-gebruik bedrijven 2019
     author: Eelco van Vliet
     version: 0.1
+  info_items:
+    - De meeste vragen in deze enquête gaan over de \emph{huidige} situatie in uw bedrijf.
+    - Sommige vragen gaan over het jaar 2018. Dit wordt aangegeven in de vraag.
+    - De vragen kunnen over het algemeen het best beantwoord worden door een ICT-verantwoordelijke.
+    - De vragenblokken G en H gaan echter over facturering en e-commerce. Wellicht kan een financieel medewerker deze het best invullen.
+    - Als een percentage (\%) of het aantal FTE's ingevuld moet worden volstaat een schatting
 questionnaire:
   personeel_en_computers:
     add_this: true
     label: Personeel en computers
+    info: "Kleine bedrijven: alleen \\ref{quest:aantal_werkzame_personen} en \\ref{quest:procent_wp_met_compu_en_internet}"
     questions:
       aantal_werkzame_personen:
         add_this: true
