@@ -88,7 +88,9 @@ class SurveyDocument(Document):
                  version=1.0,
                  document_options=None,
                  questionnaire=None,
-                 info_items=None
+                 info_items=None,
+                 global_label_width="2.8cm",
+                 global_box_width="4"
                  ):
         if document_options is None:
             # take the default options if they are not passed to the class
@@ -108,6 +110,9 @@ class SurveyDocument(Document):
         self.preamble.append(Command(r"renewcommand\thesection", NoEscape(r"\Alph{section}")))
 
         self.questionnaire = questionnaire
+
+        self.global_label_width = global_label_width
+        self.global_box_width = global_box_width
 
         with self.create(Questionnaire(options="noinfo")):
 
@@ -154,6 +159,7 @@ class SurveyDocument(Document):
             add_this = question_properties.get("add_this", True)
             if not add_this:
                 logger.debug("Skip question {}".format(key))
+                continue
 
             logger.info("Adding question {}".format(key))
 
@@ -170,17 +176,28 @@ class SurveyDocument(Document):
 
         if question_type == "quantity":
             quantity_label = question_properties.get("quantity_label", "Aantal") + ":"
+            label_width = question_properties.get("label_width", self.global_label_width)
+            box_width = question_properties.get("box_width", self.global_box_width)
             with self.create(QuantityQuestion(arguments=NoEscape(question))):
-                self.add_quantity_question(key, quantity_label)
+                self.add_quantity_question(key,
+                                           quantity_label,
+                                           label_width=label_width,
+                                           box_width=box_width)
         elif question_type == "percentage":
             logger.info("Adding a quantity percentage")
         else:
             raise AssertionError("question type not known. This should not happen")
 
-    def add_quantity_question(self, key=None, quantity_label=None):
+    def add_quantity_question(self, key=None, quantity_label=None, label_width=None,
+                              box_width=4):
         logger.debug("Adding a quantity question")
 
-        self.append(ChoiseItemText(arguments=["1.2em", 4, quantity_label]))
+        if label_width is None:
+            label = quantity_label
+        else:
+            label = "\\parbox{" + label_width + "}{" + quantity_label + "}"
+
+        self.append(ChoiseItemText(arguments=["1.2em", box_width, NoEscape(label)]))
         self.append(Command("label", NoEscape(label_question(key))))
 
     def add_percentage_question(self):
