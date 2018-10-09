@@ -60,6 +60,7 @@ def _parse_the_command_line_arguments(args):
     parser.add_argument("--force_process", action="store_true",
                         help="Force to process company table, even if they have been marked "
                              "as processes")
+    parser.add_argument("--pdf", action="store_true", help="Create the pdf output")
 
     # parse the command line
     parsed_arguments = parser.parse_args(args)
@@ -91,6 +92,7 @@ def setup_logging(write_log_to_file=False,
     # so we can control the output
     merge_loggers(_logger, "cbs_utils")
     merge_loggers(_logger, "survey_maker.engine")
+    merge_loggers(_logger, "survey_maker.document")
 
     _logger.info("{:10s}: {}".format("Running", sys.argv))
     _logger.info("{:10s}: {}".format("Version", __version__))
@@ -119,6 +121,7 @@ def main(args_in):
                                                                              version=__version__,
                                                                              start_time=start_time,
                                                                              cmd=sys.argv[:])
+    logger.info(message)
     # read the yaml file and put the whole structure into a dictionary: *settings*
     logger.info("Reading settings file {}".format(args.survey_settings))
     with open(args.survey_settings, "r") as stream:
@@ -127,9 +130,9 @@ def main(args_in):
     general = settings["general"]
     working_directory = general["working_directory"]
     output_directory = general["output_directory"]
+    preamble = general["preamble"]
 
-    questionaire = settings["questionaire"]
-    questions = settings["questions"]
+    questionnaire = settings["questionnaire"]
 
     output_file = os.path.splitext(args.survey_settings)[0]
 
@@ -143,8 +146,9 @@ def main(args_in):
         SurveyMaker(
             output_directory=output_directory,
             output_file=output_file,
-            questionaire=questionaire,
-            questions=questions
+            questionnaire=questionnaire,
+            preamble=preamble,
+            pdf=args.pdf
         )
 
 

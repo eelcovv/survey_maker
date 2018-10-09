@@ -1,9 +1,11 @@
+from pylatex import Document, Section, Subsection, Command
+from pylatex.utils import italic, NoEscape
 import os
 import re
 import sys
 from pathlib import Path
 
-import survey_make
+from survey_maker.document import SurveyDocument
 
 from cbs_utils.misc import get_logger
 
@@ -44,9 +46,10 @@ class SurveyMaker(object):
     def __init__(self,
                  output_directory=None,
                  output_file=None,
-                 questionaire=None,
-                 questions=None,
-                ):
+                 questionnaire=None,
+                 preamble=None,
+                 pdf=False
+                 ):
 
         logger.info("Starting Survey Maker")
 
@@ -54,21 +57,25 @@ class SurveyMaker(object):
 
         self.output_file = self.output_directory / output_file
 
-        self.questionaire = questionaire
-        self.questions = questions
+        self.document = SurveyDocument(
+            questionnaire=questionnaire,
+            title=preamble.get("title"),
+            author=preamble.get("author"),
+            version=preamble.get("version")
+        )
 
-        self.document = pl.Document(
-            default_filepath=self.output_file.name)
+        if pdf:
+            self.document.generate_pdf(filepath=self.output_file.name, clean_tex=False)
+        else:
+            self.document.generate_tex(filepath=self.output_file.name)
 
-        self.create_latex()
-
-        self.document.generate_tex()
-
-    def create_latex(self):
+    def fill_document(self):
         """
         Create the latex ouput
         """
 
-        logger.info("Writing survey to {}".format(self.output_file))
+        logger.info("Filling the document")
+
+        self.document.create(Section("My first section"))
 
 
