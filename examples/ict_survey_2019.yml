@@ -5,7 +5,8 @@ general:
     title: ICT-gebruik bedrijven 2019
     author: Eelco van Vliet
     version: 0.1
-  info_items:
+  info:
+    items:
     - De meeste vragen in deze enquête gaan over de \emph{huidige} situatie in uw bedrijf.
     - Sommige vragen gaan over het jaar 2018. Dit wordt aangegeven in de vraag.
     - De vragen kunnen over het algemeen het best beantwoord worden door een ICT-verantwoordelijke.
@@ -21,6 +22,22 @@ questionnaire:
         add_this: true
         label: Wat was het totale aantal werkzame personen{$^\ast$} in uw bedrijf op 31 december 2018?
         quantity_label: Aantal
+        info:
+          title: Werkzame personen
+          items:
+            wel:
+              title: Wel meetellen
+              items:
+              - Werknemers en directeuren die op de eigen loonlijst staan
+              - Werknemers die op loonlijst staan van een ander bedrijf, maar bij uw bedrijf werkzaam zijn en dus tot uw personeel behoren (ingeleend personeel)
+              - Werkzame eigenaren, firmanten, leden van maatschappen, vennoten en medewerkende gezinsleden
+              - Uitzendkrachten
+              - Ingehuurde ZZP’ers.
+            niet:
+              title: Niet meetellen
+              items:
+              - Uitgeleend personeel (werknemers die op de loonlijst staan, maar werken bij een andere onderneming of instelling)
+              - Personeel dat buiten Nederland werkt.
       procent_wp_met_computer:
         quantity_label: Percentage (\%)
         label: Hoeveel procent van de werkzame personen gebruikt een computer (inclusief laptops, tablets en smartphones) voor het werk?

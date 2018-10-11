@@ -1,35 +1,15 @@
-from pylatex import Document, Section, Subsection, Command
-from pylatex.utils import italic, NoEscape
-import os
-import re
-import sys
 from pathlib import Path
 
-from survey_maker.document import SurveyDocument
-
 from cbs_utils.misc import get_logger
+from survey_maker.survey_document import SurveyDocument
 
 try:
     from survey_maker import __version__
 except ModuleNotFoundError:
     __version__ = "unknown"
 
-try:
-    # if profile exist, it means we are running kernprof to time all the lines of the functions
-    # decorated with #@profile
-    # noinspection PyUnboundLocalVariable
-    isinstance(profile, object)
-except NameError:
-    # in case this fails, we add the profile decorator to the builtins such that it does
-    # not raise an error.
-    import line_profiler
-    import builtins
-
-    profile = line_profiler.LineProfiler()
-    builtins.__dict__["profile"] = profile
-
 __author__ = "Eelco van Vliet"
-__copyright__ = "Eelco van Vliet"
+__copyright__ = "CBS"
 __license__ = "mit"
 
 logger = get_logger(__name__)
@@ -50,7 +30,10 @@ class SurveyMaker(object):
                  preamble=None,
                  info_items=None,
                  pdf=False,
-                 n_compile=1
+                 n_compile=1,
+                 silent=True,
+                 compiler="pdflatex",
+                 clean=True
                  ):
 
         logger.info("Starting Survey Maker")
@@ -68,18 +51,23 @@ class SurveyMaker(object):
         )
 
         if pdf:
+            # create the pdf file for this document
             for cnt in range(n_compile):
-                if n_compile == 2 and cnt == 0:
-                    clean = False
-                else:
-                    clean = True
+                # in case the --twice comment line option is given, n_compile = 2, such that we
+                # can correctly create the labels in one go
+                clean_latex = clean
+                if clean and n_compile == 2 and cnt == 0:
+                    # in case we want to clean the latex file, but compile two times (because the
+                    # twice argument is given, do not clean the first time, so that we can get the
+                    # labels right
+                    clean_latex = False
 
                 self.document.generate_pdf(filepath=self.output_file.name,
                                            clean_tex=False,
-                                           clean=clean,
-                                           compiler="xelatex",
-                                           silent=False
+                                           clean=clean_latex,
+                                           compiler=compiler,
+                                           silent=silent
                                            )
         else:
+            # only create the tex document without compiling the source
             self.document.generate_tex(filepath=self.output_file.name)
-

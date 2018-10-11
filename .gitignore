@@ -50,3 +50,5 @@ MANIFEST
 *.tex
 *.pdf
 *.sdaps
+*.aux
+*.out

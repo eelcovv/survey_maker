@@ -41,7 +41,7 @@ def label_module(key):
     Returns
     -------
     str:
-        mod:key, where all the _ are removed from the key as this is also done by Label
+        mod:key, where all the underscores are removed from the key as this is also done by Label
     """
     return re.sub("_", "", ":".join(["mod", key]))
 
