@@ -2,7 +2,6 @@
 Some aid classes and function for the latex environment
 """
 import re
-
 from pylatex.base_classes import Environment, CommandBase
 
 
