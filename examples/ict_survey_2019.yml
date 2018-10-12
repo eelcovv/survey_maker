@@ -15,12 +15,12 @@ general:
 questionnaire:
   personeel_en_computers:
     add_this: true
-    label: Personeel en computers
+    title: Personeel en computers
     info: "Kleine bedrijven: alleen \\ref{quest:aantal_werkzame_personen} en \\ref{quest:procent_wp_met_compu_en_internet}"
     questions:
       aantal_werkzame_personen:
         add_this: true
-        label: Wat was het totale aantal werkzame personen{$^\ast$} in uw bedrijf op 31 december 2018?
+        question: Wat was het totale aantal werkzame personen{$^\ast$} in uw bedrijf op 31 december 2018?
         quantity_label: Aantal
         info:
           fontsize: footnotesize
@@ -35,18 +35,42 @@ questionnaire:
               - Uitzendkrachten
               - Ingehuurde ZZP’ers.
             niet:
-              title: Niet meetellen
+              title: \emph{Niet} meetellen
               items:
               - Uitgeleend personeel (werknemers die op de loonlijst staan, maar werken bij een andere onderneming of instelling)
               - Personeel dat buiten Nederland werkt.
       procent_wp_met_computer:
         quantity_label: Percentage (\%)
-        label: Hoeveel procent van de werkzame personen gebruikt een computer (inclusief laptops, tablets en smartphones) voor het werk?
+        question: Hoeveel procent van de werkzame personen gebruikt een computer (inclusief laptops, tablets en smartphones) voor het werk?
   ict_specialisten:
-    label: ICT-specialisten
+    title: ICT-specialisten
     questions:
       ict_specialisten_in_dienst:
-        label: Heeft uw bedrijf één of meer ICT-specialisten in dienst?
+        question: Heeft uw bedrijf één of meer ICT-specialisten in dienst?
+        type: choices
+        choices:
+          - "Nee $\\rightarrow$ Ga naar \\ref{quest:cursus_eigen_personeel}"
+          - "Ja"
       ict_specialisten_aantal_fte:
-        label: Hoeveel ICT-specialisten1 stonden er op 31 december 2018 op de loonlijst, uitgedrukt in FTE’s?
+        question: Hoeveel ICT-specialisten1 stonden er op 31 december 2018 op de loonlijst, uitgedrukt in FTE’s?
         quantity_label: FTE
+      ict_specialisten_door_wie_uitgevoerd:
+        question: Wie voerde het onderstaande ICT-werk binnen uw bedrijf in 2018 voornamelijk uit?
+        info:
+          above: true
+          items:
+          - "\\emph{Eigen personeel}: Voornamelijk uitgevoerd door eigen personeel, inclusief personeel dat werkzaam is in gelieerde bedrijven (moeder- of dochterondernemingen)"
+          - "\\emph{Extern personeel}: Voornamelijk uitgevoerd door externe leverancier(s)"
+        type: group
+        groups:
+        - Eigen personeel
+        - Extern personeel
+        - N.V.T.
+        choicelines:
+        - Onderhoud van ICT-infrastructuur (servers, computers, printers, netwerken)
+        - Ondersteuning van office software (tekstverwerkingsprogramma’s, spreadsheets e.d.)
+        - Ontwikkeling van bedrijfsvoeringssoftware/-systemen (bijv. ERP-software om informatie te delen over verschillende afdelingen (zoals boekhouding, planning, productie, marketing); CRM-software om informatie over klanten te beheren, software voor Human Resource Management, databases)
+        - Ondersteuning van bedrijfsvoeringssoftware/-systemen (bijv. ERP-, CRM-, HRM-software, databases)
+        - Ontwikkeling van web-applicaties (bijv. websites, toepassingen voor e-commerce)
+        - Ondersteuning van web-applicaties (bijv. websites, toepassingen voor e-commerce)
+        - ICT-beveiliging en bescherming van data (bijv. beveiligingstests, beveiligingssoftware)
