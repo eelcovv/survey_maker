@@ -10,6 +10,7 @@ import argparse
 import logging
 import os
 import sys
+import subprocess
 
 import pandas as pd
 import yaml
@@ -39,8 +40,7 @@ def _parse_the_command_line_arguments(args):
     parser.add_argument("survey_settings", action="store",
                         help="The yaml survey input file")
     parser.add_argument("--version", help="Show the current version", action="version",
-                        version="{}\nPart of kvk_url_finder version {}".format(
-                            os.path.basename(__file__), __version__))
+                        version="{}".format(__version__))
     parser.add_argument('-d', '--debug', help="Print lots of debugging statements",
                         action="store_const", dest="log_level", const=logging.DEBUG,
                         default=logging.INFO)
@@ -111,6 +111,29 @@ def setup_logging(write_log_to_file=False,
     return _logger
 
 
+def get_version(preamble):
+    """
+    Get the current git version of this questionary
+
+    Returns
+    -------
+    str:
+        current git version
+    """
+    process = subprocess.Popen(["git", "describe", "--tags"],
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stat1, stat2 = process.communicate()
+    if stat1.decode() == "":
+        logger.info("No git version found in questionnary folder. Is it under git control?")
+        survey_version = preamble.get("version", "Unknown")
+        logger.info("Overruling with version in yaml file: {}".format(survey_version))
+    else:
+        survey_version = stat1.decode()
+        logger.info("Survey version found: {}".format(stat1.decode()))
+
+    return  survey_version
+
+
 def main(args_in):
     args, parser = _parse_the_command_line_arguments(args_in)
 
@@ -158,6 +181,8 @@ def main(args_in):
         # make the directories in case they do not exist yet
         make_directory(output_directory)
 
+        survey_version = get_version(preamble)
+
         # create the object and do you thing
         SurveyMaker(
             output_directory=output_directory,
@@ -168,7 +193,8 @@ def main(args_in):
             info_items=info_items,
             n_compile=n_compile,
             silent=args.silent,
-            clean=args.clean
+            clean=args.clean,
+            survey_version=survey_version
         )
 
 

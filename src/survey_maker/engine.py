@@ -33,7 +33,8 @@ class SurveyMaker(object):
                  n_compile=1,
                  silent=True,
                  compiler="pdflatex",
-                 clean=True
+                 clean=True,
+                 survey_version=None
                  ):
 
         logger.info("Starting Survey Maker")
@@ -46,7 +47,7 @@ class SurveyMaker(object):
             questionnaire=questionnaire,
             title=preamble.get("title"),
             author=preamble.get("author"),
-            version=preamble.get("version"),
+            survey_version=survey_version,
             info_items=info_items
         )
 

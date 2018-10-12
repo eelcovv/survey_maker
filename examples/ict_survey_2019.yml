@@ -4,7 +4,7 @@ general:
   preamble:
     title: ICT-gebruik bedrijven 2019
     author: Eelco van Vliet
-    version: 0.1
+    version: 1.1
   info:
     items:
     - De meeste vragen in deze enquête gaan over de \emph{huidige} situatie in uw bedrijf.

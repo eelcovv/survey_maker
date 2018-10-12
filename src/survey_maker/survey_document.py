@@ -1,5 +1,6 @@
 import string
 import time
+import git
 from pylatex import (Document, Section, Command)
 from pylatex.utils import NoEscape
 
@@ -16,8 +17,8 @@ class SurveyDocument(Document):
     def __init__(self,
                  title="Default Title",
                  author="TheAuthor",
+                 survey_version=None,
                  date=NoEscape(r"\today"),
-                 version=1.0,
                  document_options=None,
                  questionnaire=None,
                  info_items=None,
@@ -37,7 +38,8 @@ class SurveyDocument(Document):
         self.preamble.append(Command("author", author))
         self.preamble.append(Command("date", date))
         self.preamble.append(Command("makeatletter"))
-        self.preamble.append(Command("chead[]", NoEscape(r"\@title\\Version {}".format(version))))
+        self.preamble.append(
+            Command("chead[]", NoEscape(r"\@title\\Version {}".format(survey_version))))
         self.preamble.append(Command("makeatother"))
         self.preamble.append(Command(r"renewcommand\thesection", NoEscape(r"\Alph{section}")))
 
