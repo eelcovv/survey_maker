@@ -123,23 +123,6 @@ class SurveyDocument(Document):
 
             self.add_all_modules()
 
-    def add_info_items(self, information):
-        """
-        Add a list of items as a bullet list to the document
-
-        Parameters
-        ----------
-        information: str or list
-            In case it is a string, add just a text, if it is a list, add a bullet list
-        """
-        with self.create(InfoEnvironment()):
-            if isinstance(information, list):
-                with self.create(Itemize()):
-                    for item in information:
-                        self.append(Command("item", NoEscape(item)))
-            else:
-                self.append(Command("footnotesize", NoEscape(information)))
-
     def add_all_modules(self):
 
         for module_key, module_properties in self.questionnaire.items():
