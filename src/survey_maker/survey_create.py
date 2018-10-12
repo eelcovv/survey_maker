@@ -142,7 +142,7 @@ def main(args_in):
     output_directory = general["output_directory"]
     preamble = general["preamble"]
 
-    info_items = general.get("info_items")
+    info_items = general.get("info")
 
     questionnaire = settings["questionnaire"]
 

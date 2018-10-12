@@ -117,7 +117,7 @@ class SurveyDocument(Document):
         with self.create(Questionnaire(options="noinfo")):
 
             if info_items is not None:
-                self.add_info_items(info_items)
+                self.add_info(info_items, fontsize="normalsize")
 
             self.append(AddInfo(arguments=["Date", time.strftime("%d.%m.%Y")]))
 
@@ -161,7 +161,7 @@ class SurveyDocument(Document):
         self.append(Section(title=label, label=NoEscape(label_module(module_key))))
 
         if info is not None:
-            self.add_info_items(information=info)
+            self.add_info(info)
 
         for key, question_properties in questions.items():
             add_this = question_properties.get("add_this", True)
@@ -201,9 +201,18 @@ class SurveyDocument(Document):
             self.add_info(info)
 
     def add_info(self, info, fontsize="footnotesize"):
+        """
+        Add a info block with a nested block it bullet points
+
+        Parameters
+        ----------
+        info: dict
+            A dictionary with the information to add to the info block. See *write_info* for
+            a description of the dictionary
+        """
 
         with self.create(InfoEnvironment()):
-            self.write_info(info, fontsize)
+            self.write_info(info, fontsize=fontsize)
 
     def write_info(self, info, fontsize="footnotesize", is_item=False):
         """
