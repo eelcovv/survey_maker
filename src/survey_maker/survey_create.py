@@ -9,7 +9,6 @@ Usage:
 import argparse
 import logging
 import os
-import platform
 import sys
 
 import pandas as pd
@@ -47,9 +46,9 @@ def _parse_the_command_line_arguments(args):
                         default=logging.INFO)
     parser.add_argument('-v', '--verbose', help="Be verbose", action="store_const",
                         dest="log_level", const=logging.INFO)
-    parser.add_argument('--no_silent',  help="Do not suppress the latex output",
+    parser.add_argument('--no_silent', help="Do not suppress the latex output",
                         action="store_false", dest="silent")
-    parser.add_argument('--silent',  help="Suppress the latex output",
+    parser.add_argument('--silent', help="Suppress the latex output",
                         action="store_true", default=True)
     parser.add_argument('-q', '--quiet', help="Be quiet: no output", action="store_const",
                         dest="log_level", const=logging.WARNING)
@@ -69,7 +68,7 @@ def _parse_the_command_line_arguments(args):
     parser.add_argument("--twice", action="store_true", help="Compile two times for the labels")
     parser.add_argument("--clean", action="store_true",
                         help="Clean the latex temp files after processing")
-    parser.add_argument("--no_clean", action="store_false",  dest="clean",
+    parser.add_argument("--no_clean", action="store_false", dest="clean",
                         help="Do not clean the latex temp files after processing")
 
     # parse the command line
