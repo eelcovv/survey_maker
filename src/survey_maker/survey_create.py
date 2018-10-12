@@ -14,6 +14,7 @@ import sys
 
 import pandas as pd
 import yaml
+import yamlloader
 
 from cbs_utils.misc import (create_logger, merge_loggers, Chdir, make_directory)
 from survey_maker.engine import SurveyMaker
@@ -134,7 +135,7 @@ def main(args_in):
     # read the yaml file and put the whole structure into a dictionary: *settings*
     logger.info("Reading settings file {}".format(args.survey_settings))
     with open(args.survey_settings, "r") as stream:
-        settings = yaml.load(stream=stream)
+        settings = yaml.load(stream=stream, Loader=yamlloader.ordereddict.CLoader)
 
     general = settings["general"]
     working_directory = general["working_directory"]

@@ -23,10 +23,11 @@ questionnaire:
         label: Wat was het totale aantal werkzame personen{$^\ast$} in uw bedrijf op 31 december 2018?
         quantity_label: Aantal
         info:
-          title: Werkzame personen
+          fontsize: footnotesize
+          title: $^{\ast}$Werkzame personen
           items:
             wel:
-              title: Wel meetellen
+              title: \emph{Wel} meetellen
               items:
               - Werknemers en directeuren die op de eigen loonlijst staan
               - Werknemers die op loonlijst staan van een ander bedrijf, maar bij uw bedrijf werkzaam zijn en dus tot uw personeel behoren (ingeleend personeel)

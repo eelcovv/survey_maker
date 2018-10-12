@@ -51,7 +51,7 @@ class Itemize(Environment):
     content_separator = "\n"
 
 
-class InfoItems(Environment):
+class InfoEnvironment(Environment):
     _latex_name = "info"
 
 
@@ -124,8 +124,16 @@ class SurveyDocument(Document):
             self.add_all_modules()
 
     def add_info_items(self, information):
-        with self.create(InfoItems()):
-            if isinstance(information, list) :
+        """
+        Add a list of items as a bullet list to the document
+
+        Parameters
+        ----------
+        information: str or list
+            In case it is a string, add just a text, if it is a list, add a bullet list
+        """
+        with self.create(InfoEnvironment()):
+            if isinstance(information, list):
                 with self.create(Itemize()):
                     for item in information:
                         self.append(Command("item", NoEscape(item)))
@@ -169,6 +177,7 @@ class SurveyDocument(Document):
 
         question = question_properties["label"]
         question_type = question_properties.get("type", "quantity")
+        info = question_properties.get("info")
 
         if question_type not in QUESTION_TYPES:
             logger.info("question type {} not yet implemented. Skipping".format(question_type))
@@ -188,6 +197,96 @@ class SurveyDocument(Document):
         else:
             raise AssertionError("question type not known. This should not happen")
 
+        if info is not None:
+            self.add_info(info)
+
+    def add_info(self, info, fontsize="footnotesize"):
+
+        with self.create(InfoEnvironment()):
+            self.write_info(info, fontsize)
+
+    def write_info(self, info, fontsize="footnotesize", is_item=False):
+        """
+        A recursive method to create a nested block of text with itemizes
+
+        Parameters
+        ----------
+        info: OrderDict
+            A dictionary with the information we want to add to a info block
+        fontsize: str
+            The size of the font
+        is_item: bool
+            If true,  strings are items of a itemize environment and need a ítem command
+
+        The *info* dictionary has the following format::
+
+            info:
+              fontsize: this field is not plotted by used to set the font size of the info block
+              title: The title added outside the itemize block
+              items: # either a list of a dict can follow the items.
+                wel:
+                  title: The first item in our main bullet list
+                  items:
+                  - subitem11 # these items are added as a list
+                  - subitem12
+                niet:
+                  title: The second item in our main bullet list
+                  items:
+                  - subitem21
+                  - subitem22
+
+        So the *info* is the main dictionary which is passed to the routine. Then, a *title* is
+        plotted above the main itemize block. Then we can add the items, which can be again a
+        dictionary with a title, and a new item field containing a list.
+
+        The routine below is recursively calling itself so that in principle the items can be
+        nested
+        """
+
+        try:
+            # in case
+            fsize = info["fontsize"]
+        except (KeyError, TypeError):
+            fsize = fontsize
+
+        if isinstance(info, str):
+            # info is a string. Create a plot command
+            text = Command(fontsize, NoEscape(info))
+            if is_item:
+                # in case the *is_item* flag is true, preprend
+                self.append(Command("item", text))
+            else:
+                # it is not a item, which is only the case for the first title string
+                self.append(text)
+        elif isinstance(info, dict):
+            # we have a dict, loop over its keys and make a recursive call for each item
+            for key, value in info.items():
+                if key == "title":
+                    # we the key is a title field. Create a entry for this by recursively calling
+                    # this function again. If this is the first entry, is_item is false and
+                    # therefore the title is put outside the itemize block without a item
+                    self.write_info(value, is_item=is_item, fontsize=fsize)
+                    # after the first call, the is_item flag is set to true, which means that all
+                    # the other titles are preceded with the \items
+                    is_item = True
+                elif key == "items":
+                    # if we find a items key, open a new itemize block add call this function
+                    # recursively with the list or dict
+                    with self.create(Itemize()):
+                        self.write_info(value, is_item=True, fontsize=fsize)
+                elif key == "fontsize":
+                    # skip the fontsize key field
+                    continue
+                else:
+                    # the other values  are just added the the cursive call
+                    self.write_info(value, is_item=is_item, fontsize=fsize)
+        elif isinstance(info, list):
+            # we have a list. Just added all the items to the itemize environment
+            for item in info:
+                self.write_info(item, is_item=True, fontsize=fsize)
+        else:
+            raise AssertionError("Only valid for str, dict or list")
+
     def add_quantity_question(self, key=None, quantity_label=None, label_width=None,
                               box_width=4):
         logger.debug("Adding a quantity question")
@@ -202,5 +301,3 @@ class SurveyDocument(Document):
 
     def add_percentage_question(self):
         logger.debug("Adding a percentage question")
-
-
