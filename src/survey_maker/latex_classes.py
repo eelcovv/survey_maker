@@ -101,3 +101,15 @@ class GroupChoice(CommandBase):
 
 class AddInfo(CommandBase):
     _latex_name = "addinfo"
+
+
+class QuestionSection(CommandBase):
+    _latex_name = "questionsection"
+
+
+class NewLine(CommandBase):
+    _latex_name = "newline"
+
+
+class VSpace(CommandBase):
+    _latex_name = "vspace"

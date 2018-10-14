@@ -1,6 +1,6 @@
 import string
 import time
-import git
+
 from pylatex import (Document, Section, Command)
 from pylatex.utils import NoEscape
 
@@ -42,6 +42,14 @@ class SurveyDocument(Document):
             Command("chead[]", NoEscape(r"\@title\\Version {}".format(survey_version))))
         self.preamble.append(Command("makeatother"))
         self.preamble.append(Command(r"renewcommand\thesection", NoEscape(r"\Alph{section}")))
+        self.preamble.append(Command(r"newcommand\supscript[1]", NoEscape(r"{$^{\textrm{#1}}$}")))
+        self.preamble.append(Command(r"newcommand\subscript[1]", NoEscape(r"{$_{\textrm{#1}}$}")))
+        self.preamble.append(Command(r"newcommand\explanation[1]",
+                                     NoEscape(r"\newline\footnotesize{\emph{#1}}")))
+
+        # the filbreak makes sure that you do net get a loney header at the bottom of the page
+        self.preamble.append(Command(r"newcommand\questionsection[1]",
+                                     NoEscape(r"\filbreak\textbf{\emph{#1}}")))
 
         self.questionnaire = questionnaire
 
@@ -89,6 +97,18 @@ class SurveyDocument(Document):
             self.add_info(info)
 
         for key, question_properties in questions.items():
+
+            # if a sectiontitle field is given, start a new section title at this question
+            section = question_properties.get("section")
+            if section:
+                title = section["title"]
+                self.append(VSpace(NoEscape("\parskip")))
+                self.append(QuestionSection(NoEscape(title)))
+                info = section.get("info")
+                if info is not None:
+                    self.append(NewLine())
+                    self.add_info(info)
+
             add_this = question_properties.get("add_this", True)
             if not add_this:
                 logger.debug("Skip question {}".format(key))
@@ -120,7 +140,9 @@ class SurveyDocument(Document):
             box_width = question_properties.get("box_width", self.global_box_width)
             with self.create(QuantityQuestion(arguments=NoEscape(question))):
                 if info is not None and above:
-                    self.add_info(info)
+                    logger.warning("Above option not possible for quantity question! "
+                                   "Put this info box below")
+                    above = False
                 self.add_quantity_question(key,
                                            quantity_label,
                                            label_width=label_width,
@@ -174,6 +196,7 @@ class SurveyDocument(Document):
 
         with self.create(InfoEnvironment()):
             self.write_info(info, fontsize=fontsize)
+        self.append(VSpace(NoEscape("\parskip")))
 
     def write_info(self, info, fontsize="footnotesize", is_item=False, info_above_items=False):
         """
@@ -299,10 +322,7 @@ class SurveyDocument(Document):
         if label_width is None:
             label = quantity_label
         else:
-            label = "\\parbox{" + label_width + "}{" + quantity_label + "}"
+            label = "\\parbox{" + "{}".format(label_width) + "}{" + quantity_label + "}"
 
         self.append(ChoiceItemText(arguments=["1.2em", box_width, NoEscape(label)]))
         self.append(Command("label", NoEscape(label_question(key))))
-
-    def add_percentage_question(self):
-        logger.debug("Adding a percentage question")
