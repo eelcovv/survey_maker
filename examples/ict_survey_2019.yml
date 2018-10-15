@@ -43,6 +43,7 @@ questionnaire:
         quantity_label: Percentage (\%)
         question: Hoeveel procent van de werkzame personen gebruikt een computer (inclusief laptops, tablets en smartphones) voor het werk?
   ict_specialisten:
+    add_this: true
     title: ICT-specialisten
     questions:
       ict_specialisten_in_dienst:
@@ -74,3 +75,39 @@ questionnaire:
         - Ontwikkeling van web-applicaties (bijv. websites, toepassingen voor e-commerce)
         - Ondersteuning van web-applicaties (bijv. websites, toepassingen voor e-commerce)
         - ICT-beveiliging en bescherming van data (bijv. beveiligingstests, beveiligingssoftware)
+  facturen:
+    title: Facturen (elektronisch en papier)
+    info:
+      title:  Er zijn twee soorten electronische facturen
+      items:
+        voor_automatische_verwerking:
+          title: E-facturen geschikt voor automatische verwerking
+          items:
+          - "Voorbeelden: Electronic Data Interchange (EDI), XML, UBL"
+          - Worden ofwel direct uitgewisseld door elektronische systemen van bedrijven onderling, of via  elektronische systemen van dienstverleners zoals \emph{Billing Service Provides}
+        niet_voor_automatische_verwerking:
+          title: Facturen in electronische vorm \emph{niet} geschikt voor automatische verwerking
+          items:
+          - "Voorbeelden: Factuur in e-mail of als e-mailbijlagen in de vorm van een PDF-bestand"
+    questions:
+      facturen_verzonden:
+        question: Heeft uw bedrijf in 2017 de volgende soorten facturen verzonden?
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - E-factuur in een standaardformaat, geschikt voor automatische verwerking (bijv. EDI, XML, UBL)
+        - Elektronische vorm, niet geschikt voor automatische verwerking (bijv. e-mail, PDF-bestand)
+        - Uitsluitend in papieren vorm
+        info:
+          title: Indien alles Nee, dan naar ontvangen facturen gaan.
+      facturen_ontvangen:
+        question: Hoeveel procent van alle ontvangen facturen heeft uw bedrijf in 2016 ontvangen?
+        quantity_label:
+        - E-factuur in een standaardformaat, geschikt voor automatische verwerking (bijv. EDI, XML, UBL)
+        - In papieren vorm en/of in een elektronische vorm, \emph{niet geschikt} voor automatische verwerking
+          (bijv. e-mail, PDF-bestand)
+        info:
+          title: Het totaal moet 100\% zijn
+

@@ -133,10 +133,9 @@ class SurveyDocument(Document):
 
         if question_type == "quantity":
             quantity_label = question_properties.get("quantity_label", "")
-            if quantity_label != "":
+            if isinstance(quantity_label, str) and quantity_label != "":
                 # append a :  in case the label of the quantity is not empty
                 quantity_label += ":"
-            label_width = question_properties.get("label_width", self.global_label_width)
             box_width = question_properties.get("box_width", self.global_box_width)
             with self.create(QuantityQuestion(arguments=NoEscape(question))):
                 if info is not None and above:
@@ -145,7 +144,6 @@ class SurveyDocument(Document):
                     above = False
                 self.add_quantity_question(key,
                                            quantity_label,
-                                           label_width=label_width,
                                            box_width=box_width)
         elif question_type == "choices":
             logger.info("Adding a choice question")
@@ -314,7 +312,7 @@ class SurveyDocument(Document):
         Parameters
         ----------
         key: str
-        quantity_label: str
+        quantity_label: str or list
         label_width: int
         box_width: fliat
 
@@ -324,10 +322,26 @@ class SurveyDocument(Document):
         """
         logger.debug("Adding a quantity question")
 
-        if label_width is None:
-            label = quantity_label
+        if isinstance(quantity_label, str):
+            label_list = [quantity_label]
         else:
-            label = "\\parbox{" + "{}".format(label_width) + "}{" + quantity_label + "}"
+            label_list = quantity_label
 
-        self.append(ChoiceItemText(arguments=["1.2em", box_width, NoEscape(label)]))
+        if label_width is None:
+            width = self.global_label_width
+        else:
+            width = label_width
+
+        for label in label_list:
+            if isinstance(quantity_label, list):
+                # treat as a list of labels
+                lbl = "\\parbox{0.8\\textwidth}{" + label + "}"
+            else:
+                if label_width is not None:
+                    lbl = "\\parbox{" + "{}".format(width) + "}{" + label + "}"
+                else:
+                    lbl = label
+
+            self.append(ChoiceItemText(arguments=["1.2em", box_width, NoEscape(lbl)]))
+
         self.append(Command("label", NoEscape(label_question(key))))
