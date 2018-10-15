@@ -59,12 +59,9 @@ def _parse_the_command_line_arguments(args):
                         dest="log_level_file", const=logging.INFO)
     parser.add_argument('--log_file_quiet', help="Be quiet: no output to file",
                         action="store_const", dest="log_level_file", const=logging.WARNING)
-    parser.add_argument("--update_sql_tables", action="store_true",
-                        help="Reread the csv file with urls/addresses and update the tables ")
-    parser.add_argument("--force_process", action="store_true",
-                        help="Force to process company table, even if they have been marked "
-                             "as processes")
-    parser.add_argument("--pdf", action="store_true", help="Create the pdf output")
+    parser.add_argument("--pdf", action="store_true", help="Create the pdf output", default=True)
+    parser.add_argument("--no_pdf", action="store_false", help="Do not create the pdf output",
+                        dest="pdf")
     parser.add_argument("--twice", action="store_true", help="Compile two times for the labels")
     parser.add_argument("--clean", action="store_true",
                         help="Clean the latex temp files after processing")
