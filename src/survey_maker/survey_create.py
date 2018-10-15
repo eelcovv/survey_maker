@@ -98,7 +98,7 @@ def setup_logging(write_log_to_file=False,
     # so we can control the output
     merge_loggers(_logger, "cbs_utils")
     merge_loggers(_logger, "survey_maker.engine")
-    merge_loggers(_logger, "survey_maker.document")
+    merge_loggers(_logger, "survey_maker.survey_document")
 
     _logger.info("{:10s}: {}".format("Running", sys.argv))
     _logger.info("{:10s}: {}".format("Version", __version__))
