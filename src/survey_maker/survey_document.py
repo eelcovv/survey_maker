@@ -158,12 +158,13 @@ class SurveyDocument(Document):
                 self.add_choice_question(key, choices)
         elif question_type == "group":
             logger.info("Adding a group question")
+            group_width = question_properties.get("group_width")
             groups = question_properties["groups"]
             choice_lines = question_properties["choicelines"]
             with self.create(ChoiceGroupQuestion(arguments=NoEscape(question))):
                 if info is not None and above:
                     self.add_info(info)
-                self.add_choice_group_question(key, groups, choice_lines)
+                self.add_choice_group_question(key, groups, choice_lines, group_width)
         else:
             raise AssertionError("question type not known. Check if type of question {} is one of "
                                  "the following: {} ".format(key, QUESTION_TYPES))
@@ -171,9 +172,13 @@ class SurveyDocument(Document):
         if info is not None and not above:
             self.add_info(info)
 
-    def add_choice_group_question(self, key, groups, choice_lines):
+    def add_choice_group_question(self, key, groups, choice_lines, group_width=None):
 
-        for grp in groups:
+        for group in groups:
+            if group_width is not None:
+                grp = "\parbox{" + "{}".format(group_width) + "}{" + group + "}"
+            else:
+                grp = group
             self.append(GroupChoice(NoEscape(grp)))
 
         for cnt, line in enumerate(choice_lines):
