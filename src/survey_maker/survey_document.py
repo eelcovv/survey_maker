@@ -176,7 +176,7 @@ class SurveyDocument(Document):
 
         for group in groups:
             if group_width is not None:
-                grp = "\parbox{" + "{}".format(group_width) + "}{" + group + "}"
+                grp = "\parbox{" + "{}".format(group_width) + r"}{\raggedleft" + group + "}"
             else:
                 grp = group
             self.append(GroupChoice(NoEscape(grp)))
