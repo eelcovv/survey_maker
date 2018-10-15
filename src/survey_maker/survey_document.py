@@ -332,10 +332,12 @@ class SurveyDocument(Document):
         else:
             width = label_width
 
-        for label in label_list:
+        for cnt, label in enumerate(label_list):
             if isinstance(quantity_label, list):
+                char = string.ascii_lowercase[cnt]
+                label_with_char = "\\textbf{" + char + "}) " + label
                 # treat as a list of labels
-                lbl = "\\parbox{0.8\\textwidth}{" + label + "}"
+                lbl = "\\parbox{0.8\\textwidth}{" + label_with_char + "}"
             else:
                 if label_width is not None:
                     lbl = "\\parbox{" + "{}".format(width) + "}{" + label + "}"
