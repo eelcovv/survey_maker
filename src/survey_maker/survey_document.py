@@ -337,7 +337,7 @@ class SurveyDocument(Document):
                 char = string.ascii_lowercase[cnt]
                 label_with_char = "\\textbf{" + char + "}) " + label
                 # treat as a list of labels
-                lbl = "\\parbox{0.8\\textwidth}{" + label_with_char + "}"
+                lbl = "\\parbox{0.92\\textwidth}{" + label_with_char + "}"
             else:
                 if label_width is not None:
                     lbl = "\\parbox{" + "{}".format(width) + "}{" + label + "}"
