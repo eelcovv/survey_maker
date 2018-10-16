@@ -92,6 +92,7 @@ class SurveyDocument(Document):
 
             logger.info("Adding section {}".format(module_key))
 
+            self.append(Command("clearpage"))
             self.add_module(module_key, module_properties)
 
     def add_module(self, module_key, module_properties):
