@@ -213,7 +213,7 @@ class SurveyDocument(Document):
                     self.add_info(info)
                 self.add_choice_question(key, choices)
         elif question_type == "group":
-            logger.info("Adding a group question")
+            logger.debug("Adding a group question")
             group_width = question_properties.get("group_width")
             groups = question_properties["groups"]
             choice_lines = question_properties["choicelines"]
