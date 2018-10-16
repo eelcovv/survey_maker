@@ -10,6 +10,7 @@ import argparse
 import logging
 import os
 import sys
+import re
 import subprocess
 
 import pandas as pd
@@ -121,11 +122,11 @@ def get_version(preamble):
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stat1, stat2 = process.communicate()
     if stat1.decode() == "":
-        logger.info("No git version found in questionnary folder. Is it under git control?")
+        logger.info("No git version found in questionnaire folder. Is it under git control?")
         survey_version = preamble.get("version", "Unknown")
         logger.info("Overruling with version in yaml file: {}".format(survey_version))
     else:
-        survey_version = stat1.decode()
+        survey_version = stat1.decode().strip()
         logger.info("Survey version found: {}".format(stat1.decode()))
 
     return  survey_version
@@ -180,6 +181,8 @@ def main(args_in):
         make_directory(output_directory)
 
         survey_version = get_version(preamble)
+
+        output_file = "_".join([output_file, re.sub("-.*", "", survey_version)])
 
         # create the object and do you thing
         SurveyMaker(
