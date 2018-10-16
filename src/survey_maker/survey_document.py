@@ -128,7 +128,7 @@ class SurveyDocument(Document):
                 logger.debug("Skipping section {}".format(module_key))
                 continue
 
-            logger.info("Adding section {}".format(module_key))
+            logger.info("Adding module {}".format(module_key))
 
             self.append(Command("clearpage"))
 
@@ -204,7 +204,7 @@ class SurveyDocument(Document):
                                            quantity_label,
                                            box_width=box_width)
         elif question_type == "choices":
-            logger.info("Adding a choice question")
+            logger.debug("Adding a choice question")
             choices = question_properties.get("choices")
             number_of_columns = question_properties.get("number_of_columns", 1)
             with self.create(ChoiceQuestion(options=[number_of_columns],
