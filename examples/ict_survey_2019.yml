@@ -1,6 +1,9 @@
 general:
   output_directory: .
   working_directory: .
+  colorize_questions:
+    key: exclude_small_companies
+    color: blue
   preamble:
     title: ICT-gebruik bedrijven 2019
     author: Eelco van Vliet
@@ -15,6 +18,7 @@ general:
 questionnaire:
   personeel_en_computers:
     add_this: true
+    exclude_small_companies: true
     title: Personeel en computers
     info: "Kleine bedrijven: alleen \\ref{quest:aantal_werkzame_personen} en \\ref{quest:procent_wp_met_compu_en_internet}"
     questions:

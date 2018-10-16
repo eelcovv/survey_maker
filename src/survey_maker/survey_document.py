@@ -2,6 +2,7 @@ import string
 import time
 
 from pylatex import (Document, Section, Command)
+from pylatex.package import Package
 from pylatex.utils import NoEscape
 
 from cbs_utils.misc import get_logger
@@ -23,7 +24,8 @@ class SurveyDocument(Document):
                  questionnaire=None,
                  info_items=None,
                  global_label_width="2.8cm",
-                 global_box_width="4"
+                 global_box_width="4",
+                 colorize_questions=None
                  ):
         if document_options is None:
             # take the default options if they are not passed to the class
@@ -37,7 +39,8 @@ class SurveyDocument(Document):
         self.preamble.append(Command("title", title))
         self.preamble.append(Command("author", "Version: {}".format(survey_version)))
         self.preamble.append(Command("date", date))
-        self.preamble.append(Command("usepackage", "tocloft"))
+        self.preamble.append(Package("color"))
+        self.preamble.append(Package("tocloft"))
         self.preamble.append(Command("makeatletter"))
         self.preamble.append(
             Command("chead[]", NoEscape(r"\@title\\Version {}".format(survey_version))))
@@ -66,6 +69,30 @@ class SurveyDocument(Document):
         self.append(Command("newpage"))
         self.append(Command("appendix"))
 
+        if colorize_questions is not None:
+            self.colorize_color = colorize_questions["color"]
+            self.colorize_key = colorize_questions["key"]
+        else:
+            self.colorize_color = None
+            self.colorize_key = None
+
+        self.preamble.append(Command(
+            NoEscape(r"addto\captionsdutch{\renewcommand{\contentsname}{\Large\textbf{"
+                     r"Modules Vragenlijst}}}")))
+
+        if self.colorize_color:
+            # create a new command setting the color
+            self.preamble.append(Command(r"newcommand\colorline[1]",
+                                         NoEscape(r"{{\color{" +
+                                                  r"{:}".format(self.colorize_color) +
+                                                  r"}{#1}}}")))
+
+            # create a new environment setting the color
+            self.preamble.append(Command(
+                r"newenvironment{colorize}{\medskip\bgroup\color{" +
+                r"{:}".format(self.colorize_color) +
+                r"}}{\egroup\medskip}"))
+
         with self.create(Questionnaire(options="noinfo")):
 
             # we can start with a info block in case that is given in the *general* section of
@@ -93,6 +120,10 @@ class SurveyDocument(Document):
             logger.info("Adding section {}".format(module_key))
 
             self.append(Command("clearpage"))
+
+            if module_properties.get(self.colorize_key):
+                self.append(Command("color", self.colorize_color))
+
             self.add_module(module_key, module_properties)
 
     def add_module(self, module_key, module_properties):

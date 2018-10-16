@@ -160,6 +160,7 @@ def main(args_in):
     working_directory = general["working_directory"]
     output_directory = general["output_directory"]
     preamble = general["preamble"]
+    colorize_questions = general.get("colorize_questions")
 
     info_items = general.get("info")
 
@@ -191,7 +192,8 @@ def main(args_in):
             n_compile=n_compile,
             silent=args.silent,
             clean=args.clean,
-            survey_version=survey_version
+            survey_version=survey_version,
+            colorize_questions=colorize_questions
         )
 
 
