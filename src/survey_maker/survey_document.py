@@ -35,13 +35,13 @@ class SurveyDocument(Document):
         )
 
         self.preamble.append(Command("title", title))
-        self.preamble.append(Command("author", author))
+        self.preamble.append(Command("author", "Version: {}".format(survey_version)))
         self.preamble.append(Command("date", date))
+        self.preamble.append(Command("usepackage", "tocloft"))
         self.preamble.append(Command("makeatletter"))
         self.preamble.append(
             Command("chead[]", NoEscape(r"\@title\\Version {}".format(survey_version))))
         self.preamble.append(Command("makeatother"))
-        self.preamble.append(Command(r"renewcommand\thesection", NoEscape(r"\Alph{section}")))
         self.preamble.append(Command(r"newcommand\supscript[1]", NoEscape(r"{$^{\textrm{#1}}$}")))
         self.preamble.append(Command(r"newcommand\subscript[1]", NoEscape(r"{$_{\textrm{#1}}$}")))
         self.preamble.append(Command(r"newcommand\explanation[1]",
@@ -51,10 +51,20 @@ class SurveyDocument(Document):
         self.preamble.append(Command(r"newcommand\questionsection[1]",
                                      NoEscape(r"\filbreak\textbf{\emph{#1}}")))
 
+        self.preamble.append(Command("setcounter{tocdepth}", "1"))
+        self.preamble.append(Command(
+            NoEscape(r"addto\captionsdutch{\renewcommand{\contentsname}{\Large\textbf{"
+                     r"Modules Vragenlijst}}}")))
+
         self.questionnaire = questionnaire
 
         self.global_label_width = global_label_width
         self.global_box_width = global_box_width
+
+        self.append(Command("maketitle"))
+        self.append(Command("tableofcontents*"))
+        self.append(Command("newpage"))
+        self.append(Command("appendix"))
 
         with self.create(Questionnaire(options="noinfo")):
 
