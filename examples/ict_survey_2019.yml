@@ -3,7 +3,7 @@ general:
   working_directory: .
   colorize_questions:
     key: exclude_small_companies
-    color: blue
+    color:  roodvergrijsd  #  codekleur  # cbslichtblauw
   preamble:
     title: ICT-gebruik bedrijven 2019
     author: Eelco van Vliet
@@ -78,7 +78,7 @@ questionnaire:
         - Ondersteuning van bedrijfsvoeringssoftware/-systemen (bijv. ERP-, CRM-, HRM-software, databases)
         - Ontwikkeling van web-applicaties (bijv. websites, toepassingen voor e-commerce)
         - Ondersteuning van web-applicaties (bijv. websites, toepassingen voor e-commerce)
-        - ICT-beveiliging en bescherming van data (bijv. beveiligingstests, beveiligingssoftware)
+        - \colorline{ICT-beveiliging en bescherming van data (bijv. beveiligingstests, beveiligingssoftware)}
   facturen:
     title: Facturen (elektronisch en papier)
     info:
@@ -95,6 +95,7 @@ questionnaire:
           - "Voorbeelden: Factuur in e-mail of als e-mailbijlagen in de vorm van een PDF-bestand"
     questions:
       facturen_verzonden:
+        exclude_small_companies: true
         question: Heeft uw bedrijf in 2017 de volgende soorten facturen verzonden?
         type: group
         groups:

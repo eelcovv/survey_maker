@@ -69,6 +69,12 @@ class ChoiceQuestion(Environment):
     content_separator = "\n"
 
 
+class Colorize(Environment):
+    _latex_name = "colorize"
+    escape = False
+    content_separator = "\n"
+
+
 class ChoiceGroupQuestion(Environment):
     _latex_name = "choicegroup"
     escape = False
@@ -113,3 +119,8 @@ class NewLine(CommandBase):
 
 class VSpace(CommandBase):
     _latex_name = "vspace"
+
+
+class ColorLine(CommandBase):
+    _latex_name = "colorline"
+

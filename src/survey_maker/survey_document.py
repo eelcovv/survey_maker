@@ -81,13 +81,24 @@ class SurveyDocument(Document):
                      r"Modules Vragenlijst}}}")))
 
         if self.colorize_color:
-            # create a new command setting the color
+            self.preamble.append(Command(NoEscape(r"definecolor{cbsblauw}{RGB}{39, 29, 108}")))
+            self.preamble.append(Command(NoEscape(r"definecolor{cbslichtblauw}{RGB}{0, 161, 205}")))
+            self.preamble.append(Command(NoEscape(r"definecolor{oranje}{RGB}{243, 146, 0}")))
+            self.preamble.append(Command(NoEscape(
+                r"definecolor{oranjevergrijsd}{RGB}{206, 124, 0}")))
+            self.preamble.append(Command(NoEscape(r"definecolor{rood}{RGB}{233, 76, 10}")))
+            self.preamble.append(Command(NoEscape(
+                r"definecolor{roodvergrijsd}{RGB}{178, 61, 2}")))
+            self.preamble.append(Command(NoEscape(
+                r"definecolor{codekleur}{RGB}{88, 88, 88}")))
+
+            # create a new command for setting the color of a single line
             self.preamble.append(Command(r"newcommand\colorline[1]",
                                          NoEscape(r"{{\color{" +
                                                   r"{:}".format(self.colorize_color) +
                                                   r"}{#1}}}")))
 
-            # create a new environment setting the color
+            # create a new environment for setting the color in a block
             self.preamble.append(Command(
                 r"newenvironment{colorize}{\medskip\bgroup\color{" +
                 r"{:}".format(self.colorize_color) +
@@ -100,7 +111,7 @@ class SurveyDocument(Document):
             if info_items is not None:
                 self.add_info(info_items, fontsize="normalsize")
 
-            # always add a Data infomation
+            # always add a Data information
             self.append(AddInfo(arguments=["Date", time.strftime("%d.%m.%Y")]))
 
             # now add all the modules with questions
@@ -122,9 +133,10 @@ class SurveyDocument(Document):
             self.append(Command("clearpage"))
 
             if module_properties.get(self.colorize_key):
-                self.append(Command("color", self.colorize_color))
-
-            self.add_module(module_key, module_properties)
+                with self.create(Colorize()):
+                    self.add_module(module_key, module_properties)
+            else:
+                self.add_module(module_key, module_properties)
 
     def add_module(self, module_key, module_properties):
 
@@ -157,7 +169,11 @@ class SurveyDocument(Document):
                 continue
 
             logger.info("Adding question {}".format(key))
-            self.add_question(key, question_properties)
+            if question_properties.get(self.colorize_key):
+                with self.create(Colorize()):
+                    self.add_question(key, question_properties)
+            else:
+                self.add_question(key, question_properties)
 
     def add_question(self, key, question_properties):
 
