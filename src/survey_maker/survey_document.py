@@ -244,8 +244,11 @@ class SurveyDocument(Document):
             self.append(GroupChoice(NoEscape(grp)))
 
         for cnt, line in enumerate(choice_lines):
-            char = string.ascii_lowercase[cnt]
-            line_with_char = "\\textbf{" + char + "}) " + line
+            char = string.ascii_lowercase[cnt] + ")"
+            if re.search("colorline", line):
+                # in case we color the line, do the same for the character
+                char = "\colorline{" + char + "}"
+            line_with_char = "\\textbf{" + char + "} " + line
             self.append(ChoiceLine(NoEscape(line_with_char)))
 
         self.append(Command("label", NoEscape(label_question(key))))
