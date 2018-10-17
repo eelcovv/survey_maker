@@ -73,6 +73,10 @@ class Colorize(Environment):
     _latex_name = "colorize"
     escape = False
     content_separator = "\n"
+    omit_if_empty = True
+
+class Empty(Environment):
+    omit_if_empty = True
 
 
 class ChoiceGroupQuestion(Environment):

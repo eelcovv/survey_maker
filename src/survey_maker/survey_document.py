@@ -77,6 +77,7 @@ class SurveyDocument(Document):
             self.colorize_key = None
 
         self.preamble.append(Command(
+            # this line changes the title of the table of contents
             NoEscape(r"addto\captionsdutch{\renewcommand{\contentsname}{\Large\textbf{"
                      r"Modules Vragenlijst}}}")))
 
@@ -152,6 +153,8 @@ class SurveyDocument(Document):
 
         for key, question_properties in questions.items():
 
+            filter = question_properties.get("filter")
+
             # if a sectiontitle field is given, start a new section title at this question
             section = question_properties.get("section")
             if section:
@@ -170,12 +173,15 @@ class SurveyDocument(Document):
 
             logger.info("Adding question {}".format(key))
             if question_properties.get(self.colorize_key):
-                with self.create(Colorize()):
-                    self.add_question(key, question_properties)
+                environment = Colorize()
             else:
-                self.add_question(key, question_properties)
+                # no colour is added to this question. Assign an empty environment
+                environment = Empty()
 
-    def add_question(self, key, question_properties):
+            with self.create(environment):
+                self.add_question(key, question_properties, filter)
+
+    def add_question(self, key, question_properties, filter=None):
 
         question = question_properties["question"]
         question_type = question_properties.get("type", "quantity")
@@ -211,7 +217,7 @@ class SurveyDocument(Document):
                                             arguments=NoEscape(question))):
                 if info is not None and above:
                     self.add_info(info)
-                self.add_choice_question(key, choices)
+                self.add_choice_question(key, choices, filter)
         elif question_type == "group":
             logger.debug("Adding a group question")
             group_width = question_properties.get("group_width")
@@ -341,7 +347,7 @@ class SurveyDocument(Document):
         else:
             raise AssertionError("Only valid for str, dict or list")
 
-    def add_choice_question(self, key, choices=None):
+    def add_choice_question(self, key, choices=None, filter=None):
         """
         Add a question with choices
 
@@ -353,12 +359,25 @@ class SurveyDocument(Document):
             If None, assume Nee/Ja.
         """
         if choices is None:
-            choice_labels = ["Nee", "Ja"]
+            choice_labels = ["Ja", "Nee"]
         else:
             choice_labels = choices
 
-        for choice in choice_labels:
-            self.append(ChoiceItem(NoEscape(choice)))
+        for cnt, choice in enumerate(choice_labels):
+            if filter is not None and filter["condition"] == choice:
+                goto = filter["goto"]
+                ref_cat = goto.split(":")[0]
+                if ref_cat == "quest":
+                    category = "vraag"
+                elif ref_cat == "mod":
+                    category = "module"
+                else:
+                    raise  AssertionError("Only quest and mod are implemented")
+                ch_str = choice + " $\\rightarrow$ Ga naar " + category + " \\ref{" + goto + "}"
+            else:
+                ch_str = choice
+
+            self.append(ChoiceItem(NoEscape(ch_str)))
 
         self.append(Command("label", NoEscape(label_question(key))))
 
