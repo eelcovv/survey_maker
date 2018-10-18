@@ -5,6 +5,25 @@ import re
 from pylatex.base_classes import Environment, CommandBase
 
 
+def label_module_section(title):
+    """
+    Create a label to use for referring to a module section
+
+    Parameters
+    ----------
+    key: str
+        Name of the key
+
+    Returns
+    -------
+    str
+        label for the module section
+
+    """
+
+    return re.sub("_|\s", "", ":".join(["modsec", title.lower()]))
+
+
 def label_question(key):
     """
     Create a label to use for referring to a question
@@ -73,7 +92,7 @@ class Colorize(Environment):
     _latex_name = "colorize"
     escape = False
     content_separator = "\n"
-    omit_if_empty = True
+
 
 class Empty(Environment):
     omit_if_empty = True
@@ -113,8 +132,8 @@ class AddInfo(CommandBase):
     _latex_name = "addinfo"
 
 
-class QuestionSection(CommandBase):
-    _latex_name = "questionsection"
+class ModuleSection(CommandBase):
+    _latex_name = "modulesection"
 
 
 class NewLine(CommandBase):

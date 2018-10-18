@@ -4,6 +4,7 @@ general:
   colorize_questions:
     key: exclude_small_companies
     color:  roodvergrijsd  #  codekleur  # cbslichtblauw
+    label: Kleine bedrijven
   preamble:
     title: ICT-gebruik bedrijven 2019
     author: Eelco van Vliet

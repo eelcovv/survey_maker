@@ -44,6 +44,10 @@ class SurveyDocument(Document):
         self.preamble.append(Command("makeatletter"))
         self.preamble.append(
             Command("chead[]", NoEscape(r"\@title\\Version {}".format(survey_version))))
+        self.preamble.append(
+            Command(r"newcommand{\sectionwithlabel}[2]",
+                    NoEscape(r"\phantomsection #1\def\@currentlabel{\unexpanded{#1}}\label{#2}")))
+
         self.preamble.append(Command("makeatother"))
         self.preamble.append(Command(r"newcommand\supscript[1]", NoEscape(r"{$^{\textrm{#1}}$}")))
         self.preamble.append(Command(r"newcommand\subscript[1]", NoEscape(r"{$_{\textrm{#1}}$}")))
@@ -51,8 +55,8 @@ class SurveyDocument(Document):
                                      NoEscape(r"\newline\footnotesize{\emph{#1}}")))
 
         # the filbreak makes sure that you do net get a loney header at the bottom of the page
-        self.preamble.append(Command(r"newcommand\questionsection[1]",
-                                     NoEscape(r"\filbreak\textbf{\emph{#1}}")))
+        section_str = r"\filbreak{\sectionwithlabel{\textbf{\emph{#1}}}{#2}}"
+        self.preamble.append(Command(r"newcommand\modulesection[2]", NoEscape(section_str)))
 
         self.preamble.append(Command("setcounter{tocdepth}", "1"))
         self.preamble.append(Command(
@@ -72,9 +76,11 @@ class SurveyDocument(Document):
         if colorize_questions is not None:
             self.colorize_color = colorize_questions["color"]
             self.colorize_key = colorize_questions["key"]
+            self.colorize_label = colorize_questions["label"]
         else:
             self.colorize_color = None
             self.colorize_key = None
+            self.colorize_label = None
 
         self.preamble.append(Command(
             # this line changes the title of the table of contents
@@ -134,18 +140,47 @@ class SurveyDocument(Document):
             self.append(Command("clearpage"))
 
             if module_properties.get(self.colorize_key):
+                # we have found the key 'colorize_key' (given in the general section as e.g.
+                # "small_company". This means the whole module needs to be coloured and also
+                # we return the value of small_company. In case this is a string (an not a bool)
+                # it is interpreted as a goto reference which needs to be reported.
+                goto = module_properties[self.colorize_key]
                 with self.create(Colorize()):
-                    self.add_module(module_key, module_properties)
+                    self.add_module(module_key, module_properties, goto)
             else:
                 self.add_module(module_key, module_properties)
 
-    def add_module(self, module_key, module_properties):
+    def add_module(self, module_key, module_properties, goto=None):
+        """
+        Add a module to the document
+
+        Parameters
+        ----------
+        module_key: str
+            The name key of the module. For internal use only
+        module_properties: dict
+            A dictionary with the properties of the module
+        goto:  str or bool
+            In case goto is not none, we have requested to colorize this module because we are
+            dealing for instance with a moduel which can be skipped for small companies. In case
+            this value is a str, it is interpreted as a goto label
+
+        """
 
         title = module_properties["title"]
         questions = module_properties["questions"]
         info = module_properties.get("info")
 
         self.append(Section(title=title, label=NoEscape(label_module(module_key))))
+
+        if goto is not None and isinstance(goto, str):
+            # A goto string is pased to the module. Prefend a Ga naa label before we start with
+            # this module
+            if self.colorize_label is not None:
+                label = self.colorize_label
+                ref_str = f"{label}" + " $\\rightarrow$ Ga naar \\ref{" + goto + "}"
+                with self.create(InfoEnvironment()):
+                    self.append(Command("emph", NoEscape(ref_str)))
 
         if info is not None:
             # in case a info section is given, at it at the top of the module
@@ -158,9 +193,15 @@ class SurveyDocument(Document):
             # if a sectiontitle field is given, start a new section title at this question
             section = question_properties.get("section")
             if section:
+                goto = section.get(self.colorize_key)
+                #if goto is not None and isinstance(goto, str):
+                #    environment = Colorize()
+                #else:
+                #    environment = Empty()
                 title = section["title"]
+                title_label = label_module_section(title)
                 self.append(VSpace(NoEscape("\parskip")))
-                self.append(QuestionSection(NoEscape(title)))
+                self.append(ModuleSection([NoEscape(title), title_label]))
                 info = section.get("info")
                 if info is not None:
                     self.append(NewLine())
@@ -173,12 +214,9 @@ class SurveyDocument(Document):
 
             logger.info("Adding question {}".format(key))
             if question_properties.get(self.colorize_key):
-                environment = Colorize()
+                with self.create(Colorize()):
+                    self.add_question(key, question_properties, filter)
             else:
-                # no colour is added to this question. Assign an empty environment
-                environment = Empty()
-
-            with self.create(environment):
                 self.add_question(key, question_properties, filter)
 
     def add_question(self, key, question_properties, filter=None):
