@@ -174,10 +174,13 @@ class SurveyDocument(Document):
         self.append(Section(title=title, label=NoEscape(label_module(module_key))))
 
         if goto is not None and isinstance(goto, str):
-            # A goto string is pased to the module. Prefend a Ga naa label before we start with
+            # A goto string is pased to the module. Prepend a Ga naar label before we start with
             # this module
             if self.colorize_label is not None:
                 label = self.colorize_label
+                if re.match("^mod", goto):
+                    # remove all underscores for mod: reference
+                    goto = re.sub("_", "", goto)
                 ref_str = f"{label}" + " $\\rightarrow$ Ga naar \\ref{" + goto + "}"
                 with self.create(InfoEnvironment()):
                     self.append(Command("emph", NoEscape(ref_str)))
@@ -185,6 +188,8 @@ class SurveyDocument(Document):
         if info is not None:
             # in case a info section is given, at it at the top of the module
             self.add_info(info)
+
+        color_all_in_section = False
 
         for key, question_properties in questions.items():
 
@@ -194,18 +199,42 @@ class SurveyDocument(Document):
             section = question_properties.get("section")
             if section:
                 goto = section.get(self.colorize_key)
-                #if goto is not None and isinstance(goto, str):
-                #    environment = Colorize()
-                #else:
-                #    environment = Empty()
+                ref_str = None
+                if goto is not None:
+                    color_all_in_section = True
+                    if re.match("^mod", goto):
+                        # remove all underscores for mod: reference
+                        goto = re.sub("_", "", goto)
+                    if isinstance(goto, str) and self.colorize_label is not None:
+                        label = self.colorize_label
+                        ref_str = f"{label}" + " $\\rightarrow$ Ga naar \\ref{" + goto + "}"
+                else:
+                    color_all_in_section = False
+
                 title = section["title"]
                 title_label = label_module_section(title)
                 self.append(VSpace(NoEscape("\parskip")))
-                self.append(ModuleSection([NoEscape(title), title_label]))
+
+                if color_all_in_section:
+                    with self.create(Colorize()):
+                        self.append(ModuleSection([NoEscape(title), title_label]))
+                        if ref_str is not None:
+                            with self.create(InfoEnvironment()):
+                                self.append(Command("emph", NoEscape(ref_str)))
+                else:
+                    self.append(ModuleSection([NoEscape(title), title_label]))
+                    if ref_str is not None:
+                        with self.create(InfoEnvironment()):
+                            self.append(Command("emph", NoEscape(ref_str)))
+
                 info = section.get("info")
                 if info is not None:
-                    self.append(NewLine())
-                    self.add_info(info)
+                    self.append(VSpace(NoEscape("\parskip")))
+                    if color_all_in_section:
+                        with self.create(Colorize()):
+                            self.add_info(info)
+                    else:
+                        self.add_info(info)
 
             add_this = question_properties.get("add_this", True)
             if not add_this:
@@ -213,7 +242,7 @@ class SurveyDocument(Document):
                 continue
 
             logger.info("Adding question {}".format(key))
-            if question_properties.get(self.colorize_key):
+            if question_properties.get(self.colorize_key) or color_all_in_section:
                 with self.create(Colorize()):
                     self.add_question(key, question_properties, filter)
             else:

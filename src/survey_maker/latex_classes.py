@@ -21,7 +21,7 @@ def label_module_section(title):
 
     """
 
-    return re.sub("_|\s", "", ":".join(["modsec", title.lower()]))
+    return re.sub("_|\s|/", "", ":".join(["modsec", title.lower()]))
 
 
 def label_question(key):

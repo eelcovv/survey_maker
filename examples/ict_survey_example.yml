@@ -2,7 +2,7 @@ general:
   output_directory: .
   working_directory: .
   colorize_questions:
-    key: exclude_small_companies
+    key: small_company
     color:  roodvergrijsd  #  codekleur  # cbslichtblauw
     label: Kleine bedrijven
   preamble:
@@ -19,7 +19,7 @@ general:
 questionnaire:
   personeel_en_computers:
     add_this: true
-    exclude_small_companies: true
+    small_company: mod:ict_specialisten
     title: Personeel en computers
     info: "Kleine bedrijven: alleen \\ref{quest:aantal_werkzame_personen} en \\ref{quest:procent_wp_met_compu_en_internet}"
     questions:
@@ -54,9 +54,12 @@ questionnaire:
       ict_specialisten_in_dienst:
         question: Heeft uw bedrijf één of meer ICT-specialisten in dienst?
         type: choices
+        filter:
+          condition: Nee
+          goto: "quest:ict_specialisten_door_wie_uitgevoerd"
         choices:
-          - "Nee $\\rightarrow$ Ga naar \\ref{quest:cursus_eigen_personeel}"
-          - "Ja"
+          - Nee
+          - Ja
       ict_specialisten_aantal_fte:
         question: Hoeveel ICT-specialisten1 stonden er op 31 december 2018 op de loonlijst, uitgedrukt in FTE’s?
         quantity_label: FTE
@@ -94,9 +97,10 @@ questionnaire:
           title: Facturen in electronische vorm \emph{niet} geschikt voor automatische verwerking
           items:
           - "Voorbeelden: Factuur in e-mail of als e-mailbijlagen in de vorm van een PDF-bestand"
+          - Test van section ref \ref{modsec:nicesection}
     questions:
       facturen_verzonden:
-        exclude_small_companies: true
+        #small_company: "quest:facturen_ontvangen"
         question: Heeft uw bedrijf in 2017 de volgende soorten facturen verzonden?
         type: group
         groups:
@@ -109,6 +113,10 @@ questionnaire:
         info:
           title: Indien alles Nee, dan naar ontvangen facturen gaan.
       facturen_ontvangen:
+        section:
+          title: Nice section
+          info: blablabla
+          small_company: "modsec:weerensection"
         question: Hoeveel procent van alle ontvangen facturen heeft uw bedrijf in 2016 ontvangen?
         quantity_label:
         - E-factuur in een standaardformaat, geschikt voor automatische verwerking (bijv. EDI, XML, UBL)
@@ -116,4 +124,15 @@ questionnaire:
           (bijv. e-mail, PDF-bestand)
         info:
           title: Het totaal moet 100\% zijn
-
+      facturen_nog_een_vraag:
+        question: Nog een vraag
+      facturen_nog_een_vraag2:
+        question: Nog een vraag
+        section:
+          title:  Weer en section
+          info: this is not small
+  nog_een_modules:
+    title: Nog een module
+    questions:
+      vraagje:
+        question: dit is een vraag
