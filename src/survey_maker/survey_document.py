@@ -441,6 +441,8 @@ class SurveyDocument(Document):
                     category = "vraag"
                 elif ref_cat == "mod":
                     category = "module"
+                elif ref_cat == "modsec":
+                    category = "module sectie"
                 else:
                     raise  AssertionError("Only quest and mod are implemented")
                 ch_str = choice + " $\\rightarrow$ Ga naar " + category + " \\ref{" + goto + "}"
