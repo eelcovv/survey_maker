@@ -8,7 +8,7 @@ from pylatex.utils import NoEscape
 from cbs_utils.misc import get_logger
 from survey_maker.latex_classes import *
 
-QUESTION_TYPES = ["quantity", "choices", "group"]
+QUESTION_TYPES = ["quantity", "choices", "group", "textbox"]
 SPECIAL_KEYS = ("fontsize", "above")
 
 logger = get_logger(__name__)
@@ -262,6 +262,7 @@ class SurveyDocument(Document):
             logger.info("question type {} not yet implemented. Skipping".format(question_type))
             return
 
+        logger.debug("Checking quantity_type : {}".format(question_type))
         if question_type == "quantity":
             quantity_label = question_properties.get("quantity_label", "")
             if isinstance(quantity_label, str) and quantity_label != "":
@@ -294,12 +295,32 @@ class SurveyDocument(Document):
                 if info is not None and above:
                     self.add_info(info)
                 self.add_choice_group_question(key, groups, choice_lines, group_width)
+        elif question_type == "textbox":
+            text_width = question_properties.get("textbox", "1cm")
+            if info is not None and above:
+                self.add_info(info)
+            self.add_textbox_question(key, question, text_width)
         else:
             raise AssertionError("question type not known. Check if type of question {} is one of "
                                  "the following: {} ".format(key, QUESTION_TYPES))
 
         if info is not None and not above:
             self.add_info(info)
+
+    def add_textbox_question(self, key, question, text_width=None):
+        """
+        Add a text box with the question
+
+        Parameters
+        ----------
+        key
+        question
+        text_width
+        """
+
+        self.append(TextBox(arguments=[text_width, NoEscape(question)]))
+
+        self.append(Command("label", NoEscape(label_question(key))))
 
     def add_choice_group_question(self, key, groups, choice_lines, group_width=None):
 

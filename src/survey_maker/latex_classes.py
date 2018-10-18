@@ -128,6 +128,15 @@ class GroupChoice(CommandBase):
     content_separator = "\n"
 
 
+class TextBox(CommandBase):
+    _latex_name = "textbox*"
+    escape = False
+    content_separator = "\n"
+
+
+class AddInfo(CommandBase):
+    _latex_name = "addinfo"
+
 class AddInfo(CommandBase):
     _latex_name = "addinfo"
 
