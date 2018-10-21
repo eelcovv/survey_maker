@@ -193,7 +193,9 @@ class SurveyDocument(Document):
 
         for key, question_properties in questions.items():
 
-            filter = question_properties.get("filter")
+            # the filter is a dictionary with properties defining the condition and redirection
+            # in case we want to skip to another question for a certain outcome
+            filter_prop = question_properties.get("filter")
 
             # if a sectiontitle field is given, start a new section title at this question
             section = question_properties.get("section")
@@ -244,11 +246,11 @@ class SurveyDocument(Document):
             logger.info("Adding question {}".format(key))
             if question_properties.get(self.colorize_key) or color_all_in_section:
                 with self.create(Colorize()):
-                    self.add_question(key, question_properties, filter)
+                    self.add_question(key, question_properties, filter_prop)
             else:
-                self.add_question(key, question_properties, filter)
+                self.add_question(key, question_properties, filter_prop)
 
-    def add_question(self, key, question_properties, filter=None):
+    def add_question(self, key, question_properties, filter_prop=None):
 
         question = question_properties["question"]
         question_type = question_properties.get("type", "quantity")
@@ -274,9 +276,7 @@ class SurveyDocument(Document):
                     logger.warning("Above option not possible for quantity question! "
                                    "Put this info box below")
                     above = False
-                self.add_quantity_question(key,
-                                           quantity_label,
-                                           box_width=box_width)
+                self.add_quantity_question(key, quantity_label, box_width=box_width)
         elif question_type == "choices":
             logger.debug("Adding a choice question")
             choices = question_properties.get("choices")
@@ -285,7 +285,7 @@ class SurveyDocument(Document):
                                             arguments=NoEscape(question))):
                 if info is not None and above:
                     self.add_info(info)
-                self.add_choice_question(key, choices, filter)
+                self.add_choice_question(key, choices, filter_prop)
         elif question_type == "group":
             logger.debug("Adding a group question")
             group_width = question_properties.get("group_width")
@@ -294,7 +294,7 @@ class SurveyDocument(Document):
             with self.create(ChoiceGroupQuestion(arguments=NoEscape(question))):
                 if info is not None and above:
                     self.add_info(info)
-                self.add_choice_group_question(key, groups, choice_lines, group_width)
+                self.add_choice_group_question(key, groups, choice_lines, group_width,filter_prop)
         elif question_type == "textbox":
             text_width = question_properties.get("textbox", "1cm")
             if info is not None and above:
@@ -322,7 +322,8 @@ class SurveyDocument(Document):
 
         self.append(Command("label", NoEscape(label_question(key))))
 
-    def add_choice_group_question(self, key, groups, choice_lines, group_width=None):
+    def add_choice_group_question(self, key, groups, choice_lines, group_width=None,
+                                  filter_prop=None):
 
         for group in groups:
             if group_width is not None:
@@ -330,6 +331,11 @@ class SurveyDocument(Document):
             else:
                 grp = group
             self.append(GroupChoice(NoEscape(grp)))
+
+        if filter_prop is not None:
+            condition = filter_prop["condition"]
+            redirection_str = self.get_redirection_string_for_filter(filter_prop)
+            self.add_info(condition + redirection_str)
 
         for cnt, line in enumerate(choice_lines):
             char = string.ascii_lowercase[cnt] + ")"
@@ -438,25 +444,26 @@ class SurveyDocument(Document):
         else:
             raise AssertionError("Only valid for str, dict or list")
 
-    def add_choice_question(self, key, choices=None, filter=None):
+    @staticmethod
+    def get_redirection_string_for_filter(filter_prop, choice=None):
         """
-        Add a question with choices
+        In case we have a choice in the filter prop, return a redirection string
 
         Parameters
         ----------
-        key: str
-            Key of the question used to create a unique reference label
-        choices: list or None
-            If None, assume Nee/Ja.
-        """
-        if choices is None:
-            choice_labels = ["Ja", "Nee"]
-        else:
-            choice_labels = choices
+        filter_prop
+        choice
 
-        for cnt, choice in enumerate(choice_labels):
-            if filter is not None and filter["condition"] == choice:
-                goto = filter["goto"]
+        Returns
+        -------
+        str:
+            A string to redirect to a new question
+
+        """
+        redirect_str = ""
+        if filter_prop is not None:
+            if filter_prop["condition"] == choice or choice is None:
+                goto = filter_prop["goto"]
                 ref_cat = goto.split(":")[0]
                 if ref_cat == "quest":
                     category = "vraag"
@@ -466,9 +473,32 @@ class SurveyDocument(Document):
                     category = "module sectie"
                 else:
                     raise  AssertionError("Only quest and mod are implemented")
-                ch_str = choice + " $\\rightarrow$ Ga naar " + category + " \\ref{" + goto + "}"
-            else:
-                ch_str = choice
+                redirect_str = "$\\rightarrow$ Ga naar " + category + " \\ref{" + goto + "}"
+
+        return redirect_str
+
+    def add_choice_question(self, key, choices=None, filter_prop=None):
+        """
+        Add a question with choices
+
+        Parameters
+        ----------
+        key: str
+            Key of the question used to create a unique reference label
+        choices: list or None
+            If None, assume Nee/Ja.
+        filter_prop: dict or None
+            If not None, defines the properties to filter a question
+        """
+        if choices is None:
+            choice_labels = ["Ja", "Nee"]
+        else:
+            choice_labels = choices
+
+        for cnt, choice in enumerate(choice_labels):
+
+            redirection_str = self.get_redirection_string_for_filter(filter_prop, choice)
+            ch_str = choice + redirection_str
 
             self.append(ChoiceItem(NoEscape(ch_str)))
 
