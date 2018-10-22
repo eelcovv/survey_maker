@@ -54,7 +54,7 @@ class SurveyDocument(Document):
         self.preamble.append(Command(r"newcommand\explanation[1]",
                                      NoEscape(r"\newline\footnotesize{\emph{#1}}")))
 
-        # the filbreak makes sure that you do net get a loney header at the bottom of the page
+        # the filbreak makes sure that you do net get a lonely header at the bottom of the page
         section_str = r"\filbreak{\sectionwithlabel{\textbf{\emph{#1}}}{#2}}"
         self.preamble.append(Command(r"newcommand\modulesection[2]", NoEscape(section_str)))
 
@@ -378,9 +378,10 @@ class SurveyDocument(Document):
         The *info* dictionary has the following format::
 
             info:
-              fontsize: this field is not plotted by used to set the font size of the info block
+              fontsize: this field is used to set the font size of the info block. Default is
+                         footnotesize
               title: The title added outside the itemize block
-              items: # either a list of a dict can follow the items.
+              items: # either a list or a dict can follow the items.
                 wel:
                   title: The first item in our main bullet list
                   items:
@@ -396,8 +397,7 @@ class SurveyDocument(Document):
         plotted above the main itemize block. Then we can add the items, which can be again a
         dictionary with a title, and a new item field containing a list.
 
-        The routine below is recursively calling itself so that in principle the items can be
-        nested
+        The routine below is recursively calling itself so that in the items can be nested
         """
 
         try:
@@ -472,8 +472,13 @@ class SurveyDocument(Document):
                 elif ref_cat == "modsec":
                     category = "module sectie"
                 else:
-                    raise  AssertionError("Only quest and mod are implemented")
-                redirect_str = "$\\rightarrow$ Ga naar " + category + " \\ref{" + goto + "}"
+                    category = None
+
+                if category is not None:
+                    redirect_str = "$\\rightarrow$ Ga naar " + category + " \\ref{" + goto + "}"
+                else:
+                    # in case we can not find a sensible fit, add the whole goto string
+                    redirect_str = "$\\rightarrow$ Ga naar " + goto
 
         return redirect_str
 
