@@ -74,42 +74,61 @@ class SurveyDocument(Document):
         self.append(Command("appendix"))
 
         if colorize_questions is not None:
-            self.colorize_color = colorize_questions["color"]
-            self.colorize_key = colorize_questions["key"]
-            self.colorize_label = colorize_questions["label"]
+            # the colorize keys are stored in a dictionary
+            self.colorize_properties = colorize_questions
         else:
-            self.colorize_color = None
-            self.colorize_key = None
-            self.colorize_label = None
+            self.colorize_properties = dict()
 
         self.preamble.append(Command(
             # this line changes the title of the table of contents
             NoEscape(r"addto\captionsdutch{\renewcommand{\contentsname}{\Large\textbf{"
                      r"Modules Vragenlijst}}}")))
 
-        if self.colorize_color:
-            self.preamble.append(Command(NoEscape(r"definecolor{cbsblauw}{RGB}{39, 29, 108}")))
-            self.preamble.append(Command(NoEscape(r"definecolor{cbslichtblauw}{RGB}{0, 161, 205}")))
-            self.preamble.append(Command(NoEscape(r"definecolor{oranje}{RGB}{243, 146, 0}")))
-            self.preamble.append(Command(NoEscape(
-                r"definecolor{oranjevergrijsd}{RGB}{206, 124, 0}")))
-            self.preamble.append(Command(NoEscape(r"definecolor{rood}{RGB}{233, 76, 10}")))
-            self.preamble.append(Command(NoEscape(
-                r"definecolor{roodvergrijsd}{RGB}{178, 61, 2}")))
-            self.preamble.append(Command(NoEscape(
-                r"definecolor{codekleur}{RGB}{88, 88, 88}")))
+        self.preamble.append(Command(NoEscape(r"definecolor{cbsblauw}{RGB}{39, 29, 108}")))
+        self.preamble.append(Command(NoEscape(r"definecolor{cbslichtblauw}{RGB}{0, 161, 205}")))
+        self.preamble.append(Command(NoEscape(r"definecolor{oranje}{RGB}{243, 146, 0}")))
+        self.preamble.append(Command(NoEscape(
+            r"definecolor{oranjevergrijsd}{RGB}{206, 124, 0}")))
+        self.preamble.append(Command(NoEscape(r"definecolor{rood}{RGB}{233, 76, 10}")))
+        self.preamble.append(Command(NoEscape(
+            r"definecolor{roodvergrijsd}{RGB}{178, 61, 2}")))
+        self.preamble.append(Command(NoEscape(
+            r"definecolor{codekleur}{RGB}{88, 88, 88}")))
 
-            # create a new command for setting the color of a single line
-            self.preamble.append(Command(r"newcommand\colorline[1]",
-                                         NoEscape(r"{{\color{" +
-                                                  r"{:}".format(self.colorize_color) +
-                                                  r"}{#1}}}")))
+        self.colorize_key = None
+        self.colorize_label = None
+        self.colorize_color = None
 
-            # create a new environment for setting the color in a block
-            self.preamble.append(Command(
-                r"newenvironment{colorize}{\medskip\bgroup\color{" +
-                r"{:}".format(self.colorize_color) +
-                r"}}{\egroup\medskip}"))
+        for col_key, col_prop in self.colorize_properties.items():
+            # for each key in the colorize chapter create a latex color command
+
+            if re.search("_", col_key):
+                raise ValueError("No _ allowed in the color keys")
+
+            color_name = col_prop["color"]
+
+            color_command = Command(r"newcommand\color" + col_key + "[1]",
+                                    NoEscape(r"{{\color{" + r"{:}".format(color_name) + r"}{#1}}}"))
+
+            if self.colorize_key is None:
+                self.colorize_color = color_name
+                self.colorize_key = col_key
+                self.colorize_label = col_prop["label"]
+                self.colorline = col_prop["label"]
+
+                # create a new command for setting the color of a single line
+                self.preamble.append(Command(r"newcommand\colorline[1]",
+                                             NoEscape(r"{{\color{" +
+                                                      r"{:}".format(self.colorize_color) +
+                                                      r"}{#1}}}")))
+
+                # create a new environment for setting the color in a block
+                self.preamble.append(Command(
+                    r"newenvironment{colorize}[1][" +
+                    color_name +
+                    r"]{\medskip\bgroup\color{#1}}{\egroup\medskip}"))
+
+            self.preamble.append(color_command)
 
         with self.create(Questionnaire(options="noinfo")):
 
@@ -139,18 +158,24 @@ class SurveyDocument(Document):
 
             self.append(Command("clearpage"))
 
-            if module_properties.get(self.colorize_key):
-                # we have found the key 'colorize_key' (given in the general section as e.g.
-                # "small_company". This means the whole module needs to be coloured and also
-                # we return the value of small_company. In case this is a string (an not a bool)
-                # it is interpreted as a goto reference which needs to be reported.
-                goto = module_properties[self.colorize_key]
-                with self.create(Colorize()):
-                    self.add_module(module_key, module_properties, goto)
-            else:
+            color_name = None
+            for ckey, cprop in self.colorize_properties.items():
+                if module_properties.get(ckey):
+                    color_name = cprop["color"]
+                    label = cprop.get("label")
+                    # we have found the key 'colorize_key' (given in the general section as e.g.
+                    # "smallcompany". This means the whole module needs to be coloured and also
+                    # we return the value of small_company. In case this is a string (an not a bool)
+                    # it is interpreted as a goto reference which needs to be reported.
+                    goto = module_properties[ckey]
+                    with self.create(Colorize(options=color_name)):
+                        self.add_module(module_key, module_properties, goto, colorlabel=label)
+            if color_name is None:
+                # if color_name is still None, report without color
                 self.add_module(module_key, module_properties)
 
-    def add_module(self, module_key, module_properties, goto=None):
+    def add_module(self, module_key, module_properties, goto=None,
+                   colorlabel=None):
         """
         Add a module to the document
 
@@ -176,12 +201,11 @@ class SurveyDocument(Document):
         if goto is not None and isinstance(goto, str):
             # A goto string is pased to the module. Prepend a Ga naar label before we start with
             # this module
-            if self.colorize_label is not None:
-                label = self.colorize_label
+            if colorlabel is not None:
                 if re.match("^mod", goto):
                     # remove all underscores for mod: reference
                     goto = re.sub("_", "", goto)
-                ref_str = f"{label}" + " $\\rightarrow$ Ga naar \\ref{" + goto + "}"
+                ref_str = f"{colorlabel}" + " $\\rightarrow$ Ga naar \\ref{" + goto + "}"
                 with self.create(InfoEnvironment()):
                     self.append(Command("emph", NoEscape(ref_str)))
 
@@ -200,25 +224,27 @@ class SurveyDocument(Document):
             # if a sectiontitle field is given, start a new section title at this question
             section = question_properties.get("section")
             if section:
-                goto = section.get(self.colorize_key)
                 ref_str = None
-                if goto is not None:
-                    color_all_in_section = True
+                color_all_in_section = False
+                for ckey, cprop in self.colorize_properties.items():
+                    goto = section.get(ckey)
+                    if goto is None:
+                        continue
+                    color_all_in_section = cprop["color"]
                     if re.match("^mod", goto):
                         # remove all underscores for mod: reference
                         goto = re.sub("_", "", goto)
-                    if isinstance(goto, str) and self.colorize_label is not None:
-                        label = self.colorize_label
+                    label = cprop.get("label")
+                    if isinstance(goto, str) and label is not None:
                         ref_str = f"{label}" + " $\\rightarrow$ Ga naar \\ref{" + goto + "}"
-                else:
-                    color_all_in_section = False
+                    break
 
                 title = section["title"]
                 title_label = label_module_section(title)
                 self.append(VSpace(NoEscape("\parskip")))
 
                 if color_all_in_section:
-                    with self.create(Colorize()):
+                    with self.create(Colorize(options=color_all_in_section)):
                         self.append(ModuleSection([NoEscape(title), title_label]))
                         if ref_str is not None:
                             with self.create(InfoEnvironment()):
@@ -233,7 +259,7 @@ class SurveyDocument(Document):
                 if info is not None:
                     self.append(VSpace(NoEscape("\parskip")))
                     if color_all_in_section:
-                        with self.create(Colorize()):
+                        with self.create(Colorize(options=color_all_in_section)):
                             self.add_info(info)
                     else:
                         self.add_info(info)
@@ -244,8 +270,18 @@ class SurveyDocument(Document):
                 continue
 
             logger.info("Adding question {}".format(key))
-            if question_properties.get(self.colorize_key) or color_all_in_section:
-                with self.create(Colorize()):
+            have_key = None
+            ckey = None
+            for ckey, cprop in self.colorize_properties.items():
+                have_key = question_properties.get(ckey)
+                if have_key:
+                    break
+            if have_key or color_all_in_section:
+                if color_all_in_section:
+                    col = color_all_in_section
+                else:
+                    col = self.colorize_properties[ckey]["color"]
+                with self.create(Colorize(options=col)):
                     self.add_question(key, question_properties, filter_prop)
             else:
                 self.add_question(key, question_properties, filter_prop)
