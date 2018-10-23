@@ -95,12 +95,16 @@ class SurveyDocument(Document):
         self.preamble.append(Command(NoEscape(
             r"definecolor{codekleur}{RGB}{88, 88, 88}")))
 
+        # these attributes get the properties of the first colorize item
         self.colorize_key = None
         self.colorize_label = None
         self.colorize_color = None
 
         for col_key, col_prop in self.colorize_properties.items():
             # for each key in the colorize chapter create a latex color command
+
+            if not self.process_this_colorize(col_prop):
+               continue
 
             if re.search("_", col_key):
                 raise ValueError("No _ allowed in the color keys")
@@ -143,6 +147,26 @@ class SurveyDocument(Document):
             # now add all the modules with questions
             self.add_all_modules()
 
+    @staticmethod
+    def process_this_colorize(color_prop):
+        """
+        For this colorize properties, check if the add_this flag is there and is false
+
+        Parameters
+        ----------
+        color_prop: dict
+            Properties of the colorize
+
+        Returns
+        -------
+        bool
+            True if we have added this color
+        """
+        add_this = color_prop.get("add_this")
+        if add_this is None:
+            add_this = True
+        return add_this
+
     def add_all_modules(self):
         """
         Add all the modules
@@ -160,6 +184,8 @@ class SurveyDocument(Document):
 
             color_name = None
             for ckey, cprop in self.colorize_properties.items():
+                if not self.process_this_colorize(cprop):
+                    continue
                 if module_properties.get(ckey):
                     color_name = cprop["color"]
                     label = cprop.get("label")
@@ -227,6 +253,8 @@ class SurveyDocument(Document):
                 ref_str = None
                 color_all_in_section = False
                 for ckey, cprop in self.colorize_properties.items():
+                    if not self.process_this_colorize(cprop):
+                        continue
                     goto = section.get(ckey)
                     if goto is None:
                         continue
@@ -270,21 +298,39 @@ class SurveyDocument(Document):
                 continue
 
             logger.info("Adding question {}".format(key))
-            have_key = None
-            ckey = None
-            for ckey, cprop in self.colorize_properties.items():
-                have_key = question_properties.get(ckey)
-                if have_key:
-                    break
-            if have_key or color_all_in_section:
+            color_local = self.get_color_first_match(question_properties)
+            if color_local or color_all_in_section:
                 if color_all_in_section:
                     col = color_all_in_section
                 else:
-                    col = self.colorize_properties[ckey]["color"]
+                    col = color_local
                 with self.create(Colorize(options=col)):
                     self.add_question(key, question_properties, filter_prop)
             else:
+                # there is no local color and no overall section color defined. Write without color
                 self.add_question(key, question_properties, filter_prop)
+
+    def get_color_first_match(self, question_properties):
+        """
+        Check if one of the keys of the current question matches one of the colorize keys
+
+        Parameters
+        ----------
+        question_properties: dict
+            Dictionary with the question properties
+
+        Returns
+        -------
+        str:
+            None or the name of the matched color
+        """
+        color = None
+        for ckey, cprop in self.colorize_properties.items():
+            have_key = question_properties.get(ckey)
+            if have_key and self.process_this_colorize(cprop):
+                color = self.colorize_properties[ckey]["color"]
+                break  # stop after the first color you find
+        return color
 
     def add_question(self, key, question_properties, filter_prop=None):
 
