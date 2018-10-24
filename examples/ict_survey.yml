@@ -1,0 +1,840 @@
+general:
+  output_directory: .
+  working_directory: .
+  colorize_questions: 
+    nietvoorkleinebedrijven:
+      add_this: true
+      color:  roodvergrijsd  #  codekleur  # cbslichtblauw
+      label:  Kleine bedrijven
+    eurostat:
+      color:  cbsblauw
+      label:  Eurostat
+    eurostatoptional:
+      color:  cbslichtblauw
+      label:  Eurostat Optional
+  preamble:
+    title: ICT-gebruik bedrijven 2019
+    author: Eelco van Vliet
+  info:
+    items:
+    - De meeste vragen in deze enquête gaan over de \emph{huidige} situatie in uw bedrijf.
+    - Sommige vragen gaan over het jaar 2018. Dit wordt aangegeven in de vraag.
+    - De vragen kunnen over het algemeen het best beantwoord worden door een ICT-verantwoordelijke.
+    - De vragenblokken \ref{mod:facturen} en \ref{mod:ecommerce} gaan echter over facturering en e-commerce. Wellicht kan een financieel medewerker deze het best invullen.
+    - Als een percentage (\%) of het aantal FTE's ingevuld moet worden volstaat een schatting
+    - \colornietvoorkleinebedrijven{Alle vragen en modules weergeven in de kleur van deze regel, worden \emph{alleen} aan de grote bedrijven (10 of meer werknemers) voorgelegd. De klein bedrijven (2--10 werknemers) kunnen deze vragen overslaan.}
+questionnaire:
+  personeel_en_computers:
+    add_this: true
+    title: Personeel en computers
+    questions:
+      wp_aantal:
+        add_this: true
+        question: Wat was het totale aantal werkzame personen{$^\ast$} in uw bedrijf op 31 december 2018?
+        quantity_label: Aantal
+        info:
+          fontsize: footnotesize
+          title: $^{\ast}$Werkzame personen
+          items:
+            wel:
+              title: \emph{Wel} meetellen
+              items:
+              - Werknemers en directeuren die op de eigen loonlijst staan
+              - Werknemers die op loonlijst staan van een ander bedrijf, maar bij uw bedrijf werkzaam zijn en dus tot uw personeel behoren (ingeleend personeel)
+              - Werkzame eigenaren, firmanten, leden van maatschappen, vennoten en medewerkende gezinsleden
+              - Uitzendkrachten
+              - Ingehuurde ZZP’ers.
+            niet:
+              title: \emph{Niet} meetellen
+              items:
+              - Uitgeleend personeel (werknemers die op de loonlijst staan, maar werken bij een andere onderneming of instelling)
+              - Personeel dat buiten Nederland werkt.
+      wp_met_computer:
+        # replaces the *wp_aantal* question A1, which is mandatory
+        nietvoorkleinebedrijven: "quest:wp_met_computer_en_intenet"
+        eurostat:
+          refers_to: A2
+        question: Hoeveel procent van de werkzame personen gebruikt een computer (inclusief laptops, tablets en smartphones) voor het werk?\explanation{Een schatting volstaat}
+        quantity_label: Percentage (\%)
+      wp_met_computer_en_internet:
+        question: Hoeveel procent van de werkzame personen gebruikt voor het werk een computer (inclusief laptops, tablets en smartphones) met internettoegang?\explanation{Een schatting volstaat}
+        quantity_label: Percentage (\%)
+      wp_telewerken:
+        question: Hoeveel procent van de werkzame personen werkt geregeld buiten de bedrijfsvestiging, met toegang tot de ICT-systemen van het bedrijf?\explanation{Een schatting volstaat}
+        quantity_label: Percentage (\%)
+        nietvoorkleinebedrijven: true
+  ict_specialisten:
+    add_this: true
+    info: 
+      items: 
+        title: \supscript{$\ast$}ICT-specialisten
+        items: 
+        - "Een ICT-specialist is een medewerker voor wie ICT \\emph{het belangrijkste werk} vormt. Bijvoorbeeld ICT-systemen of applicaties specificeren, ontwerpen, ontwikkelen, installeren, beheren en/of managen." 
+        - "Een voltijdmedewerker die alle werktijd werkt als ICT-specialist telt als één FTE." 
+        - "Een medewerker die in deeltijd werkt of niet alle werktijd werkt als ICT-specialist moet slechts meegeteld worden voor een gedeelte van een arbeidsjaar. Bijvoorbeeld: een medewerker die twee dagen per week werkt als ICT-specialist telt voor 0,4 (namelijk 2/5) arbeidsjaar." 
+        - "Voor alle vragen waar het aantal FTE's ingevuld moet worden volstaat een schatting"
+    title: ICT-specialisten
+    questions:
+      ict_specialisten_in_dienst:
+        question: Heeft uw bedrijf één of meer ICT-specialisten\supscript{$\ast$} in dienst?
+        eurostatoptional:
+          refers_to: B1
+        type: choices
+        filter:
+          condition: Nee
+          goto: "quest:ict_specialisten_cursussen_intern"
+        choices:
+          - Ja
+          - Nee
+      ict_specialisten_aantal_fte:
+        question: Hoeveel ICT-specialisten\supscript{$\ast$} stonden er op 31 december 2018 op de loonlijst, uitgedrukt in FTE’s?
+        quantity_label: FTE
+      ict_specialisten_voor_ontwikkeling:
+        question: Hoeveel van deze FTE’s werden besteed aan de ontwikkeling of het onderhoud van software die in uw bedrijf wordt gebruikt?
+        quantity_label: FTE
+        info:
+          items: 
+          - "\\textbf{Let op}: FTE’s besteed aan werk voor derden \\emph{niet} meetellen."
+      ict_specialisten_cursussen_intern:
+        question: "Bood uw bedrijf de binnen uw bedrijf werkzame ICT-specialisten in 2018 opleidingen of cursussen aan om hun ICT-vaardigheden verder te ontwikkelen?"
+        type: choices
+        info:
+          above: true
+          title: Antwoord \emph{Nee} als uw bedrijf in 2018 geen ICT-specialisten in dienst had.
+        eurostatoptional:
+          refers_to: B2a
+      ict_specialisten_cursussen_intern_personeel:
+        question: "Bood uw bedrijf ander personeel werkzaam in uw bedrijf in 2018 opleidingen of cursussen aan om hun ICT-vaardigheden verder te ontwikkelen?"
+        type: choices
+        eurostatoptional:
+          refers_to: B2b
+      ict_specialisten_willen_aannemen:
+        question: "Heeft uw bedrijf in 2018 ICT-specialisten aangenomen of willen aannemen?"
+        type: choices
+        filter:
+          condition: Nee
+          goto: "quest:ict_specialisten_door_wie_uitgevoerd"
+        eurostatoptional:
+          refers_to: B3
+        choices:
+          - Ja
+          - Nee
+      ict_specialisten_moeilijk_te_vervullen:
+        question: "Had uw bedrijf in 2018 vacatures voor ICT-specialisten die moeilijk te vervullen waren?"
+        type: choices
+        eurostatoptional:
+          refers_to: B4
+      ict_specialisten_door_wie_uitgevoerd:
+        question: Wie voerde het onderstaande ICT-werk binnen uw bedrijf in 2018 voornamelijk uit?
+        eurostatoptional:
+          refers_to: B5
+        info:
+          above: true
+          items:
+          - "\\emph{Eigen personeel}: Voornamelijk uitgevoerd door eigen personeel, inclusief personeel dat werkzaam is in gelieerde bedrijven (moeder- of dochterondernemingen)"
+          - "\\emph{Extern personeel}: Voornamelijk uitgevoerd door externe leverancier(s)"
+        type: group
+        groups:
+        - Eigen personeel
+        - Extern personeel
+        - N.V.T.
+        choicelines:
+        - \colorline{Onderhoud van ICT-infrastructuur (servers, computers, printers, netwerken)}
+        - \colorline{Ondersteuning van office software (tekstverwerkingsprogramma’s, spreadsheets e.d.)}
+        - \colorline{Ontwikkeling van bedrijfsvoeringssoftware/-systemen (bijv. ERP-software om informatie te delen over verschillende afdelingen (zoals boekhouding, planning, productie, marketing); CRM-software om informatie over klanten te beheren, software voor Human Resource Management, databases)}
+        - \colorline{Ondersteuning van bedrijfsvoeringssoftware/-systemen (bijv. ERP-, CRM-, HRM-software, databases)}
+        - \colorline{Ontwikkeling van web-applicaties (bijv. websites, toepassingen voor e-commerce)}
+        - \colorline{Ondersteuning van web-applicaties (bijv. websites, toepassingen voor e-commerce)}
+        - ICT-beveiliging en bescherming van data (bijv. beveiligingstests, beveiligingssoftware)
+  internet:                
+    title: Internet
+    add_this: true
+    questions:
+      internet_vaste_verbinding:
+        section:
+          title: Vaste internetverbinding
+          nietvoorkleinebedrijven: "modsec:website"
+        question: Gebruikt uw bedrijf een vaste internetverbinding\supscript{$\ast$}?
+        eurostat:
+          refers_to: C1
+        info:
+          above: true
+          title: \supscript{$\ast$}Bijvoorbeeld ADSL, Kabel, Glasvezel, SDLS, VDSL, of andere hoogwaardige DSL-verbindingen
+        type: choices
+        filter:
+          condition: Nee
+          goto: "modsec:mobieleinternetverbinding"
+      internet_download_snelheid:
+        question: Wat is de maximale downloadsnelheid van uw snelste vaste internetverbinding volgens uw internetabonnement/-contract
+        nietvoorkleinebedrijven: true
+        type: choices
+        choices:
+          - Minder dan 2 Mbit/sec 
+          - 2 tot 10 Mbit/sec
+          - 10 tot 30 Mbit/sec
+          - 30 tot 100 Mbit/sec
+          - 100 Mbit/sec of meer
+      internet_mobiel_aan_personeel:
+        section:
+          title: Mobiele internetverbinding
+          nietvoorkleinebedrijven: "modsec:website"
+          info:
+            items:
+            - Deze vragen gaan over het gebruik van draagbare apparaten zoals laptops, tablets en smartphones met internetverbinding via mobiele telefoonnetwerken voor het werk. 
+            - Het bedrijf verstrekt de draagbare apparaten en betaalt ten minste een deel van de abonnement- en gebruikskosten. 
+            - Wifi telt niet mee als mobiel internet
+        question: Verstrekte uw bedrijf draagbare apparaten met mobiel internet\supscript{$\star$} aan de werkzame personen voor hun werk?
+        type: choices
+        filter:
+          condition: Nee
+          goto: "quest:internet_heeft_website"
+        choices:
+          - Ja
+          - Nee
+        info:
+          above: true
+          title:  \supscript{$\star$}Als de internetverbinding \emph{uitsluitend} via Wifi loopt en \emph{niet} via mobiele-telefoonnetwerken, telt dit niet mee.
+      internet_hoeveel_wp_perc_heeft_apparaat:
+        question: Hoeveel procent van de werkzame personen heeft voor het werk een draagbaar apparaat met mobiel internet, dat het bedrijf heeft verstrekt?
+        nietvoorkleinebedrijven: true
+        quantity_label: Percentage (\%)
+        info:
+          above: true
+          title:  \supscript{$\star$}Als de internetverbinding \emph{uitsluitend} via Wifi loopt en \emph{niet} via mobiele-telefoonnetwerken, telt dit niet mee.
+      internet_apparaten_voor_toegang:
+        question: Verstrekte uw bedrijf dergelijke apparatuur (draagbare computers, smartphones) aan de werkzame personen voor
+        nietvoorkleinebedrijven: true
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - Toegang tot het e-mailsysteem van uw bedrijf?
+        - Toegang tot bestanden van uw bedrijf om daarin wijzigingen aan te brengen?
+        - Toegang tot specifieke bedrijfssystemen\supscript{$\ddag$}?  
+        info:
+          title: \supscript{$\ddag$}Bijvoorbeeld om orders te registreren/bewaken, Enterprise Resource Planning (ERP)
+      internet_heeft_website:
+        section:
+          title: Website
+        question: Heeft uw bedrijf een website?
+        type: choices
+        filter:
+          condition: Nee
+          goto: "modsec:adverterenopinternet"
+        choices:
+        - Ja
+        - Nee
+      internet_website_bevat:
+        question: Bevat uw website
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - Beschrijvingen van goederen/diensten, of prijslijsten
+        - De mogelijkheid om online te bestellen, boeken of reserveren
+        - Een faciliteit waarmee de klant zelf zijn product kan ontwerpen/aanpassen (goederen of diensten)
+        - Informatie over de status van een bestelling
+        - Klantspecifieke informatie voor reguliere bezoekers
+        - Verwijzingen of links naar pagina’s van uw bedrijf op sociale media
+      internet_adverteren:
+        section:
+          title: Adverteren op internet
+        nietvoorkleinebedrijven: "mod:clouddiensten"
+        question: Betaalt uw bedrijf om op internet te adverteren?
+        info: 
+          items: 
+          - Bijvoorbeeld voor advertenties bij zoekmachines, op sociale media of op andere websites. 
+          - Het telt ook mee als uw bedrijf een zoekmachine betaalt voor een hoge plaats in de zoekresultaten.
+        type: choices
+        filter:
+          condition: Nee
+          goto: "mod:clouddiensten"
+        choices:
+          - Ja
+          - Nee
+      internet_adverteren_methodes:
+        question: Gebruikt uw bedrijf daarbij de volgende gerichte methoden?
+        nietvoorkleinebedrijven: "mod:clouddiensten"
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - Advertenties gebaseerd op de inhoud van de website, of op trefwoorden waar gebruikers naar zoeken?
+        - Advertenties gebaseerd op eerdere internetactiviteiten van gebruikers, of op hun profiel?
+        - Advertenties gebaseerd op de geografische locatie van internetgebruikers?
+        - Andere gerichte advertentiemethode?
+  clouddiensten:
+    title: Clouddiensten
+    add_this: true
+    info:
+      title: Omschrijving clouddiensten
+      items:
+        it1:
+          title: \emph{Cloud computing} of \emph{De Cloud} betreft ICT-diensten via internet. Klanten kunnen hiermee bijvoorbeeld software, rekenkracht en opslagcapaciteit gebruiken via internet in plaats van lokaal op hun eigen servers of computers.
+        it2:
+          title: Clouddiensten voldoen aan de volgende criteria
+          items:
+          - Servers van de aanbieders leveren diensten
+          - De gebruiker kan de diesten diensten eenvoudig zelf uitbereiden of juist verminderen (bijvoorbeeld de hoeveel opslagcapaciteit verhogen of verlagen)
+          - De gerbuiker heeft na de installatie altijd toegang tot de diensten, zonder tussenkomst van de aanbieder
+          - De gebruiker betaalt voor de diensten
+        it3:
+          title: Een verbinding via VPN (Virtual Private Network) kan ook tot een clouddienst behoren
+    questions:
+      cloud_dienst_gebruikt:
+        question: Gebruikt uw bedrijf betaalde diensten uit \emph{De Cloud}
+        info:
+          above: true
+          title: Gratis clouddiensten niet meetellen
+        type: choices
+        filter:
+          condition: Nee
+          goto: "mod:printing3d"
+        choices:
+          - Ja
+          - Nee
+      cloud_diensten_welke:
+        question: Gebruikt uw bedrijf de volgende betaalde clouddiensten
+        info:
+          above: true
+          title: Gratis clouddiensten niet meetellen
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - E-mail (als cloud-dienst) 
+        - Office software, zoals tekstverwerkers, spreadsheetprogramma's (als cloud-dienst) 
+        - Opslag (hosting) van databases van het bedrijf (als cloud-dienst) 
+        - Bestanden opslaan (als cloud-dienst) 
+        - Software voor boekhouding of financieel beheer (als cloud-dienst)
+        - Software om informatie over klanten te beheren (CRM)
+        - Rekenkracht voor software van het bedrijf (als cloud-dienst)
+      cloud_diensten_hoe:
+        question: Gebruikt uw bedrijf betaalde clouddiensten die worden geleverd vanaf
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - Gedeelde servers, niet uitsluitend voor uw bedrijf
+        - Servers uitsluitend gereserveerd voor uw bedrijf
+  printing3d: 
+    title: 3D Printing
+    add_this: true
+    nietvoorkleinebedrijven: "mod:bigdata"
+    info:
+      title: 3D-printen, ook wel Additive Manufacturing genoemd verwijst naar het gebruik van speciale printers, hetzij door de onderneming zelf of door gebruik te maken van 3D-afdrukservices van andere bedrijven, voor het creëren van driedimensionale fysieke objecten met behulp van digitale technologie.
+    questions:
+      printing_3d_gebruikt_hoe:
+        question: Heeft uw bedrijf in 2018 gebruik gemaakt van 3D-printen?
+        filter:
+          condition: "Als beide 'Nee'"
+          goto: "mod:robotica"
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - Gebruik makend van 3D-printers van het bedrijf zelf
+        - Gebruik makend van 3D-printers services van andere bedrijven
+      printing_3d_gebruikt_waarvoor:
+        question: "Heeft uw bedrijf in 2018 gebruik gemaakt van 3D-printen voor:"
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - Maken van prototypes of modellen voor verkoop
+        - Maken van prototypes of modellen voor intern gebruik
+        - Producten voor verkoop exclusief prototypes en modellen (b.v. mallen, gereedschap, onderdelen van producten, halffabricaten etc.)
+        - Producten voor intern gebruik tijdens het productieproces (uitgezonderd prototypes en modellen)
+  robotica: 
+    title: Gebruik van robotica
+    add_this: true
+    info:
+      items: 
+      - \textbf{Een industriële robot} is een automatisch bestuurde, herprogrammeerbare, multifunctionele manipulator die in drie of meer assen kan worden geprogrammeerd., die mobiel of op een vaste plaats wordt gebruikt voor industriële geautomatiseerde applicaties.  
+      - \textbf{Een service robot} is een machine die een mate van autonomie heeft en in een complexe en dynamische omgeving kan werken waarin interactie met personen, objecten of andere apparaten vereist kan zijn. 
+      - Service robots voor gebruik in industriële geautomatiseerde applicaties tellen niet mee. 
+      - Software robots (computerprogramma's) en 3D printers vallen buiten de scope van de volgende vragen. 
+    questions:
+      robotica_gebruikt_hoe:
+        question: Gebruikt uw bedrijf de volgende type robots? 
+        filter:
+          condition: "Als beide 'Nee'"
+          goto: "mod:robotica"
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - Industriële robots(b.v. automatisch  lassen, lasersnijden, verfspuiten e.d.) (zie definitie) 
+        - Service robot (b.v. voor surveilleren, schoonmaken, transport e.d.) (als nee $\rightarrow$ Ga naar \ref{quest:robotica_nieuwe_banen})
+      robotica_gebruikt_waarvoor:
+        question: "Gebruikt uw bedrijf service robots voor:"
+        info:
+          above: true
+          title: "(Gebruik s.v.p. de definitie van service robots bij het overwegen van onderstaande taken)"
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - Surveilleren, beveiliging of inspectie taken (b.v. gebruik van drones e.d.) 
+        - Transport van personen of goederen (b.v. gebruik van automatisch geleide voertuigen e.d.)
+        - Schoonmaken van afvalcontainers
+        - Managementsystemen voor magazijnen (b.v. palletiseren, goederen afhandeling e.d.)
+        - Assemblage werkzaamheden door een service robot
+        - Geautomatiseerde taken van bediening
+        - Constructie werkzaamheden of schadereparatie taken
+      robotica_nieuwe_banen:
+        question: "Indien ja op F1a en/of F1b"
+        info:
+          title: als Ja op beide $\rightarrow$ Ga naar \ref{quest:robotica_nieuwe_banen_netto}, \emph{anders} $\rightarrow$ Ga naar \ref{mod:bigdata}.
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - Zijn door het in gebruik nemen van robots in uw bedrijf nieuwe banen ontstaan?
+        - Zijn door het in gebruik nemen van robots in uw bedrijf bestaande banen verdwenen?
+      robotica_nieuwe_banen_netto:
+        info:
+          above: true
+          items: 
+          - "Indien in \\ref{quest:robotica_nieuwe_banen} Ja op beide"
+          - Slechts 1 antwoord mogelijk
+        question: Wat was uiteindelijk het effect van het in gebruik nemen van robots in uw bedrijf? 
+        type: choices
+        choices:
+        - Er zijn meer nieuwe banen ontstaan dan oude banen verdwenen.
+        - Er zijn ongeveer even veel nieuwe banen ontstaan dan oude banen verdwenen.
+        - Er zijn meer oude banen verdwenen dan nieuwe banen ontstaan.
+  big_data:
+    title: Big data analyse
+    add_this: true
+    info:
+      title: "Big data analyse:"
+      items: 
+        it1:
+          title: Met \emph{Big data} bedoelen we hier informatie die wordt gegenereerd uit elektronische activiteiten van gebruikers,en uit onderlinge communicatie tussen apparaten (machine-to-machine). Het gaat bijvoorbeeld om gegevens die voortkomen uit het gebruik van media, en uit productieprocessen in een bedrijf.
+        it2:
+          title: "Big data hebben meestal kenmerken zoals:"
+          items:
+          - Grote hoeveelheden gegevens die in de loop van de tijd zijn gegenereerd
+          - Grote diversiteit van de gegevens doordat er verschillende indelingen van complexe data bestaan, gestructureerd of ongestructureerd.  Het gaat bijvoorbeeld om gegevens in de vorm van tekst, video, afbeeldingen, spraak, documenten, sensorgegevens, activiteitenlogboeken, \emph{click streams} en coördinaten.
+          - "Hoge omloopsnelheid: de data worden in hoge snelheid gegenereerd, beschikbaar gesteld en gewijzigd"
+        it3:
+          title: Big data analyse is het gebruik van technieken, technologieën en software tools voor analyse van big data uit het eigen bedrijf, of uit andere gegevensbronnen.
+    questions:
+      big_data_gebruikt_uit_bronnen:
+        question: "Heeft uw bedrijf in 2018 big data\\supscript{$\\ddag$} geanalyseerd uit de volgende bronnen:"
+        info:
+          above: true
+          title: "Analyses die andere bedrijven hebben uitgevoerd voor uw bedrijf tellen ook mee"
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - "Data van het bedrijf zelf, uit apparaten of sensoren?\\explanation{Bijv. uit onderlinge communicatie tussen apparaten(machine-to-machine), digitale sensoren, RFID\\supscript{$\\dagger$}}"
+        - "Data over geografische locaties uit het gebruik van draagbare apparaten?\\explanation{Bijv. apparaten die mobiele-telefoonnetwerken, draadloze verbindingen of GPS gebruiken.}"
+        - "Data afkomstig van sociale media?\\explanation{Bijv. sociale netwerken zoals Facebook, blogs en microblogs zoals Twitter, en websites die multimedia delen zoals YouTube}"
+        - "Andere bronnen van big data?"
+      big_data_gedaan_door_wie:
+        question: Wie heeft in 2018 voor uw bedrijf big data geanalyseerd?
+        info:
+          above: true
+          title: "Indien u bij vraag \\ref{quest:big_data_gebruikt_uit_bronnen} uitsluitend 'Nee' heeft geantwoord ga verder met module \\ref{mod:ictveiligheid}"
+        type: group
+        groups:
+        - Nee
+        - Ja
+        choicelines:
+        - Medewerkers van uw bedrijf\explanation{Inclusief medewerkers van moeder-, dochter-, of zustermaatschappijen}
+        - Een ander bedrijf
+      big_data_gebruikt_door_wie_twee_keer_nee:
+        info: 
+          above: false
+          title: "$^\\ast$Eerder heeft u bij vraag \\ref{quest:big_data_gebruikt_uit_bronnen} aangegeven dat uw bedrijf big data heeft geanalyseerd, maar bij de vraag wie de big data heeft geananalyseerd (\\ref{quest:big_data_gedaan_door_wie}) zegt u zowel bij 'medewerkers van uw eigen bedrijf' als bij 'een ander bedrijf' '\\emph{Nee}'. Als dit fout is, graag de vraag/vragen aanpassen. Zo niet dan graag toelichten."  
+        question: Indien 2 keer \emph{Nee} bij \ref{quest:big_data_gedaan_door_wie}$^\ast$ $\rightarrow$ Geef een toelichting
+        type: textbox
+        textbox: 1cm
+  ict_veiligheid:
+    title: ICT-veiligheid
+    add_this: true
+    info: De volgende vragen gaan over ICT-veiligheid. Op deze vragenlijst bedoelen we daarmee alle maatregelen, controles en procedures die een bedrijf toepast met betrekking tot ICT-systemen, met als doel de integriteit, authenticiteit, beschikbaarheid en vertrouwelijkheid van gegevens (data) en systemen te borgen.
+    questions:
+      ict_veiligheid_maatregelen:
+        question: Gebruikt uw bedrijf de volgende ICT-veiligheidsmaatregelen?
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - Antivirussoftware\explanation{Gratis en/of betaald}.
+        - Beleid voor sterke wachtwoorden\explanation{Wachtwoorden die ten minste acht gemengde karakters hebben, die veranderd moeten worden na een bepaalde periode en/of naar aanleiding van bijvoorbeeld een ICT-veiligheidsincident, en die versleuteld worden verstuurd en opgeslagen.}
+        - Identificatie en authenticatie van gebruikers via software of hardware tokens om toegang te krijgen tot de 
+          ICT-systemen (oftewel twee-factor authenticatie)\explanation{Bijvoorbeeld via smartcards, USB-beveiligingssleutels of mobiele telefoons (eenmalige inlogcodes via SMS of app).}
+        - Versleutelingstechnieken (encryptie) voor het \emph{opslaan} van data en/of documenten
+        - Versleutelingstechnieken (encryptie) voor het \emph{versturen} van data en/of documenten, bijvoorbeeld via e-mails
+        - Op een andere fysieke  locatie (reserve)gegevens bewaren (offsite data-backup)\explanation{Opslag in de cloud telt ook mee.}
+        - Netwerk access control\explanation{Alleen apparaten die voldoen aan bepaalde eisen krijgen toegang tot het bedrijfsnetwerk, bijvoorbeeld alleen  apparaten die de laatste update van een besturingssysteem hebben geïnstalleerd}
+        - Virtual private network (VPN) bij internetgebruik buiten het bedrijf\explanation{Een VPN zorgt ervoor dat alle internetverkeer tussen de gebruiker en de VPN-server wordt versleuteld. Daardoor kan het verkeer niet worden afgeluisterd, en kan de inhoud van bezochte websites niet worden gemanipuleerd door kwaadwillenden (bijv. man-in-the-middle-aanvallen).}
+        - Logbestanden opslaan om incidenten achteraf te analyseren
+        - Methodes om de ICT-veiligheid in uwe bedrijf te kunnen beoordelen, zoals de veiligheidsmaatregelen laten controleren door derden, of tests uitvoeren\explanation{Bijvoorbeeld penetration testing (pen test), red teaming, 'ethisch hacken', back-up systemen testen of gesimuleerde ICT-veiligheidsincidenten zoal nep-phishing-emails versturen. Dergelijke tests worden uitgevoerd om op een veilige manier kwetsbaarheden in ICT-systemen op te sporen.}
+        - Risicoanalyses\explanation{Periodiek beoordelen wat de kans is dat uw bedrijf wordt getroffen door een incident, en wat daarvan de mogelijke gevolgen zijn.}
+        - Andere maatregelen.
+      ict_veiligheid_hoeveel_ftes:
+        info:
+          title: \supscript{$\ast$}ICT-veiligheidsspecialisten
+          items: 
+          - ICT-veiligheidsspecialisten zijn personeelsleden voor wie ICT-veiligheid onderdeel van het werk vormt. Bijvoorbeeld zorgdragen voor de ICT-veiligheid binnen het bedrijf door de veilig en adequaat gebruik van ICT te faciliteren, door risico's te evalueren, of door trainingen te verzorgen voor veilig ICT-gebruik. 
+          - Een voltijdsmedewerker die alle werktijd werkt als ICT-veiligheidsspecialist, telt als één fte. 
+          - "Een medewerker die in deeltijd werkt of niet alle werktijd werkt als ICT-veiligheidsspecialist telt slechts mee voor een gedeelte van een fte. Bijvoorbeeld: een medewerker die twee dagen per week werkt als ICT-veiligheidsspecialist telt voor 0.4 (namelijk 2/5) fte."
+        question: Hoeveel ICT-veiligheidsspecialisten\supscript{$\ast$} stonden er op 31 december 2018 op de loonlijst, uitgedrukt in FTE’s?\explanation{Fte's besteed aan werk voor
+          derden \emph{niet} meetellen.\newline Een schatting volstaat}
+        quantity_label: FTE
+      ict_veiligheid_hoe_updates:
+        question: Voert uw bedrijf software-updates (security patching) meestal volledig automatisch uit, of gebeurt dit meestal (deels) handmatig?\explanation{Een security patch is een aanpassing van de software met als doel een kwetsbaarheid te verhelpen}
+        type: choices
+        choices:
+        - Meestal volledig automatisch
+        - Meestal (deels) handmatig
+        - Niet van toepassing
+      ict_veiligheid_incidenten:
+        question:  Hoe vaak kwamen onderstaande ICT-veiligheidsincidenten in 2018 voor in uw bedrijf?
+        filter:
+          condition: Als geen van allen voorgekomen
+          goto: "quest:ict_veiligheid_welke_websites_geraadpleegd"
+        type: group
+        group_width: 0.075\textwidth
+        groups:
+        - Niet voorgekomen
+        - 1 of 2 keer
+        - 3 of 4 keer
+        - Meer dan 4 keer
+        choicelines:
+        - Uitval van ICT-diensten als gevolg van ICT-gerelateerde veiligheidsincidenten, zoals een storing in hardware of software
+        - Uitval van ICT-diensten als gevolg van een aanval van buitenaf, bijvoorbeeld DoS (\emph{Denial of Service}) of \emph{ransomeware}-aanvallen
+        - Vernietiging of verminking van data als gevolg van ICT-gerelateerde veiligheidsincidenten, zoals een storing in hardware of software
+        - Vernietiging of verminking van data als gevolg van infectie met kwaadaardige software of door ongeoorloofde elektronische toegang
+        - Onthulling van vertrouwelijke elektronische gegevens door inbraak, pharming of phishing
+        - Onthulling van vertrouwelijke elektronische gegevens door acties van eigen personeel, opzettelijk of per ongeluk
+      ict_veiligheid_kosten:
+        question:  Hoe hoog waren de totale kosten van dit soort incidenten voor uw bedrijf in 2018?
+        type: group
+        group_width: 0.1\textwidth
+        groups:
+        - Niet of nauwelijks kosten
+        - Wel kosten maar deze waren niet hoog
+        - De kosten waren hoog
+        choicelines:
+        - Uitval van ICT-diensten als gevolg van ICT-gerelateerde veiligheidsincidenten, zoals een storing in hardware of software
+        - Uitval van ICT-diensten als gevolg van een aanval van buitenaf, bijvoorbeeld DoS (\emph{Denial of Service}) of \emph{ransomeware}-aanvallen
+        - Vernietiging of verminking van data als gevolg van ICT-gerelateerde veiligheidsincidenten, zoals een storing in hardware of software
+        - Vernietiging of verminking van data als gevolg van infectie met kwaadaardige software of door ongeoorloofde elektronische toegang
+        - Onthulling van vertrouwelijke elektronische gegevens door inbraak, pharming of phishing
+        - Onthulling van vertrouwelijke elektronische gegevens door acties van eigen personeel, opzettelijk of per ongeluk
+      ict_veiligheid_welke_websites_geraadpleegd:
+        question: "Welke website worden regelmatig\\supscript{$\\ast$} door uw bedrijf geraadpleegd voor informatie ICT-veiligheidsincidenten?"
+        info:
+          above: true
+          items:
+           - "\\supscript{$\\ast$}Regelmatig: meerdere keren per jaar"
+           - Meerdere antwoorden mogelijk
+        type: choices
+        choices:
+        - www.ncsc.nl
+        - www.veiliginternetten.nl
+        - www.veiligzakelijkinternetten.nl
+        - www.kvk.nl
+        - www.ondernemersplein.nl
+        - www.security.nl
+        - www.alertonline.nl
+        - Ander website
+        - Geen
+      ict_veiligheid_welke_instanties_waarschuwden:
+        question: "Van wie ontvangt uw bedrijf waarschuwingen voor (nieuwe) cyberdreigingen en kwetsbaarheden  in de ICT-systemen van uw bedrijf?"
+        info:
+          above: true
+          items:
+          - Meerdere antwoorden mogelijk
+        type: choices
+        choices:
+        - De IT-leverancier/automatiseerder van uw bedrijf
+        - De branchorganisatie
+        - De Kamer van Koophandel
+        - Het Nationaal Cyber Security Centrum
+        - Medewerkers van uw eigen bedrijf
+        - Anderen
+        - Niemand
+      ict_veiligheid_bij_wie_zoekt_u_hulp:
+        question: "Bij wie zoekt uw bedrijf advies of hulp als binnen uw bedrijf een ICT-veiligheidsincident heeft plaatsgevonden"
+        info:
+          above: true
+          items:
+          - Meerdere antwoorden mogelijk
+        type: choices
+        choices:
+        - De IT-leverancier/automatiseerder van uw bedrijf
+        - De Politie
+        - De Autoriteit Persoonsgegevens
+        - Het Nationaal Cyber Security Centrum
+        - Bij andere ondernemers in de buurt of branch
+        - Medewerkers van uw eigen bedrijf
+        - Zou niet weten  bij wie hulp en/of advies te vragen
+        - Anderen websites, organisaties of personen
+        - Niemand
+  facturen:
+    add_this: true
+    title: Facturen (elektronisch en papier)
+    info:
+      title: De vragen gaan over papieren en elektronische facturen
+    questions:
+      facturen_heeft_u_die_facturen_verzonden:
+        question: "Heeft uw bedrijf in 2018 facturen verzonden, electronisch en/of papier aan:"
+        section:
+          title: Verzonden facturen
+        filter:
+          condition: Als alle vragen 'Nee'
+          goto: "modsec:ontvangenfacturen"
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+        - Andere bedrijven
+        - Overheden
+        - Consumenten
+        info:
+          title:  Er zijn twee soorten elektronische facturen
+          items:
+            voor_automatische_verwerking:
+              title: E-facturen geschikt voor automatische verwerking
+              items:
+              - "Voorbeelden: Electronic Data Interchange (EDI), XML, UBL"
+              - Worden ofwel direct uitgewisseld door elektronische systemen van bedrijven onderling, of via  elektronische systemen van dienstverleners zoals \emph{Billing Service Provides}
+            niet_voor_automatische_verwerking:
+              title: Facturen in elektronische vorm \emph{niet} geschikt voor automatische verwerking
+              items:
+              - "Voorbeelden: Factuur in e-mail of als e-mailbijlagen in de vorm van een PDF-bestand"
+      facturen_verzonden_welke:
+        question: Heeft uw bedrijf in 2018 de volgende soorten facturen verzonden?
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+          - E-factuur in een standaardformaat, geschikt voor automatische verwerking (bijv. EDI, XML, UBL)
+          - Elektronische vorm, niet geschikt voor automatische verwerking (bijv. e-mail, PDF-bestand)
+          - Uitsluitend in papieren vorm
+        filter:
+          condition: Als alle vragen 'Nee'
+          goto: "modsec:ontvangenfacturen"
+      facturen_verzonden_percentages_naar_wie:
+        question: "Hoeveel procent van alle facturen aan andere bedrijven of overheden heeft uw bedrijf in 2018 verzonden:\\explanation{Een schatting volstaat}"
+        quantity_label:
+          - E-factuur in een standaardformaat, geschikt voor automatische verwerking (bijv. EDI, XML, UBL)
+          - In elektronische vorm, \emph{niet geschikt} voor automatische verwerking (bijv. e-mail, PDF-bestand)
+          - Uitsluitend in papieren vorm 
+        info:
+          title: Het totaal van \textbf{a}, \textbf{b} en \textbf{c} moet 100\% zijn
+      facturen_ontvangen:
+        question: "Hoeveel procent van alle ontvangen facturen heeft uw bedrijf in 2018 ontvangen:"
+        section:
+          title: Ontvangen facturen
+        quantity_label:
+          - E-factuur in een standaardformaat, geschikt voor automatische verwerking (bijv. EDI, XML, UBL)
+          - In papieren vorm en/of in een elektronische vorm, \emph{niet geschikt} voor automatische verwerking 
+            (bijv. e-mail, PDF-bestand)
+        info:
+          title: Het totaal van \textbf{a} en \textbf{b} moet 100\% zijn
+  ecommerce:
+    add_this: true
+    title: "E-Commerce"
+    questions:
+      ecommerce_totale_omzet:
+        section:
+          title: Totale omzet
+        question: Wat was in 2018 de totale omzet van het Nederlandse gedeelte van uw bedrijf, excl. btw?\explanation{Opgeven in duizendtallen (dwz k€). Noteer € 23.568,- dus als 24.}
+        quantity_label: k€
+        info:
+          title: Omschrijving Ecommerce
+          items:
+          - E-commerce is de aan- of verkoop van goederen of diensten via computernetwerken met een methode die speciaal ontworpen is voor het verzenden of ontvangen van bestellingen/orders.
+          - Handgetypte e-mail telt dus niet mee.
+          - De bestellingen/orders vinden plaats via deze methodes maar het betalen ervan hoeft niet online te gebeuren.
+          - "E-commerce kan plaatsvinden via een website of via EDI (\\emph{Electronic Data Interchange}). Met EDI wordt hier bedoeld: het zenden of ontvangen van informatie in een afgesproken format dat automatische verwerking mogelijk maakt, bijvoorbeeld EDIFACT, XML, UBL, XBRL"
+      ecommerce_order_ontvangen:
+        section:
+          title: "Omzet via website en apps"
+        question: Heeft uw bedrijf in 2018 orders ontvangen voor goederen of diensten via een website of \emph{app}$^\dagger$
+        info: 
+          title:  "$^\\dagger$Het gaat hier om verkopen via een online winkel (webshop), via webformulieren op een website of extranet, of via een \\emph{app}. \\textbf{Ook meetellen}: orders die uw bedrijf heeft ontvangen via een website of app die niet van uw bedrijf is, bijvoorbeeld een platform zoals booking.com, bol.com, e.d. Handgetypte e-mails niet meetellen."
+        filter:
+          condition: Nee
+          goto: "modsec:omzetviaedi"
+        type: choices
+        choices:
+        - Ja
+        - Nee 
+      ecommerce_omzet:
+        question: Wat was in 2018 de omzet die uw bedrijf behaalde met orders ontvangen via een website of app, excl. btw?
+        quantity_label: k€
+        info:
+          title: \supscript{$\dagger$}Opgeven in duizendtallen. Noteer € 23.568,- dus als 24. Een schatting volstaat.
+      ecommerce_omzet_per_doelgroep:
+        question: "Hoeveel procent van de in 2018 via een website of app behaalde omzet betrof verkoop aan:"
+        quantity_label:
+        - Bedrijven
+        - Overheidsorganisaties
+        - Nederlandse consumenten
+        - Buitenlandse consumenten
+        info:
+          title: Het totaal van \textbf{a} t/m \textbf{d} moet 100\% zijn
+      ecommerce_omzet_per_regio:
+        question: "Hoeveel procent van de in 2018 via een website of app behaalde omzet betrof verkoop aan klanten in:"
+        nietvoorkleinebedrijven: true
+        quantity_label:
+        - Nederland
+        - Andere EU-landen
+        - Niet EU-landen
+        info:
+          title: Het totaal van \textbf{a}, \textbf{b} en \textbf{c} moet 100\% zijn
+      ecommerce_omzet_per_kanaal:
+        question: "Hoeveel procent van de in 2018 via een website of app behaalde omzet (excl. btw) betrof verkoop via:"
+        quantity_label:
+        - De website of apps van uw \emph{eigen} bedrijf\explanation{Inclusief die  van moeder-, dochter-, of zustermaatschappijen}
+        - "Websites of apps van \\emph{andere} bedrijven: platforms voor e-commerce die meerdere aanbieders gebruiken om hun producten te verkopen\\explanation{Bijvoorbeeld booking.com, bol.com, eBay, Amazon}"
+        info:
+          title: Het totaal van \textbf{a} en \textbf{b} moet 100\% zijn
+      ecommerce_omzet_effect_online_platforms:
+        question: "Wat is uw inschatting van het effect van het bestaan van online platforms in uw bedrijfstak, op de omzet van uw bedrijf?\\explanation{Online platforms zijn platforms voor e-commerce die meerdere aanbieders gebruiken om hun producten te verkopen, bijvoorbeeld booking.com, bol.com, eBay, Amazon, Airbnb, Uber}"
+        type: choices
+        choices:
+        - Negatief (omzet daalt)
+        - Neutraal (omzet blijft min of meer gelijk)
+        - Positief (omzet stijgt)
+        - Ik ben niet bekend met online platforms die actief zijn  binnen de bedrijfstak van ons bedrijf
+      ecommerce_omzet_via_edi_gehad:
+        section:
+          title: Omzet via EDI
+          info:
+            title: Met EDI wordt hier bedoeld
+            items: 
+            - Informatie zenden of ontvangen in een afgesproken format dat automatische verwerking mogelijk maakt, bijvoorbeeld EDIFACT, XML, UBL, en XBRL. 
+            - Inkopen via handgetypte e-mails tellen \emph{niet} mee.
+        question: "Heeft uw bedrijf in 2018 orders ontvangen voor goederen of diensten via EDI?"
+        type: choices
+        choices:
+          - Ja
+          - Nee
+        filter:
+          condition: Nee
+          goto: "modsec:totaleinkoop"
+      ecommerce_omzet_via_edi_hoeveel:
+        question: Wat was in 2018 de omzet die uw bedrijf behaalde met orders ontvangen via EDI, excl. btw?  
+        quantity_label: k€
+        info:
+          title: \supscript{$\ast$}Opgeven in duizendtallen. Noteer € 23.568,- dus als 24. Een schatting volstaat.
+      ecommerce_omzet_edi_per_regio:
+        question: "Hoeveel procent van de in 2018 via EDI behaalde omzet betrof verkoop aan klanten in:"
+        nietvoorkleinebedrijven: true
+        quantity_label:
+        - Nederland
+        - Andere EU-landen
+        - Niet EU-landen
+        info:
+          title: Het totaal van \textbf{a}, \textbf{b} en \textbf{c} moet 100\% zijn
+      ecommerce_inkoop:
+        section:
+          title: Totale inkoop
+          info: 
+            title: Tot de inkopen behoren bijvoorbeeld grondstoffen en halffabricaten, maar ook kantoorartikelen en energie (gas, water, elektriciteit). Ook diensten zoals externe accountants en juristen, onderhoud, telecom en verzekeringen horen bij de inkopen. Loonkosten van eigen personeel behoren niet tot de inkopen.
+
+        question: "Hoeveel bedroeg in 2018 de totale inkoop, exclusief investeringen van het Nederlandse gedeelte van uw bedrijf, excl. btw\\supscript{$\\ast$}?"
+        quantity_label: k€
+        info:
+          title: \supscript{$\ast$}Opgeven in duizendtallen. Noteer € 23.568,- dus als 24. Een schatting volstaat.
+      ecommerce_inkoop_online_gedaan:
+        section:
+          title: Inkoop via websites en apps
+        question: "Heeft uw bedrijf in 2018 via een website of \\emph{app} goederen of diensten besteld bij een ander bedrijf?"
+        type: choices
+        filter:
+          condition: Nee
+          goto: "modsec:inkoopviaedi"
+        choices:
+          - Ja
+          - Nee
+        info:
+          title: "\\emph{Let op}: inkopen via handgetypte e-mails tellen niet mee als inkopen via e-commerce."
+      ecommerce_inkoop_online_hoeveel:
+        question: "Hoeveel heeft uw bedrijf in 2018 uitgeven aan bestellingen via websites of apps, excl. btw?"
+        quantity_label: k€
+        info:
+          title: \supscript{$\ast$}Opgeven in duizendtallen. Noteer € 23.568,- dus als 24. Een schatting volstaat.
+      ecommerce_inkoop_online_per_regio:
+        question: "Hoeveel procent van deze uitgaven is gedaan bij aanbieders in:"
+        nietvoorkleinebedrijven: true
+        quantity_label:
+        - Nederland
+        - Andere EU-landen
+        - Niet EU-landen
+        info:
+          title: Het totaal van \textbf{a}, \textbf{b} en \textbf{c} moet 100\% zijn
+      ecommerce_inkoop_via_edi_gehad:
+        section:
+          title: Inkoop via EDI
+          info:
+            title: "\\supscript{$\\ddag$}Met EDI wordt hier bedoeld:" 
+            items: 
+            - Informatie zenden of ontvangen in een afgesproken format dat automatische verwerking mogelijk maakt, bijvoorbeeld EDIFACT, XML, UBL, en XBRL. 
+            - Inkopen via handgetypte e-mails tellen \emph{niet} mee.
+        question: "Heeft uw bedrijf in 2018 via EDI goederen of diensten besteld bij een ander bedrijf?"
+        type: choices
+        filter:
+          condition: Nee
+          goto: "mod:contactgegevens"
+      ecommerce_inkoop_via_edi_hoeveel:
+        question: Hoeveel heeft uw bedrijf in 2018 uitgegeven aan bestellingen via EDI, excl. btw.?
+        quantity_label: k€
+        info:
+          title: \supscript{$\ast$}Opgeven in duizendtallen. Noteer € 23.568,- dus als 24. Een schatting volstaat.
+      ecommerce_inkoop_edi_per_regio:
+        question: "Hoeveel procent van deze uitgaven is gedaan bij aanbieders in:"
+        nietvoorkleinebedrijven: true
+        quantity_label:
+        - Nederland
+        - Andere EU-landen
+        - Niet EU-landen
+        info:
+          title: Het totaal van \textbf{a}, \textbf{b} en \textbf{c} moet 100\% zijn
+  contactgegevens:
+    add_this: true
+    title: Contactgegevens
+    questions:
+      aanhef:
+        question: Aanhef
+        type: choices
+        choices:
+          - Dhr.
+          - Mevr.
+      naam:
+        question: Naam
+        type: textbox
+      contact:
+        question: Contactdetails
+        quantity_label:
+        - e-mailadres 
+        - telefoonnummer
+      opmerkingen:
+        question: Opmerkingen
+        type: textbox
+        textbox: 10cm
+

@@ -6,14 +6,14 @@ Usage:
 
 """
 
+import sys
+
 import argparse
 import logging
 import os
-import sys
+import pandas as pd
 import re
 import subprocess
-
-import pandas as pd
 import yaml
 import yamlloader
 
@@ -129,7 +129,7 @@ def get_version(preamble):
         survey_version = stat1.decode().strip()
         logger.info("Survey version found: {}".format(stat1.decode()))
 
-    return  survey_version
+    return survey_version
 
 
 def main(args_in):

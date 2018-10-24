@@ -137,6 +137,7 @@ class TextBox(CommandBase):
 class AddInfo(CommandBase):
     _latex_name = "addinfo"
 
+
 class AddInfo(CommandBase):
     _latex_name = "addinfo"
 
@@ -155,4 +156,3 @@ class VSpace(CommandBase):
 
 class ColorLine(CommandBase):
     _latex_name = "colorline"
-

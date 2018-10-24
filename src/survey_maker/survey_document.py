@@ -1,6 +1,7 @@
-import string
 import time
 
+import collections
+import string
 from pylatex import (Document, Section, Command)
 from pylatex.package import Package
 from pylatex.utils import NoEscape
