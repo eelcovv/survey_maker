@@ -103,11 +103,13 @@ class SurveyDocument(Document):
         self.colorize_label = None
         self.colorize_color = None
 
+        # initialise the counter with one counter for the total already
+        self.counts = collections.Counter({"questions": 1, "modules": 1})
+        self.counts_per_module = dict()
+
         self.create_color_latex_command()
 
-        self.counters = collections.Counter()
-
-        # create the questionair environment and add all the modules with their questions
+        # create the questionnaire environment and add all the modules with their questions
         with self.create(Questionnaire(options="noinfo")):
 
             # we can start with a info block in case that is given in the *general* section of
@@ -129,7 +131,7 @@ class SurveyDocument(Document):
         """
 
         logger.info("Counts")
-        for key, count in self.counters.items():
+        for key, count in self.counts.items():
             logger.info("{} : {}".format(key, count))
 
     def create_color_latex_command(self):
@@ -145,6 +147,9 @@ class SurveyDocument(Document):
 
             if re.search("_", col_key):
                 raise ValueError("No _ allowed in the color keys")
+
+            # add a new string counter for the col_key
+            self.counts.update({col_key: 1})
 
             color_name = col_prop["color"]
 
@@ -202,7 +207,7 @@ class SurveyDocument(Document):
                 logger.debug("Skipping section {}".format(module_key))
                 continue
 
-            self.counters.update("module")
+            self.counts.update({"modules": 1})
 
             logger.info("Adding module {}".format(module_key))
 
@@ -221,13 +226,12 @@ class SurveyDocument(Document):
                     # it is interpreted as a goto reference which needs to be reported.
                     goto = module_properties[ckey]
                     with self.create(Colorize(options=color_name)):
-                        self.add_module(module_key, module_properties, goto, colorlabel=label)
+                        self.add_module(module_key, module_properties, goto, color_label=label)
             if color_name is None:
                 # if color_name is still None, report without color
                 self.add_module(module_key, module_properties)
 
-    def add_module(self, module_key, module_properties, goto=None,
-                   colorlabel=None):
+    def add_module(self, module_key, module_properties, goto=None, color_label=None):
         """
         Add a module to the document
 
@@ -241,6 +245,8 @@ class SurveyDocument(Document):
             In case goto is not none, we have requested to colorize this module because we are
             dealing for instance with a moduel which can be skipped for small companies. In case
             this value is a str, it is interpreted as a goto label
+        color_label: str
+            Name of the color label
 
         """
 
@@ -253,11 +259,11 @@ class SurveyDocument(Document):
         if goto is not None and isinstance(goto, str):
             # A goto string is pased to the module. Prepend a Ga naar label before we start with
             # this module
-            if colorlabel is not None:
+            if color_label is not None:
                 if re.match("^mod", goto):
                     # remove all underscores for mod: reference
                     goto = re.sub("_", "", goto)
-                ref_str = f"{colorlabel}" + " $\\rightarrow$ Ga naar \\ref{" + goto + "}"
+                ref_str = f"{color_label}" + " $\\rightarrow$ Ga naar \\ref{" + goto + "}"
                 with self.create(InfoEnvironment()):
                     self.append(Command("emph", NoEscape(ref_str)))
 
