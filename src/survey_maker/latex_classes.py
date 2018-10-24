@@ -63,6 +63,12 @@ class Itemize(Environment):
     content_separator = "\n"
 
 
+class Tabular(Environment):
+    _latex_name = "tabular"
+    escape = False
+    content_separator = "\n"
+
+
 class InfoEnvironment(Environment):
     _latex_name = "info"
 
@@ -148,6 +154,12 @@ class ModuleSection(CommandBase):
 
 class NewLine(CommandBase):
     _latex_name = "newline"
+
+
+class Appendix(CommandBase):
+    _latex_name = "section*"
+    escape = False
+    content_separator = "\n"
 
 
 class VSpace(CommandBase):

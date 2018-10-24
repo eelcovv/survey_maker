@@ -2,19 +2,23 @@ general:
   output_directory: .
   working_directory: .
   colorize_questions: 
-    nietvoorkleinebedrijven:
+    alleengrotebedrijven:
       add_this: true
       color:  roodvergrijsd  #  codekleur  # cbslichtblauw
-      label:  Kleine bedrijven
+      label:  Grote bedrijven
+      goto_condition_label:  Kleine bedrijven
     eurostat:
       color:  cbsblauw
       label:  Eurostat
     eurostatoptional:
       color:  cbslichtblauw
-      label:  Eurostat Optional
+      label:  Eurostat Optioneel
   preamble:
     title: ICT-gebruik bedrijven 2019
     author: Eelco van Vliet
+  summary:
+    add_this: true
+    title: Overzicht vragenlijst
   info:
     items:
     - De meeste vragen in deze enquête gaan over de \emph{huidige} situatie in uw bedrijf.
@@ -22,7 +26,7 @@ general:
     - De vragen kunnen over het algemeen het best beantwoord worden door een ICT-verantwoordelijke.
     - De vragenblokken \ref{mod:facturen} en \ref{mod:ecommerce} gaan echter over facturering en e-commerce. Wellicht kan een financieel medewerker deze het best invullen.
     - Als een percentage (\%) of het aantal FTE's ingevuld moet worden volstaat een schatting
-    - \colornietvoorkleinebedrijven{Alle vragen en modules weergeven in de kleur van deze regel, worden \emph{alleen} aan de grote bedrijven (10 of meer werknemers) voorgelegd. De klein bedrijven (2--10 werknemers) kunnen deze vragen overslaan.}
+    - \coloralleengrotebedrijven{Alle vragen en modules weergeven in de kleur van deze regel, worden \emph{alleen} aan de grote bedrijven (10 of meer werknemers) voorgelegd. De klein bedrijven (2--10 werknemers) kunnen deze vragen overslaan.}
 questionnaire:
   personeel_en_computers:
     add_this: true
@@ -51,7 +55,7 @@ questionnaire:
               - Personeel dat buiten Nederland werkt.
       wp_met_computer:
         # replaces the *wp_aantal* question A1, which is mandatory
-        nietvoorkleinebedrijven: "quest:wp_met_computer_en_intenet"
+        alleengrotebedrijven: "quest:wp_met_computer_en_intenet"
         eurostat:
           refers_to: A2
         question: Hoeveel procent van de werkzame personen gebruikt een computer (inclusief laptops, tablets en smartphones) voor het werk?\explanation{Een schatting volstaat}
@@ -62,7 +66,7 @@ questionnaire:
       wp_telewerken:
         question: Hoeveel procent van de werkzame personen werkt geregeld buiten de bedrijfsvestiging, met toegang tot de ICT-systemen van het bedrijf?\explanation{Een schatting volstaat}
         quantity_label: Percentage (\%)
-        nietvoorkleinebedrijven: true
+        alleengrotebedrijven: true
   ict_specialisten:
     add_this: true
     info: 
@@ -153,7 +157,7 @@ questionnaire:
       internet_vaste_verbinding:
         section:
           title: Vaste internetverbinding
-          nietvoorkleinebedrijven: "modsec:website"
+          alleengrotebedrijven: "modsec:website"
         question: Gebruikt uw bedrijf een vaste internetverbinding\supscript{$\ast$}?
         eurostat:
           refers_to: C1
@@ -166,7 +170,7 @@ questionnaire:
           goto: "modsec:mobieleinternetverbinding"
       internet_download_snelheid:
         question: Wat is de maximale downloadsnelheid van uw snelste vaste internetverbinding volgens uw internetabonnement/-contract
-        nietvoorkleinebedrijven: true
+        alleengrotebedrijven: true
         type: choices
         choices:
           - Minder dan 2 Mbit/sec 
@@ -177,7 +181,7 @@ questionnaire:
       internet_mobiel_aan_personeel:
         section:
           title: Mobiele internetverbinding
-          nietvoorkleinebedrijven: "modsec:website"
+          alleengrotebedrijven: "modsec:website"
           info:
             items:
             - Deze vragen gaan over het gebruik van draagbare apparaten zoals laptops, tablets en smartphones met internetverbinding via mobiele telefoonnetwerken voor het werk. 
@@ -196,14 +200,14 @@ questionnaire:
           title:  \supscript{$\star$}Als de internetverbinding \emph{uitsluitend} via Wifi loopt en \emph{niet} via mobiele-telefoonnetwerken, telt dit niet mee.
       internet_hoeveel_wp_perc_heeft_apparaat:
         question: Hoeveel procent van de werkzame personen heeft voor het werk een draagbaar apparaat met mobiel internet, dat het bedrijf heeft verstrekt?
-        nietvoorkleinebedrijven: true
+        alleengrotebedrijven: true
         quantity_label: Percentage (\%)
         info:
           above: true
           title:  \supscript{$\star$}Als de internetverbinding \emph{uitsluitend} via Wifi loopt en \emph{niet} via mobiele-telefoonnetwerken, telt dit niet mee.
       internet_apparaten_voor_toegang:
         question: Verstrekte uw bedrijf dergelijke apparatuur (draagbare computers, smartphones) aan de werkzame personen voor
-        nietvoorkleinebedrijven: true
+        alleengrotebedrijven: true
         type: group
         groups:
         - Ja
@@ -241,7 +245,7 @@ questionnaire:
       internet_adverteren:
         section:
           title: Adverteren op internet
-        nietvoorkleinebedrijven: "mod:clouddiensten"
+        alleengrotebedrijven: "mod:clouddiensten"
         question: Betaalt uw bedrijf om op internet te adverteren?
         info: 
           items: 
@@ -256,7 +260,7 @@ questionnaire:
           - Nee
       internet_adverteren_methodes:
         question: Gebruikt uw bedrijf daarbij de volgende gerichte methoden?
-        nietvoorkleinebedrijven: "mod:clouddiensten"
+        alleengrotebedrijven: "mod:clouddiensten"
         type: group
         groups:
         - Ja
@@ -325,7 +329,7 @@ questionnaire:
   printing3d: 
     title: 3D Printing
     add_this: true
-    nietvoorkleinebedrijven: "mod:bigdata"
+    alleengrotebedrijven: "mod:bigdata"
     info:
       title: 3D-printen, ook wel Additive Manufacturing genoemd verwijst naar het gebruik van speciale printers, hetzij door de onderneming zelf of door gebruik te maken van 3D-afdrukservices van andere bedrijven, voor het creëren van driedimensionale fysieke objecten met behulp van digitale technologie.
     questions:
@@ -699,7 +703,7 @@ questionnaire:
           title: Het totaal van \textbf{a} t/m \textbf{d} moet 100\% zijn
       ecommerce_omzet_per_regio:
         question: "Hoeveel procent van de in 2018 via een website of app behaalde omzet betrof verkoop aan klanten in:"
-        nietvoorkleinebedrijven: true
+        alleengrotebedrijven: true
         quantity_label:
         - Nederland
         - Andere EU-landen
@@ -744,7 +748,7 @@ questionnaire:
           title: \supscript{$\ast$}Opgeven in duizendtallen. Noteer € 23.568,- dus als 24. Een schatting volstaat.
       ecommerce_omzet_edi_per_regio:
         question: "Hoeveel procent van de in 2018 via EDI behaalde omzet betrof verkoop aan klanten in:"
-        nietvoorkleinebedrijven: true
+        alleengrotebedrijven: true
         quantity_label:
         - Nederland
         - Andere EU-landen
@@ -781,7 +785,7 @@ questionnaire:
           title: \supscript{$\ast$}Opgeven in duizendtallen. Noteer € 23.568,- dus als 24. Een schatting volstaat.
       ecommerce_inkoop_online_per_regio:
         question: "Hoeveel procent van deze uitgaven is gedaan bij aanbieders in:"
-        nietvoorkleinebedrijven: true
+        alleengrotebedrijven: true
         quantity_label:
         - Nederland
         - Andere EU-landen
@@ -808,7 +812,7 @@ questionnaire:
           title: \supscript{$\ast$}Opgeven in duizendtallen. Noteer € 23.568,- dus als 24. Een schatting volstaat.
       ecommerce_inkoop_edi_per_regio:
         question: "Hoeveel procent van deze uitgaven is gedaan bij aanbieders in:"
-        nietvoorkleinebedrijven: true
+        alleengrotebedrijven: true
         quantity_label:
         - Nederland
         - Andere EU-landen

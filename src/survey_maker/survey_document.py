@@ -28,7 +28,9 @@ class SurveyDocument(Document):
                  info_items=None,
                  global_label_width="2.8cm",
                  global_box_width="4",
-                 colorize_questions=None
+                 colorize_questions=None,
+                 add_summary=True,
+                 summary_title="Summary"
                  ):
         if document_options is None:
             # take the default options if they are not passed to the class
@@ -39,10 +41,14 @@ class SurveyDocument(Document):
             document_options=document_options
         )
 
+        self.add_summary = add_summary
+        self.summary_title = summary_title
+
         self.preamble.append(Command("title", title))
         self.preamble.append(Command("author", "Version: {}".format(survey_version)))
         self.preamble.append(Command("date", date))
         self.preamble.append(Package("color"))
+        self.preamble.append(Package("booktabs"))
         self.preamble.append(Package("tocloft"))
         self.preamble.append(Command("makeatletter"))
         self.preamble.append(
@@ -104,7 +110,8 @@ class SurveyDocument(Document):
         self.colorize_color = None
 
         # initialise the counter with one counter for the total already
-        self.counts = collections.Counter({"questions": 1, "modules": 1})
+        self.counts = collections.Counter({"questions": 1, "modules": 1,
+                                           "questions_incl_choices": 1})
         self.counts_per_module = dict()
 
         self.create_color_latex_command()
@@ -123,16 +130,90 @@ class SurveyDocument(Document):
             # now add all the modules with questions
             self.add_all_modules()
 
-        self.make_report()
+            self.make_report()
 
     def make_report(self):
         """
         Report the counts of the questions
         """
 
+        if self.add_summary:
+            self.append(Command("clearpage"))
+            self.append(Command("setcounter", arguments=["secnumdepth", 0]))
+            self.append(Section(title=self.summary_title,
+                                label=NoEscape(re.sub("\s+", "_", self.summary_title).lower())))
+            self.create_summary_table()
+
         logger.info("Counts")
         for key, count in self.counts.items():
-            logger.info("{} : {}".format(key, count))
+            name = self.get_name_of_key(key)
+            logger.info("{:20s} : {}".format(name, count))
+
+    def create_summary_table(self):
+        """
+        Create two latex tables with all the count of the modules and questions
+        """
+
+        self.append(ModuleSection([NoEscape("Globaal aantal vragen"), "global"]))
+        self.append(Command("newline"))
+
+        with self.create(Tabular(arguments="ll")):
+            self.append(Command("toprule"))
+            self.append(r"\textbf{Grootheid}&\textbf{Aantal}\\")
+            self.append(Command("midrule"))
+            for key, count in self.counts.items():
+                name = self.get_name_of_key(key)
+                self.append(f"{name} & {count}\\\\")
+            self.append(Command("bottomrule"))
+
+        self.append(Command("newline"))
+
+        self.append(ModuleSection([NoEscape("Aantal vragen per module"), "permodule"]))
+        self.append(Command("newline"))
+        n_categories = len(list(self.counts.keys())) - 1
+        tabular = "l" + "l" * n_categories
+        with self.create(Tabular(arguments=tabular)):
+            self.append(Command("toprule"))
+            header = "\\textbf{Module}"
+            for key, cnt in self.counts.items():
+                if key == "modules":
+                    continue
+                name = self.get_name_of_key(key)
+                header += (" & " + name)
+            header += "\\\\"
+            self.append(header)
+            self.append(Command("midrule"))
+            for key, module_count in self.counts_per_module.items():
+                line = self.questionnaire[key]["title"]
+                for m_key in self.counts.keys():
+                    if m_key == "modules":
+                        continue
+                    try:
+                        value = module_count[m_key]
+                    except KeyError:
+                        value = 0
+                    line += (" & " + "{}".format(value))
+                line += "\\\\"
+                self.append(line)
+
+            self.append(Command("bottomrule"))
+
+    def get_name_of_key(self, key):
+
+        if key == "questions":
+            name = "Vragen"
+        elif key == "questions_incl_choices":
+            name = "Vragen met opties"
+        elif key == "modules":
+            name = "Modules"
+        else:
+            colorize_prop = self.colorize_properties[key]
+            try:
+                name = colorize_prop["label"]
+            except KeyError:
+                name = key
+
+        return name
 
     def create_color_latex_command(self):
         """
@@ -208,28 +289,57 @@ class SurveyDocument(Document):
                 continue
 
             self.counts.update({"modules": 1})
+            self.counts_per_module[module_key] = collections.Counter({"questions": 1})
 
             logger.info("Adding module {}".format(module_key))
 
             self.append(Command("clearpage"))
 
-            color_name = None
-            for ckey, cprop in self.colorize_properties.items():
-                if not self.process_this_colorize(cprop):
-                    continue
-                if module_properties.get(ckey):
-                    color_name = cprop["color"]
-                    label = cprop.get("label")
-                    # we have found the key 'colorize_key' (given in the general section as e.g.
-                    # "smallcompany". This means the whole module needs to be coloured and also
-                    # we return the value of small_company. In case this is a string (an not a bool)
-                    # it is interpreted as a goto reference which needs to be reported.
-                    goto = module_properties[ckey]
-                    with self.create(Colorize(options=color_name)):
-                        self.add_module(module_key, module_properties, goto, color_label=label)
-            if color_name is None:
-                # if color_name is still None, report without color
+            color_name, goto, label = self.get_colorize_properties(module_properties)
+
+            if color_name is not None:
+                with self.create(Colorize(options=color_name)):
+                    self.add_module(module_key, module_properties, goto, color_label=label)
+            else:
+                # if color_name is None no color was found, so report without color
                 self.add_module(module_key, module_properties)
+
+    def get_colorize_properties(self, module_properties):
+        """
+        Check for all the colorize properties if one of them is added to the module properties
+
+        Parameters
+        ----------
+        module_properties: dict
+            Dictionary with the module properties
+
+        Returns
+        -------
+        tuple
+            (color_name,  goto, label), where color_name is the name of the color beloning to
+            the key found in this module, goto is a reference string in case it is defined
+            and label a prefix add to the goto
+        """
+
+        color_name = None
+        goto = None
+        label = None
+        for ckey, cprop in self.colorize_properties.items():
+            if not self.process_this_colorize(cprop):
+                continue
+            if module_properties.get(ckey):
+                color_name = cprop["color"]
+                label = cprop.get("goto_condition_label")
+
+                # we have found the key 'colorize_key' (given in the general section as e.g.
+                # "smallcompany". This means the whole module needs to be coloured and also
+                # we return the value of small_company. In case this is a string (an not a bool)
+                # it is interpreted as a goto reference which needs to be reported.
+                goto = module_properties[ckey]
+                # stop checking the other keys in case we have found the first
+                break
+
+        return color_name, goto, label
 
     def add_module(self, module_key, module_properties, goto=None, color_label=None):
         """
@@ -330,17 +440,30 @@ class SurveyDocument(Document):
                 continue
 
             logger.info("Adding question {}".format(key))
-            color_local = self.get_color_first_match(question_properties)
+            color_local, color_key = self.get_color_first_match(question_properties)
             if color_local or color_all_in_section:
                 if color_all_in_section:
                     col = color_all_in_section
                 else:
                     col = color_local
                 with self.create(Colorize(options=col)):
-                    self.add_question(key, question_properties, filter_prop)
+                    n_question = self.add_question(key, question_properties, filter_prop)
             else:
                 # there is no local color and no overall section color defined. Write without color
-                self.add_question(key, question_properties, filter_prop)
+                n_question = self.add_question(key, question_properties, filter_prop)
+
+            self.counts.update({"questions": 1})
+            self.counts_per_module[module_key].update({"questions": 1})
+
+            self.counts.update({"questions_incl_choices": n_question})
+            self.counts_per_module[module_key].update({"questions_incl_choices": n_question})
+
+            if color_local is not None:
+                self.counts.update({color_key: 1})
+                self.counts_per_module[module_key].update({color_key: 1})
+
+                self.counts.update({color_key: n_question})
+                self.counts_per_module[module_key].update({color_key: 1})
 
     def get_color_first_match(self, question_properties):
         """
@@ -362,7 +485,7 @@ class SurveyDocument(Document):
             if have_key and self.process_this_colorize(cprop):
                 color = self.colorize_properties[ckey]["color"]
                 break  # stop after the first color you find
-        return color
+        return color, ckey
 
     def add_question(self, key, question_properties, filter_prop=None):
 
@@ -377,6 +500,8 @@ class SurveyDocument(Document):
         if question_type not in QUESTION_TYPES:
             logger.info("question type {} not yet implemented. Skipping".format(question_type))
             return
+
+        n_questions = 1
 
         logger.debug("Checking quantity_type : {}".format(question_type))
         if question_type == "quantity":
@@ -400,6 +525,7 @@ class SurveyDocument(Document):
                 if info is not None and above:
                     self.add_info(info)
                 self.add_choice_question(key, choices, filter_prop)
+
         elif question_type == "group":
             logger.debug("Adding a group question")
             group_width = question_properties.get("group_width")
@@ -408,7 +534,8 @@ class SurveyDocument(Document):
             with self.create(ChoiceGroupQuestion(arguments=NoEscape(question))):
                 if info is not None and above:
                     self.add_info(info)
-                self.add_choice_group_question(key, groups, choice_lines, group_width, filter_prop)
+                n_questions = self.add_choice_group_question(key, groups, choice_lines, group_width,
+                                                             filter_prop)
         elif question_type == "textbox":
             text_width = question_properties.get("textbox", "1cm")
             if info is not None and above:
@@ -420,6 +547,8 @@ class SurveyDocument(Document):
 
         if info is not None and not above:
             self.add_info(info)
+
+        return n_questions
 
     def add_textbox_question(self, key, question, text_width=None):
         """
@@ -438,6 +567,9 @@ class SurveyDocument(Document):
 
     def add_choice_group_question(self, key, groups, choice_lines, group_width=None,
                                   filter_prop=None):
+        """
+        Add a group choice question
+        """
 
         for group in groups:
             if group_width is not None:
@@ -451,6 +583,8 @@ class SurveyDocument(Document):
             redirection_str = self.get_redirection_string_for_filter(filter_prop)
             self.add_info(condition + redirection_str)
 
+        n_questions = 0
+
         for cnt, line in enumerate(choice_lines):
             char = string.ascii_lowercase[cnt] + ")"
             if re.search("colorline", line):
@@ -458,8 +592,11 @@ class SurveyDocument(Document):
                 char = "\colorline{" + char + "}"
             line_with_char = "\\textbf{" + char + "} " + line
             self.append(ChoiceLine(NoEscape(line_with_char)))
+            n_questions += 1
 
         self.append(Command("label", NoEscape(label_question(key))))
+
+        return n_questions
 
     def add_info(self, info, fontsize="footnotesize"):
         """
@@ -608,6 +745,7 @@ class SurveyDocument(Document):
             If None, assume Nee/Ja.
         filter_prop: dict or None
             If not None, defines the properties to filter a question
+
         """
         if choices is None:
             choice_labels = ["Ja", "Nee"]
