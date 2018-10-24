@@ -5,6 +5,8 @@ from pylatex import (Document, Section, Command)
 from pylatex.package import Package
 from pylatex.utils import NoEscape
 
+import collections
+
 from cbs_utils.misc import get_logger
 from survey_maker.latex_classes import *
 
@@ -100,11 +102,45 @@ class SurveyDocument(Document):
         self.colorize_label = None
         self.colorize_color = None
 
+        self.create_color_latex_command()
+
+        self.counters = collections.Counter()
+
+        # create the questionair environment and add all the modules with their questions
+        with self.create(Questionnaire(options="noinfo")):
+
+            # we can start with a info block in case that is given in the *general* section of
+            # the yaml file
+            if info_items is not None:
+                self.add_info(info_items, fontsize="normalsize")
+
+            # always add a Data information
+            self.append(AddInfo(arguments=["Date", time.strftime("%d.%m.%Y")]))
+
+            # now add all the modules with questions
+            self.add_all_modules()
+
+        self.make_report()
+
+    def make_report(self):
+        """
+        Report the counts of the questions
+        """
+
+        logger.info("Counts")
+        for key, count in self.counters.items():
+            logger.info("{} : {}".format(key, count))
+
+    def create_color_latex_command(self):
+        """
+        Loop over all the color properties and create the command in latex to make them
+        """
+
         for col_key, col_prop in self.colorize_properties.items():
             # for each key in the colorize chapter create a latex color command
 
             if not self.process_this_colorize(col_prop):
-               continue
+                continue
 
             if re.search("_", col_key):
                 raise ValueError("No _ allowed in the color keys")
@@ -133,19 +169,6 @@ class SurveyDocument(Document):
                     r"]{\medskip\bgroup\color{#1}}{\egroup\medskip}"))
 
             self.preamble.append(color_command)
-
-        with self.create(Questionnaire(options="noinfo")):
-
-            # we can start with a info block in case that is given in the *general* section of
-            # the yaml file
-            if info_items is not None:
-                self.add_info(info_items, fontsize="normalsize")
-
-            # always add a Data information
-            self.append(AddInfo(arguments=["Date", time.strftime("%d.%m.%Y")]))
-
-            # now add all the modules with questions
-            self.add_all_modules()
 
     @staticmethod
     def process_this_colorize(color_prop):
@@ -177,6 +200,8 @@ class SurveyDocument(Document):
             if not add_this:
                 logger.debug("Skipping section {}".format(module_key))
                 continue
+
+            self.counters.update("module")
 
             logger.info("Adding module {}".format(module_key))
 
@@ -376,7 +401,7 @@ class SurveyDocument(Document):
             with self.create(ChoiceGroupQuestion(arguments=NoEscape(question))):
                 if info is not None and above:
                     self.add_info(info)
-                self.add_choice_group_question(key, groups, choice_lines, group_width,filter_prop)
+                self.add_choice_group_question(key, groups, choice_lines, group_width, filter_prop)
         elif question_type == "textbox":
             text_width = question_properties.get("textbox", "1cm")
             if info is not None and above:
@@ -583,7 +608,6 @@ class SurveyDocument(Document):
             choice_labels = choices
 
         for cnt, choice in enumerate(choice_labels):
-
             redirection_str = self.get_redirection_string_for_filter(filter_prop, choice)
             ch_str = choice + redirection_str
 
