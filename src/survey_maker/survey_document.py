@@ -122,7 +122,11 @@ class SurveyDocument(Document):
             # we can start with a info block in case that is given in the *general* section of
             # the yaml file
             if info_items is not None:
+                self.append(VSpace(NoEscape("\parskip")))
+                self.append(ModuleSection([NoEscape("Toelichting vragen"), "toelichting"]))
                 self.add_info(info_items, fontsize="normalsize")
+
+            self.write_colorize_explanation()
 
             # always add a Data information
             self.append(AddInfo(arguments=["Date", time.strftime("%d.%m.%Y")]))
@@ -131,6 +135,26 @@ class SurveyDocument(Document):
             self.add_all_modules()
 
             self.make_report()
+
+    def write_colorize_explanation(self):
+        """
+        Get the explanation field of all colorize items and add to the list of items
+        """
+        if self.colorize_properties is not None:
+            self.append(VSpace(NoEscape("\parskip")))
+            self.append(ModuleSection([NoEscape("Toelichting kleuren"), "kleuren"]))
+            with self.create(Itemize()):
+                for col_key, col_prop in self.colorize_properties.items():
+                    if not self.process_this_colorize(col_prop):
+                        continue
+                    try:
+                        explanation = col_prop["explanation"]
+                    except KeyError:
+                        logger.debug("No explanation added to {}".format(col_key))
+                    else:
+
+                        cmd = f"\\color{col_key}" + "{" + explanation + "}"
+                        self.write_info(NoEscape(cmd), is_item=True)
 
     def make_report(self):
         """

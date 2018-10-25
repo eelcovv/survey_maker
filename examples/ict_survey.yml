@@ -7,12 +7,15 @@ general:
       color:  roodvergrijsd  #  codekleur  # cbslichtblauw
       label:  Grote bedrijven
       goto_condition_label:  Kleine bedrijven
+      explanation: Alle vragen en modules weergeven in de kleur van deze regel, worden alleen aan de grote bedrijven (10 of meer werknemers) voorgelegd. De klein bedrijven (2--10 werknemers) kunnen deze vragen overslaan.
     eurostat:
       color:  cbsblauw
       label:  Eurostat
+      explanation: Alle vragen en modules weergeven in de kleur van deze regel zijn verplichte Eurostat vragen
     eurostatoptional:
       color:  cbslichtblauw
       label:  Eurostat Optioneel
+      explanation: Alle vragen en modules weergeven in de kleur van deze regel zijn optionele Eurostat vragen
   preamble:
     title: ICT-gebruik bedrijven 2019
     author: Eelco van Vliet
@@ -26,7 +29,6 @@ general:
     - De vragen kunnen over het algemeen het best beantwoord worden door een ICT-verantwoordelijke.
     - De vragenblokken \ref{mod:facturen} en \ref{mod:ecommerce} gaan echter over facturering en e-commerce. Wellicht kan een financieel medewerker deze het best invullen.
     - Als een percentage (\%) of het aantal FTE's ingevuld moet worden volstaat een schatting
-    - \coloralleengrotebedrijven{Alle vragen en modules weergeven in de kleur van deze regel, worden \emph{alleen} aan de grote bedrijven (10 of meer werknemers) voorgelegd. De klein bedrijven (2--10 werknemers) kunnen deze vragen overslaan.}
 questionnaire:
   personeel_en_computers:
     add_this: true
