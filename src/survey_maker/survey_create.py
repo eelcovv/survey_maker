@@ -68,6 +68,8 @@ def _parse_the_command_line_arguments(args):
                         help="Clean the latex temp files after processing")
     parser.add_argument("--no_clean", action="store_false", dest="clean",
                         help="Do not clean the latex temp files after processing")
+    parser.add_argument("--eurostat_reference", action="store_true",
+                        help="Add the Eurostat Reference questions")
 
     # parse the command line
     parsed_arguments = parser.parse_args(args)
@@ -196,7 +198,8 @@ def main(args_in):
             silent=args.silent,
             clean=args.clean,
             survey_version=survey_version,
-            colorize_questions=colorize_questions
+            colorize_questions=colorize_questions,
+            eurostat_reference=args.eurostat_reference
         )
 
 

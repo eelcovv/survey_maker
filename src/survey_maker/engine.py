@@ -35,7 +35,8 @@ class SurveyMaker(object):
                  compiler="pdflatex",
                  clean=True,
                  survey_version=None,
-                 colorize_questions=None
+                 colorize_questions=None,
+                 eurostat_reference=False
                  ):
 
         logger.info("Starting Survey Maker")
@@ -50,7 +51,8 @@ class SurveyMaker(object):
             author=preamble.get("author"),
             survey_version=survey_version,
             info_items=info_items,
-            colorize_questions=colorize_questions
+            colorize_questions=colorize_questions,
+            eurostat_reference=eurostat_reference
         )
 
         if pdf:

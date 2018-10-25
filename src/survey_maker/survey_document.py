@@ -30,7 +30,8 @@ class SurveyDocument(Document):
                  global_box_width="4",
                  colorize_questions=None,
                  add_summary=True,
-                 summary_title="Summary"
+                 summary_title="Summary",
+                 eurostat_reference=False
                  ):
         if document_options is None:
             # take the default options if they are not passed to the class
@@ -43,6 +44,7 @@ class SurveyDocument(Document):
 
         self.add_summary = add_summary
         self.summary_title = summary_title
+        self.eurostat_reference = eurostat_reference
 
         self.preamble.append(Command("title", title))
         self.preamble.append(Command("author", "Version: {}".format(survey_version)))
@@ -229,7 +231,7 @@ class SurveyDocument(Document):
         if key == "questions":
             name = "Vragen"
         elif key == "questions_incl_choices":
-            name = "Vragen met opties"
+            name = "Vragen Tot."
         elif key == "modules":
             name = "Modules"
         else:
@@ -470,16 +472,19 @@ class SurveyDocument(Document):
 
             logger.info("Adding question {}".format(key))
             color_local, color_key = self.get_color_first_match(question_properties)
+            refers_to_label = self.get_refers_to_label(question_properties)
             if color_local or color_all_in_section:
                 if color_all_in_section:
                     col = color_all_in_section
                 else:
                     col = color_local
                 with self.create(Colorize(options=col)):
-                    n_question = self.add_question(key, question_properties, filter_prop)
+                    n_question = self.add_question(key, question_properties, filter_prop,
+                                                   refers_to_label)
             else:
                 # there is no local color and no overall section color defined. Write without color
-                n_question = self.add_question(key, question_properties, filter_prop)
+                n_question = self.add_question(key, question_properties, filter_prop,
+                                               refers_to_label)
 
             self.counts.update({"questions": 1})
             self.counts_per_module[module_key].update({"questions": 1})
@@ -493,6 +498,36 @@ class SurveyDocument(Document):
 
                 self.counts.update({color_key: n_question})
                 self.counts_per_module[module_key].update({color_key: 1})
+
+    def get_refers_to_label(self, question_properties):
+        """
+        Get the refers to label in case we have it defined and the color as well
+
+        Parameters
+        ----------
+        question_properties: dict
+            Dictionary with the question properties
+
+        Returns
+        -------
+        tuple:
+            label with the reference and color of the question
+
+        """
+        color = None
+        refers_to = None
+        for ckey, cprop in self.colorize_properties.items():
+            have_key = question_properties.get(ckey)
+            if have_key and isinstance(have_key, dict) and self.process_this_colorize(cprop):
+                refers_to = have_key.get("refers_to")
+                if refers_to is not None:
+                    color = self.colorize_properties[ckey]["color"]
+                    label = self.colorize_properties[ckey]["label"]
+                    cc = "\color{}".format(re.sub("_", "", ckey))
+                    ll = "({}: $\\rightarrow$ ".format(label) + "{" + refers_to + "})"
+                    refers_to = cc + "{" + ll + "}"
+                    break  # stop after the first color you find
+        return refers_to
 
     def get_color_first_match(self, question_properties):
         """
@@ -512,11 +547,15 @@ class SurveyDocument(Document):
         for ckey, cprop in self.colorize_properties.items():
             have_key = question_properties.get(ckey)
             if have_key and self.process_this_colorize(cprop):
-                color = self.colorize_properties[ckey]["color"]
+                apply = self.colorize_properties[ckey].get("apply_color", True)
+                if apply:
+                    color = self.colorize_properties[ckey]["color"]
+                else:
+                    color = "black"
                 break  # stop after the first color you find
         return color, ckey
 
-    def add_question(self, key, question_properties, filter_prop=None):
+    def add_question(self, key, question_properties, filter_prop=None, refers_to_label=None):
         """
         Add the current question to the document
         Parameters
@@ -527,6 +566,8 @@ class SurveyDocument(Document):
             All question properties
         filter_prop: dict
             In case this is a filter question, add the filter properties
+        refers_to_label: str or None
+            In case defined, the give the label of the reference to the original eurostat question
 
         Returns
         -------
@@ -546,6 +587,17 @@ class SurveyDocument(Document):
         if question_type not in QUESTION_TYPES:
             logger.info("question type {} not yet implemented. Skipping".format(question_type))
             return
+
+        if self.eurostat_reference and refers_to_label:
+            match = re.search("(explanation.*$)", question)
+            if bool(match):
+                expl = match.group(1)
+                question = re.sub(expl, "", question)
+            else:
+                expl = None
+            question += " \emph{" + refers_to_label + "}"
+            if expl:
+                question += ("\\" + expl)
 
         n_questions = 1
 
