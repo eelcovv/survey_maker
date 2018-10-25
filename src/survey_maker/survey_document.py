@@ -318,10 +318,11 @@ class SurveyDocument(Document):
             self.counts.update({"modules": 1})
 
             # initialise the counter of the questions per module to zero
-            self.counts_per_module[module_key] = collections.Counter({"questions": 0})
+            init_count = {"questions": 0, "questions_incl_choices": 0}
+            self.counts_per_module[module_key] = collections.Counter(init_count)
             for ckey, cprop in self.colorize_properties.items():
                 if cprop.get("add_this", True):
-                    self.counts_per_module[module_key] = collections.Counter({ckey: 0})
+                    self.counts_per_module[module_key].update({ckey: 0})
 
             logger.info("Adding module {}".format(module_key))
 
@@ -473,7 +474,7 @@ class SurveyDocument(Document):
 
             logger.info("Adding question {}".format(key))
             color_local, color_key = self.get_color_first_match(question_properties)
-            refers_to_label = self.get_refers_to_label(question_properties)
+            refers_to_label, refers_to_key = self.get_refers_to_label(question_properties)
             if color_local or color_all_in_section:
                 if color_all_in_section:
                     col = color_all_in_section
@@ -496,6 +497,9 @@ class SurveyDocument(Document):
             if color_local is not None:
                 self.counts.update({color_key: n_question})
                 self.counts_per_module[module_key].update({color_key: n_question})
+            if refers_to_label is not None and refers_to_key != color_key:
+                self.counts.update({refers_to_key: n_question})
+                self.counts_per_module[module_key].update({refers_to_key: n_question})
 
     def get_refers_to_label(self, question_properties):
         """
@@ -512,20 +516,19 @@ class SurveyDocument(Document):
             label with the reference and color of the question
 
         """
-        color = None
         refers_to = None
+        ckey = None
         for ckey, cprop in self.colorize_properties.items():
             have_key = question_properties.get(ckey)
             if have_key and isinstance(have_key, dict) and self.process_this_colorize(cprop):
                 refers_to = have_key.get("refers_to")
                 if refers_to is not None:
-                    color = self.colorize_properties[ckey]["color"]
                     label = self.colorize_properties[ckey]["label"]
                     cc = "\color{}".format(re.sub("_", "", ckey))
                     ll = "({}: $\\rightarrow$ ".format(label) + "{" + refers_to + "})"
                     refers_to = cc + "{" + ll + "}"
                     break  # stop after the first color you find
-        return refers_to
+        return refers_to, ckey
 
     def get_color_first_match(self, question_properties):
         """
