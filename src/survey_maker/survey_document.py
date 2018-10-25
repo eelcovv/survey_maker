@@ -112,10 +112,9 @@ class SurveyDocument(Document):
         self.colorize_color = None
 
         # initialise the counter with one counter for the total already
-        self.counts = collections.Counter({"modules": 0,
-                                           "questions": 0,
-                                           "questions_incl_choices": 0})
-        self.counts_per_module = dict()
+        init_count = {"modules": 0, "questions": 0, "questions_incl_choices": 0}
+        self.counts = collections.Counter(init_count)
+        self.counts_per_module = collections.OrderedDict()
 
         self.create_color_latex_command()
 
@@ -257,8 +256,7 @@ class SurveyDocument(Document):
             if re.search("_", col_key):
                 raise ValueError("No _ allowed in the color keys")
 
-            # add a new string counter for the col_key
-            self.counts.update({col_key: 1})
+            self.counts.update({col_key: 0})
 
             color_name = col_prop["color"]
 
@@ -321,6 +319,9 @@ class SurveyDocument(Document):
 
             # initialise the counter of the questions per module to zero
             self.counts_per_module[module_key] = collections.Counter({"questions": 0})
+            for ckey, cprop in self.colorize_properties.items():
+                if cprop.get("add_this", True):
+                    self.counts_per_module[module_key] = collections.Counter({ckey: 0})
 
             logger.info("Adding module {}".format(module_key))
 
@@ -493,11 +494,8 @@ class SurveyDocument(Document):
             self.counts_per_module[module_key].update({"questions_incl_choices": n_question})
 
             if color_local is not None:
-                self.counts.update({color_key: 1})
-                self.counts_per_module[module_key].update({color_key: 1})
-
                 self.counts.update({color_key: n_question})
-                self.counts_per_module[module_key].update({color_key: 1})
+                self.counts_per_module[module_key].update({color_key: n_question})
 
     def get_refers_to_label(self, question_properties):
         """
@@ -544,6 +542,7 @@ class SurveyDocument(Document):
             None or the name of the matched color
         """
         color = None
+        ckey = None
         for ckey, cprop in self.colorize_properties.items():
             have_key = question_properties.get(ckey)
             if have_key and self.process_this_colorize(cprop):
