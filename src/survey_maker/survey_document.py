@@ -110,8 +110,9 @@ class SurveyDocument(Document):
         self.colorize_color = None
 
         # initialise the counter with one counter for the total already
-        self.counts = collections.Counter({"questions": 1, "modules": 1,
-                                           "questions_incl_choices": 1})
+        self.counts = collections.Counter({"modules": 0,
+                                           "questions": 0,
+                                           "questions_incl_choices": 0})
         self.counts_per_module = dict()
 
         self.create_color_latex_command()
@@ -126,6 +127,7 @@ class SurveyDocument(Document):
                 self.append(ModuleSection([NoEscape("Toelichting vragen"), "toelichting"]))
                 self.add_info(info_items, fontsize="normalsize")
 
+            # write the explanations per colorize item
             self.write_colorize_explanation()
 
             # always add a Data information
@@ -312,8 +314,11 @@ class SurveyDocument(Document):
                 logger.debug("Skipping section {}".format(module_key))
                 continue
 
+            # add one to the counter of the modules
             self.counts.update({"modules": 1})
-            self.counts_per_module[module_key] = collections.Counter({"questions": 1})
+
+            # initialise the counter of the questions per module to zero
+            self.counts_per_module[module_key] = collections.Counter({"questions": 0})
 
             logger.info("Adding module {}".format(module_key))
 
@@ -512,6 +517,23 @@ class SurveyDocument(Document):
         return color, ckey
 
     def add_question(self, key, question_properties, filter_prop=None):
+        """
+        Add the current question to the document
+        Parameters
+        ----------
+        key: str
+            Unique name of the question
+        question_properties: dict
+            All question properties
+        filter_prop: dict
+            In case this is a filter question, add the filter properties
+
+        Returns
+        -------
+        int:
+            Count of questions
+
+        """
 
         question = question_properties["question"]
         question_type = question_properties.get("type", "quantity")
@@ -619,6 +641,9 @@ class SurveyDocument(Document):
             n_questions += 1
 
         self.append(Command("label", NoEscape(label_question(key))))
+
+        if n_questions == 0 :
+             n_questions = 1
 
         return n_questions
 
