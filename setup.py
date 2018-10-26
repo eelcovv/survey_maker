@@ -1,24 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    Setup file for survey_maker.
-    Use setup.cfg to configure your project.
+    Setup file for cbs_utils.
 
-    This file was generated with PyScaffold 3.1.
+    This file was generated with PyScaffold 3.0.3.
     PyScaffold helps you to put up the scaffold of your new Python project.
-    Learn more under: https://pyscaffold.org/
+    Learn more under: http://pyscaffold.org/
 """
-import sys
 
-from pkg_resources import require, VersionConflict
+import sys
 from setuptools import setup
 
-try:
-    require('setuptools>=38.3')
-except VersionConflict:
-    print("Error: version of setuptools is too old (<38.3)!")
-    sys.exit(1)
+# Add here console scripts and other entry points in ini-style format
+entry_points = """
+[console_scripts]
+# script_name = cbs_utils.module:function
+# For example:
+# fibonacci = cbs_utils.skeleton:run
+"""
+
+
+def setup_package():
+    needs_sphinx = {'build_sphinx', 'upload_docs'}.intersection(sys.argv)
+    sphinx = ['sphinx'] if needs_sphinx else []
+    setup(setup_requires=['pyscaffold>=3.0a0,<3.1a0'] + sphinx,
+          entry_points=entry_points,
+          use_pyscaffold=True)
 
 
 if __name__ == "__main__":
-    setup(use_pyscaffold=True)
+    setup_package()
