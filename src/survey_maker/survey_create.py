@@ -199,7 +199,7 @@ def main(args_in):
             clean=args.clean,
             survey_version=survey_version,
             colorize_questions=colorize_questions,
-            review_referencess=args.review_references
+            review_references=args.review_references
         )
 
 
