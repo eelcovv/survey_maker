@@ -31,7 +31,7 @@ class SurveyDocument(Document):
                  colorize_questions=None,
                  add_summary=True,
                  summary_title="Summary",
-                 eurostat_reference=False
+                 review_references=False
                  ):
         if document_options is None:
             # take the default options if they are not passed to the class
@@ -44,7 +44,7 @@ class SurveyDocument(Document):
 
         self.add_summary = add_summary
         self.summary_title = summary_title
-        self.eurostat_reference = eurostat_reference
+        self.review_references = review_references
 
         self.preamble.append(Command("title", title))
         self.preamble.append(Command("author", "Version: {}".format(survey_version)))
@@ -590,7 +590,7 @@ class SurveyDocument(Document):
             logger.info("question type {} not yet implemented. Skipping".format(question_type))
             return
 
-        if self.eurostat_reference and refers_to_label:
+        if self.review_references and refers_to_label:
             match = re.search("(explanation.*$)", question)
             if bool(match):
                 expl = match.group(1)

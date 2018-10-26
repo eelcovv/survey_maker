@@ -36,7 +36,7 @@ class SurveyMaker(object):
                  clean=True,
                  survey_version=None,
                  colorize_questions=None,
-                 eurostat_reference=False
+                 review_references=False
                  ):
 
         logger.info("Starting Survey Maker")
@@ -52,7 +52,7 @@ class SurveyMaker(object):
             survey_version=survey_version,
             info_items=info_items,
             colorize_questions=colorize_questions,
-            eurostat_reference=eurostat_reference
+            review_references=review_references
         )
 
         if pdf:
