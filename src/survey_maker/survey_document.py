@@ -829,7 +829,8 @@ class SurveyDocument(Document):
                     category = None
 
                 # rmove all _ as they are not allowed in latex
-                goto = re.sub("_", "", goto)
+                if ref_cat != "quest":
+                    goto = re.sub("_", "", goto)
 
                 if category is not None:
                     redirect_str = "$\\rightarrow$ Ga naar " + category + " \\ref{" + goto + "}"
