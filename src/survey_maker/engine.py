@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from pathlib import Path
 
 from cbs_utils.misc import get_logger
@@ -32,7 +33,7 @@ class SurveyMaker(object):
                  pdf=False,
                  n_compile=1,
                  silent=True,
-                 compiler="pdflatex",
+                 compiler="xelatex",
                  clean=True,
                  survey_version=None,
                  colorize_questions=None,

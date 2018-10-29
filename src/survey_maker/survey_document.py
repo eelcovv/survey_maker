@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import collections
 import string
 import time
@@ -39,6 +40,7 @@ class SurveyDocument(Document):
             # take the default options if they are not passed to the class
             document_options = ["dutch", "final", "oneside", "a4paper"]
 
+            # inputenc="latin1",
         super().__init__(
             documentclass="sdaps",
             document_options=document_options

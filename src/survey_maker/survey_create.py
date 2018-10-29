@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Utility to create a survey
 
@@ -138,7 +139,7 @@ def main(args_in):
     args, parser = _parse_the_command_line_arguments(args_in)
 
     # with the global statement line we make sure to change the global variable at the top
-    # when settin gup the logger
+    # when setting up the logger
     global logger
     logger = setup_logging(
         write_log_to_file=args.write_log_to_file,
@@ -156,7 +157,7 @@ def main(args_in):
     logger.info(message)
     # read the yaml file and put the whole structure into a dictionary: *settings*
     logger.info("Reading settings file {}".format(args.survey_settings))
-    with open(args.survey_settings, "r") as stream:
+    with open(args.survey_settings, "r", encoding="utf-8") as stream:
         settings = yaml.load(stream=stream, Loader=yamlloader.ordereddict.CLoader)
 
     general = settings["general"]
