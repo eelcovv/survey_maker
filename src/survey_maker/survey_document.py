@@ -1,12 +1,10 @@
-import time
-
 import collections
 import string
+import time
+
 from pylatex import (Document, Section, Command)
 from pylatex.package import Package
 from pylatex.utils import NoEscape
-
-import collections
 
 from cbs_utils.misc import get_logger
 from survey_maker.latex_classes import *
@@ -50,9 +48,10 @@ class SurveyDocument(Document):
         self.summary_title = summary_title
         self.review_references = review_references
 
+        date_and_version = "{}\\\\ Version: {}".format(date, survey_version)
         self.preamble.append(Command("title", title))
-        self.preamble.append(Command("author", "Version: {}".format(survey_version)))
-        self.preamble.append(Command("date", date))
+        self.preamble.append(Command("author", NoEscape(author)))
+        self.preamble.append(Command("date", NoEscape(date_and_version)))
         self.preamble.append(Package("color"))
         self.preamble.append(Package("booktabs"))
         self.preamble.append(Package("tocloft"))
@@ -236,7 +235,8 @@ class SurveyDocument(Document):
             self.append(header)
             self.append(Command("midrule"))
             for key, module_count in self.counts_per_module.items():
-                line = self.questionnaire[key]["title"]
+                line = "\\ref{" + "{}".format(label_module(key)) + "} "
+                line += self.questionnaire[key]["title"]
                 for m_key in self.counts.keys():
                     if m_key in (COUNT_MODULES_KEY, COUNT_QUST_KEY):
                         continue
@@ -744,8 +744,8 @@ class SurveyDocument(Document):
 
         self.append(Command("label", NoEscape(label_question(key))))
 
-        if n_questions == 0 :
-             n_questions = 1
+        if n_questions == 0:
+            n_questions = 1
 
         return n_questions
 
