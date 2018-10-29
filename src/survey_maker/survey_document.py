@@ -1,18 +1,20 @@
-import time
-
 import collections
 import string
+import time
+
 from pylatex import (Document, Section, Command)
 from pylatex.package import Package
 from pylatex.utils import NoEscape
-
-import collections
 
 from cbs_utils.misc import get_logger
 from survey_maker.latex_classes import *
 
 QUESTION_TYPES = ["quantity", "choices", "group", "textbox"]
 SPECIAL_KEYS = ("fontsize", "above")
+
+COUNT_QUST_KEY = "questions"
+COUNT_MODULES_KEY = "modules"
+COUNT_QUST_TOTAL_KEY = "questions_incl_choices"
 
 logger = get_logger(__name__)
 
@@ -31,7 +33,7 @@ class SurveyDocument(Document):
                  colorize_questions=None,
                  add_summary=True,
                  summary_title="Summary",
-                 eurostat_reference=False
+                 review_references=False
                  ):
         if document_options is None:
             # take the default options if they are not passed to the class
@@ -44,11 +46,12 @@ class SurveyDocument(Document):
 
         self.add_summary = add_summary
         self.summary_title = summary_title
-        self.eurostat_reference = eurostat_reference
+        self.review_references = review_references
 
+        date_and_version = "{}\\\\ Version: {}".format(date, survey_version)
         self.preamble.append(Command("title", title))
-        self.preamble.append(Command("author", "Version: {}".format(survey_version)))
-        self.preamble.append(Command("date", date))
+        self.preamble.append(Command("author", NoEscape(author)))
+        self.preamble.append(Command("date", NoEscape(date_and_version)))
         self.preamble.append(Package("color"))
         self.preamble.append(Package("booktabs"))
         self.preamble.append(Package("tocloft"))
@@ -112,7 +115,9 @@ class SurveyDocument(Document):
         self.colorize_color = None
 
         # initialise the counter with one counter for the total already
-        init_count = {"modules": 0, "questions": 0, "questions_incl_choices": 0}
+        init_count = {COUNT_MODULES_KEY: 0,
+                      COUNT_QUST_KEY: 0,
+                      COUNT_QUST_TOTAL_KEY: 0}
         self.counts = collections.Counter(init_count)
         self.counts_per_module = collections.OrderedDict()
 
@@ -189,21 +194,40 @@ class SurveyDocument(Document):
             self.append(r"\textbf{Grootheid}&\textbf{Aantal}\\")
             self.append(Command("midrule"))
             for key, count in self.counts.items():
+                if key == COUNT_QUST_KEY:
+                    # do not report the number of main questions, only including the sub questions
+                    continue
+                try:
+                    col_prop = self.colorize_properties[key]
+                except KeyError:
+                    subtract_count_from_total = False
+                else:
+                    # in case the subtract_count_from_total key is defined, report the difference
+                    # with the total. Usefull to report to total 'Kleine bedrijven' from the count
+                    # of bedrijven where the kleine bedrijven are excluded
+                    subtract_count_from_total = col_prop.get("subtract_count_from_total", False)
+
+                if subtract_count_from_total:
+                    number = self.counts[COUNT_QUST_TOTAL_KEY] - count
+                else:
+                    number = count
+
                 name = self.get_name_of_key(key)
-                self.append(f"{name} & {count}\\\\")
+                self.append(f"{name} & {number}\\\\")
             self.append(Command("bottomrule"))
 
         self.append(Command("newline"))
 
         self.append(ModuleSection([NoEscape("Aantal vragen per module"), "permodule"]))
         self.append(Command("newline"))
-        n_categories = len(list(self.counts.keys())) - 1
+        # minus 2 because we do not report the modules and not the main questions
+        n_categories = len(list(self.counts.keys())) - 2
         tabular = "l" + "l" * n_categories
         with self.create(Tabular(arguments=tabular)):
             self.append(Command("toprule"))
             header = "\\textbf{Module}"
             for key, cnt in self.counts.items():
-                if key == "modules":
+                if key in (COUNT_MODULES_KEY, COUNT_QUST_KEY):
                     continue
                 name = self.get_name_of_key(key)
                 header += (" & " + name)
@@ -211,15 +235,30 @@ class SurveyDocument(Document):
             self.append(header)
             self.append(Command("midrule"))
             for key, module_count in self.counts_per_module.items():
-                line = self.questionnaire[key]["title"]
+                line = "\\ref{" + "{}".format(label_module(key)) + "} "
+                line += self.questionnaire[key]["title"]
                 for m_key in self.counts.keys():
-                    if m_key == "modules":
+                    if m_key in (COUNT_MODULES_KEY, COUNT_QUST_KEY):
                         continue
+
+                    try:
+                        col_prop = self.colorize_properties[m_key]
+                    except KeyError:
+                        subtract_count_from_total = False
+                    else:
+                        subtract_count_from_total = col_prop.get("subtract_count_from_total", False)
+
                     try:
                         value = module_count[m_key]
                     except KeyError:
                         value = 0
-                    line += (" & " + "{}".format(value))
+
+                    if subtract_count_from_total:
+                        number = module_count[COUNT_QUST_TOTAL_KEY] - value
+                    else:
+                        number = value
+
+                    line += (" & " + "{}".format(number))
                 line += "\\\\"
                 self.append(line)
 
@@ -227,11 +266,11 @@ class SurveyDocument(Document):
 
     def get_name_of_key(self, key):
 
-        if key == "questions":
-            name = "Vragen"
-        elif key == "questions_incl_choices":
-            name = "Vragen Tot."
-        elif key == "modules":
+        if key == COUNT_QUST_KEY:
+            name = "Vragen Alleen Main"
+        elif key == COUNT_QUST_TOTAL_KEY:
+            name = "Alle Vragen"
+        elif key == COUNT_MODULES_KEY:
             name = "Modules"
         else:
             colorize_prop = self.colorize_properties[key]
@@ -314,15 +353,18 @@ class SurveyDocument(Document):
                 logger.debug("Skipping section {}".format(module_key))
                 continue
 
-            # add one to the counter of the modules
-            self.counts.update({"modules": 1})
+            exclude_from_count = module_properties.get("exclude_from_count", False)
 
-            # initialise the counter of the questions per module to zero
-            init_count = {"questions": 0, "questions_incl_choices": 0}
-            self.counts_per_module[module_key] = collections.Counter(init_count)
-            for ckey, cprop in self.colorize_properties.items():
-                if cprop.get("add_this", True):
-                    self.counts_per_module[module_key].update({ckey: 0})
+            # add one to the counter of the modules
+            if not exclude_from_count:
+                self.counts.update({"modules": 1})
+
+                # initialise the counter of the questions per module to zero
+                init_count = {"questions": 0, "questions_incl_choices": 0}
+                self.counts_per_module[module_key] = collections.Counter(init_count)
+                for ckey, cprop in self.colorize_properties.items():
+                    if cprop.get("add_this", True):
+                        self.counts_per_module[module_key].update({ckey: 0})
 
             logger.info("Adding module {}".format(module_key))
 
@@ -332,10 +374,12 @@ class SurveyDocument(Document):
 
             if color_name is not None:
                 with self.create(Colorize(options=color_name)):
-                    self.add_module(module_key, module_properties, goto, color_label=label)
+                    self.add_module(module_key, module_properties, goto, color_label=label,
+                                    exclude_from_count=exclude_from_count)
             else:
                 # if color_name is None no color was found, so report without color
-                self.add_module(module_key, module_properties)
+                self.add_module(module_key, module_properties,
+                                exclude_from_count=exclude_from_count)
 
     def get_colorize_properties(self, module_properties):
         """
@@ -374,7 +418,8 @@ class SurveyDocument(Document):
 
         return color_name, goto, label
 
-    def add_module(self, module_key, module_properties, goto=None, color_label=None):
+    def add_module(self, module_key, module_properties, goto=None, color_label=None,
+                   exclude_from_count=False):
         """
         Add a module to the document
 
@@ -390,6 +435,8 @@ class SurveyDocument(Document):
             this value is a str, it is interpreted as a goto label
         color_label: str
             Name of the color label
+        exclude_from_count: bool
+            If True, do not count this module and its questions
 
         """
 
@@ -488,18 +535,19 @@ class SurveyDocument(Document):
                 n_question = self.add_question(key, question_properties, filter_prop,
                                                refers_to_label)
 
-            self.counts.update({"questions": 1})
-            self.counts_per_module[module_key].update({"questions": 1})
+            if not exclude_from_count:
+                self.counts.update({"questions": 1})
+                self.counts_per_module[module_key].update({"questions": 1})
 
-            self.counts.update({"questions_incl_choices": n_question})
-            self.counts_per_module[module_key].update({"questions_incl_choices": n_question})
+                self.counts.update({"questions_incl_choices": n_question})
+                self.counts_per_module[module_key].update({"questions_incl_choices": n_question})
 
-            if color_local is not None:
-                self.counts.update({color_key: n_question})
-                self.counts_per_module[module_key].update({color_key: n_question})
-            if refers_to_label is not None and refers_to_key != color_key:
-                self.counts.update({refers_to_key: n_question})
-                self.counts_per_module[module_key].update({refers_to_key: n_question})
+                if color_local is not None:
+                    self.counts.update({color_key: n_question})
+                    self.counts_per_module[module_key].update({color_key: n_question})
+                if refers_to_label is not None and refers_to_key != color_key:
+                    self.counts.update({refers_to_key: n_question})
+                    self.counts_per_module[module_key].update({refers_to_key: n_question})
 
     def get_refers_to_label(self, question_properties):
         """
@@ -590,7 +638,7 @@ class SurveyDocument(Document):
             logger.info("question type {} not yet implemented. Skipping".format(question_type))
             return
 
-        if self.eurostat_reference and refers_to_label:
+        if self.review_references and refers_to_label:
             match = re.search("(explanation.*$)", question)
             if bool(match):
                 expl = match.group(1)
@@ -696,8 +744,8 @@ class SurveyDocument(Document):
 
         self.append(Command("label", NoEscape(label_question(key))))
 
-        if n_questions == 0 :
-             n_questions = 1
+        if n_questions == 0:
+            n_questions = 1
 
         return n_questions
 
@@ -827,6 +875,10 @@ class SurveyDocument(Document):
                     category = "module sectie"
                 else:
                     category = None
+
+                # rmove all _ as they are not allowed in latex
+                if ref_cat != "quest":
+                    goto = re.sub("_", "", goto)
 
                 if category is not None:
                     redirect_str = "$\\rightarrow$ Ga naar " + category + " \\ref{" + goto + "}"
