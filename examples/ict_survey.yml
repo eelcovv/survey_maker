@@ -1,7 +1,9 @@
 general:
   output_directory: .
   working_directory: .
-  colorize_questions: 
+  color_definitions:
+    forest_green:
+  colorize_questions:
     alleengrotebedrijven:
       add_this: true
       color:  roodvergrijsd  #  codekleur  # cbslichtblauw
@@ -12,13 +14,17 @@ general:
     eurostat:
       apply_color: false
       color:  cbsblauw
-      label:  EU Verplicht
-      explanation: Alle vragen en modules weergeven in de kleur van deze regel zijn verplichte Eurostat (ESTAT) vragen
+      label:  ESTAT verplicht
+      explanation: Alle vragen en modules weergeven in de kleur van deze regel zijn verplichte Eurostat (ESTAT verplicht) vragen. De pijl verwijst naar de oorspronkelijk vraag in de model questionnaire 2019
     eurostatoptional:
       apply_color: false
       color:  cbslichtblauw
-      label:  EU Optioneel
-      explanation: Alle vragen en modules weergeven in de kleur van deze regel zijn optionele Eurostat (ESTAT Opt.) vragen
+      label:  ESTAT optioneel
+      explanation: Alle vragen en modules met een link in de kleur van deze regel zijn optionele Eurostat (ESTAT optioneel) vragen. De pijl verwijst naar de oorspronkelijk vraag in de model questionnaire 2019
+    dtc:
+      color: ForestGreen
+      label:  DTC
+      explanation: Alle vragen en modules met in deze kleur zijn extra vragen toegevoegd ten behoeve van de DTC
   preamble:
     title: ICT-gebruik bedrijven 2019
     author: Eelco van Vliet
@@ -245,12 +251,12 @@ questionnaire:
           refers_to: C8
         filter:
           condition: Nee
-          goto: "mod:informatie_delen_binnen_bedrijf"
+          goto: "quest:internet_social_media_welke_gebruikt"
         choices:
         - Ja
         - Nee
       internet_website_bevat:
-        question: Bevat uw website
+        question: "Bevat uw website één of meerdere van de volgende items:"
         type: group
         eurostatoptional:
           refers_to: C9
@@ -258,14 +264,14 @@ questionnaire:
         - Ja
         - Nee
         choicelines:
-        - Beschrijvingen van goederen/diensten, of prijslijsten
+        - Beschrijvingen van goederen/diensten of prijslijsten
         - De mogelijkheid om online te bestellen, boeken of reserveren
         - Een faciliteit waarmee de klant zelf zijn product kan ontwerpen/aanpassen (goederen of diensten)
         - Informatie over de status van een bestelling
         - Klantspecifieke informatie voor reguliere bezoekers
         - Verwijzingen of links naar pagina’s van uw bedrijf op sociale media
       internet_website_use_info_visitors:
-        question: Gebruikt uw bedrijf gegevens over het gedrag van bezoekers op de website zoals muiskliks en/of bekeken items voor advertentiedoeleinden of ter verbetering van de  gebruikerstevredenheid
+        question: Gebruikt uw bedrijf gegevens over het gedrag van bezoekers op de website zoals muisklikken en/of bekeken items voor advertentiedoeleinden of ter verbetering van de  gebruikerstevredenheid
         type: choices
         eurostatoptional:
           refers_to: C10
@@ -274,12 +280,12 @@ questionnaire:
           title: Gebruik van Sociale Media
           info:
             title: Bedrijven die Social Media gebruiken hebben een eigen gebruikersnaam, account, of een gebuikerslicentie afhankelijk van het type Social Media dat gebruikt wordt.
-        question: Gebruikt uw bedrijf een van de volgende sociale media?
+        question: "Gebruikt uw bedrijf één of meerdere van de volgende sociale media:"
         eurostat:
           refers_to: C11
         filter:
           condition: Als alle keuzes 'Nee'
-          goto: "mod:informatie_delen_binnen_bedrijf"
+          goto: "mod:databeheer_binnen_het_bedrijf"
         type: group
         groups:
         - Ja
@@ -299,26 +305,28 @@ questionnaire:
         - Nee
         choicelines:
         - Ontwikkelen van het bedrijfsimago of -producten\explanation{b.v. adverteren of het lanceren van producten, enz}
-        - Vekrijgen van of reageren op van klantenmeningen, -recenties, en -vragen
+        - Verkrijgen van of reageren op van klantenmeningen, -recensies en -vragen
         - Betrekken van klanten bij het ontwikkelen of innoveren van producten of diensten
-        - Samenwerken met zakelijke klanten (b.v. leverenciers, enz.) of andere organisaties (b.v. (semi-)overheidsorganisaties, stichtingen, enz.)
+        - Samenwerken met zakelijke klanten (b.v. leveranciers, enz.) of andere organisaties (b.v. (semi-)overheidsorganisaties, stichtingen, enz.)
         - Recruiteren van werknemers
         - Delen van meningen of kennis \emph{binnen} het bedrijf.
   databeheer_binnen_het_bedrijf:
     title: Data- en informatiebeheer
     questions:
       informatie_delen_binnen_bedrijf_erp_software:
-        info:
-          above: true
-          title: Enterprise Resource Planning (EPR) is een computerprogramma gebruikt binnen organisaties ter ondersteuning van alle process binnen  het bedrijf. Met ERP kan elektronisch informatie tussen de verschillende dissiplines (zoals accouting, planning, productie, marketing, etc) gedeeld worden.
+        section:
+          title: Enterprise Resource Planning (ERP)
+          info:
+            title: Enterprise Resource Planning (ERP) is een computerprogramma gebruikt binnen organisaties ter ondersteuning van alle processen binnen  het bedrijf. Met ERP kan elektronisch informatie tussen de verschillende disciplines (zoals accounting, planning, productie, marketing, etc) gedeeld worden.
         question: Gebuikt uw bedrijf een ERP computerprogramma?
         eurostat:
           refers_to: D1
         type: choices
       informatie_delen_binnen_bedrijf_crm_software:
-        info:
-          above: true
-          title: Customer Relationship Management (CRM) is een computerprogramma gebruikt om klanteninformatie te beheren.
+        section:
+          title: Customer Relationship Management (CRM)
+          info:
+            title: Customer Relationship Management (CRM) is een computerprogramma gebruikt om klantinformatie te beheren.
         question: "Gebuikt uw bedrijf een CRM computerprogramma voor het volgende:"
         eurostat:
           refers_to: D2
@@ -328,7 +336,7 @@ questionnaire:
         - Nee
         choicelines:
         - Verzamelen, opslaan en ter beschikking stellen van informatie over klanten voor verschillende bedrijfsfuncties
-        - Analyseren van klanteninformatie voor marketingsdoeleinden\explanation{b.v. prijzen vaststellen, aanbiedingen, keuze van distributiekanalen, etc.}
+        - Analyseren van klantinformatie voor marketingdoeleinden\explanation{b.v. prijzen vaststellen, aanbiedingen, keuze van distributiekanalen, etc.}
   ict_veiligheid:
     title: ICT-veiligheid
     add_this: true
@@ -357,8 +365,7 @@ questionnaire:
         - Risicoanalyses\explanation{Periodiek beoordelen wat de kans is dat uw bedrijf wordt getroffen door een incident, en wat daarvan de mogelijke gevolgen zijn.}
         - Andere maatregelen.
       ict_veiligheid_hoe_bewust_maken:
-        question: "Maakt uw bedrijf het personeel bewust van hun verplichtingen ten op zichte van
-        ICT-veiligheidszaken op één van de volgende manieren:"
+        question: "Maakt uw bedrijf het personeel op één van de volgende manieren bewust van hun verplichtingen ten op opzichte van ICT-veiligheidszaken:"
         eurostat:
           refers_to: E2
         type: group
@@ -366,11 +373,11 @@ questionnaire:
         - Ja
         - Nee
         choicelines:
-        - Vrijwillige training of intern beschikbare informatie (b.v. informatie op het intranet)?
+        - Vrijwillige training of het aanbieden van intern beschikbare informatie (b.v. informatie op het intranet)?
         - Verplichte cursussen of het verplicht bekijken van instructiefilmpjes
         - Met een contract (b.v. een arbeidscontract)
       ict_veiligheid_door_wie_uitgevoerd:
-        question: Wie voert binnen uw bedrijft ICT-gerelateerde zaken uit (zoals veiligheidstesten, ICT-veiligheiddstrainingen, oplossen van ICT-veiligheidsincidenten)
+        question: "Wie voert binnen uw bedrijft ICT-veiligheid gerelateerde zaken uit (zoals veiligheidstesten, ICT-veiligheidstrainingen, oplossen van ICT-veiligheidsincidenten)\\explanation{Laat het upgraden van pre-package software buiten beschouwing}"
         eurostat:
           refers_to: E3
         type: group
@@ -378,7 +385,7 @@ questionnaire:
         - Ja
         - Nee
         choicelines:
-        - Eigen personeel
+        - Eigen personeel\explanation{Inclusief het personeel  van moeder-, dochter-, of zustermaatschappijen}
         - Externe leveranciers
       ict_veiligheid_heeft_procedures:
         question: "Heeft uw bedrijf documenten met maatregelen, praktijken of procedures  over ICT-veiligheid?\\explanation{Wordt al gevraag in E1j}"
@@ -423,7 +430,7 @@ questionnaire:
         choicelines:
         - Uitval van ICT-diensten als gevolg van een aanval van buitenaf, bijvoorbeeld DoS (\emph{Denial of Service}) of \emph{ransomeware}-aanvallen
         - Vernietiging of verminking van data als gevolg van infectie met kwaadaardige software of door ongeoorloofde elektronische toegang
-        - Onthulling van vertrouwelijke elektronische gegevens door inbraak, pharming of phishing
+        - Onthulling van vertrouwelijke elektronische gegevens\explanation{bv. door inbraak, pharming,  phishing aanvallen, of door toedoen van het eigen personeel (al dan niet bewust)}
       ict_veiligheid_verzekering:
         question: Is uw bedrijf verzekerd voor schade ten gevolge van ICT-veiligheidsincidenten?
         type: choices
@@ -437,11 +444,12 @@ questionnaire:
            - "\\supscript{$\\ast$}Regelmatig: meerdere keren per jaar"
            - Meerdere antwoorden mogelijk
         type: choices
+        increase_counter: dtc
         choices:
         - www.ncsc.nl
         - www.veiliginternetten.nl
         - www.veiligzakelijkinternetten.nl
-        - www.dtc.nl
+        - \colordtc{www.dtc.nl}
         - www.ondernemersplein.nl
         - www.security.nl
         - www.alertonline.nl
@@ -454,10 +462,11 @@ questionnaire:
           items:
           - Meerdere antwoorden mogelijk
         type: choices
+        increase_counter: dtc
         choices:
         - De IT-leverancier/automatiseerder van uw bedrijf
-        - De branchorganisatie
-        - Digital Trust Center
+        - De brancheorganisatie
+        - \colordtc{Digital Trust Center}
         - Het Nationaal Cyber Security Centrum
         - Medewerkers van uw eigen bedrijf
         - Anderen
@@ -469,19 +478,43 @@ questionnaire:
           items:
           - Meerdere antwoorden mogelijk
         type: choices
+        increase_counter: dtc
         choices:
         - De IT-leverancier/automatiseerder van uw bedrijf
         - De Politie
         - De Autoriteit Persoonsgegevens
         - Het Nationaal Cyber Security Centrum
-        - Bij andere ondernemers in de buurt of branch
+        - \colordtc{Digital Trust Center}
+        - Bij andere ondernemers in de buurt of branche
         - Medewerkers van uw eigen bedrijf
         - Zou niet weten  bij wie hulp en/of advies te vragen
         - Anderen websites, organisaties of personen
         - Niemand
+      ict_veiligheid_dtc_bekendheid:
+        section:
+          dtc: true
+          title: Bekendheid Digital Trust Centre (DTC)
+          info:
+            title: "De DTC is een overheidsorganisatie met als missie het weerbaar maken van bedrijven in Nederland tegen cyberdreigingen door middel van:"
+            items:
+            - informatieverschaffing
+            - stimuleren van samenwerkingsverbanden of regionaal- en brancheniveau tussen bedrijven op het gebied van cybersecurity.
+        question: Bent u bekend met het werk van de Digital Trust Center ?
+        type: choices
+        choices:
+        - Ja
+        - Nee
+        dtc: true  # need to add explicity the dtc group in order to increase the counters
+      ict_veiligheid_dtc_samenwerking:
+        question: Neemt u deel aan een DTC samenwerkingsverband (regionaal of via de branche)?
+        type: choices
+        choices:
+        - Ja
+        - Nee
+        dtc: true
   ecommerce:
     add_this: true
-    title: "E-Commerce"
+    title: "E-commerce"
     questions:
       ecommerce_totale_omzet:
         section:
@@ -578,7 +611,7 @@ questionnaire:
         info:
           title: Het totaal van \textbf{a}, \textbf{b} en \textbf{c} moet 100\% zijn
       ecommerce_omzet_web_moeilijkheid_met_eu_verkoop:
-        question: "Heeft uw bedrijf bij de verkoop via een website of app aan andere EU landen in 2018 moelijkheden ondervonden met één van de onderstaande zaken: "
+        question: "Heeft uw bedrijf bij de verkoop via een website of app aan andere EU landen in 2018 moeilijkheden ondervonden met één van de onderstaande zaken: "
         info:
           above: true
           title: Alleen in te vullen als  bij vraag \ref{quest:ecommerce_web_orders_gehad_per_regio}b 'Ja' ingevuld is
@@ -591,10 +624,10 @@ questionnaire:
         - Nee
         choicelines:
         - Hoge leverings- of retourkosten bij de verkoop aan andere EU landen
-        - Moelijkheden met het oplossen van klachten en geschillen bij de verkoop aan andere EU landen
+        - Moeilijkheden met het oplossen van klachten en geschillen bij de verkoop aan andere EU landen
         - Aanpassen van productlabels bij de verkoop aan andere EU landen
         - Tekort aan talenkennis bij de communicatie met klanten in andere EU landen
-        - Beperkingen van uw zakelijke parters om aan andere EU lande te verkopen
+        - Beperkingen van uw zakelijke partners om aan andere EU lande te verkopen
       ecommerce_omzet_via_edi_gehad:
         section:
           title: Omzet via EDI
@@ -622,7 +655,7 @@ questionnaire:
         info:
           title: \supscript{$\ast$}Opgeven in duizendtallen. Noteer € 23.568,- dus als 24. Een schatting volstaat.
       ecommerce_edi_per_regio_gehad:
-        question: "Heeft uw bedrijf in 2018 omzet behaald uit orders via EDI van klanten uit de volgnde geografische locaties:"
+        question: "Heeft uw bedrijf in 2018 omzet behaald uit orders via EDI van klanten uit de volgende geografische locaties:"
         eurostat:
           refers_to: F11
         alleengrotebedrijven: true
