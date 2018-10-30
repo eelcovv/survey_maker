@@ -43,7 +43,7 @@ class SurveyDocument(Document):
 
         super().__init__(
             documentclass="sdaps",
-            inputenc="latin1",
+            inputenc=None,
             document_options=document_options
         )
 
