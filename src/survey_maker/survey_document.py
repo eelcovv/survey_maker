@@ -66,7 +66,20 @@ class SurveyDocument(Document):
             self.preamble.append(Command("setsansfont", "Cambria", options=[ligatures]))
             self.preamble.append(Command(r"newfontfamily\serif", "Cambria"))
 
-        date_and_version = "{}\\\\ Version: {}".format(date, survey_version)
+        if review_references:
+            self.preamble.append(Package("background"))
+            self.preamble.append(Command("backgroundsetup", NoEscape(
+                                             r"position=current page.north west,"
+                                             r"angle=0,"
+                                             r"nodeanchor=north west,"
+                                             r"vshift=-2 mm,"
+                                             r"hshift=2 mm,"
+                                             r"opacity=1,"
+                                             r"scale=3,"
+                                             r"contents=Draft")))
+
+
+            date_and_version = "{}\\\\ Version: {}".format(date, survey_version)
         self.preamble.append(Command("title", title))
         self.preamble.append(Command("author", NoEscape(author)))
         self.preamble.append(Command("date", NoEscape(date_and_version)))
