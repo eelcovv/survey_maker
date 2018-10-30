@@ -255,6 +255,9 @@ questionnaire:
         choices:
         - Ja
         - Nee
+      internet_website_wat_is_url:
+        question: Wat is the URL van uw website?\explanation{In het geval van meerdere website, degene met de meeste bezoekers invullen}
+        type: textbox
       internet_website_bevat:
         question: "Bevat uw website één of meerdere van de volgende items:"
         type: group
@@ -351,19 +354,17 @@ questionnaire:
         - Ja
         - Nee
         choicelines:
-        - Antivirussoftware\explanation{Gratis en/of betaald}.
         - Beleid voor sterke wachtwoorden\explanation{Wachtwoorden die ten minste acht gemengde karakters hebben, die veranderd moeten worden na een bepaalde periode en/of naar aanleiding van bijvoorbeeld een ICT-veiligheidsincident, en die versleuteld worden verstuurd en opgeslagen.}
+        - Up-to-date houden van de software en besturingsysteem
         - Identificatie en authenticatie van gebruikers via software of hardware tokens om toegang te krijgen tot de
           ICT-systemen (oftewel twee-factor authenticatie)\explanation{Bijvoorbeeld via smartcards, USB-beveiligingssleutels of mobiele telefoons (eenmalige inlogcodes via SMS of app).}
-        - Versleutelingstechnieken (encryptie) voor het \emph{opslaan} van data en/of documenten
-        - Versleutelingstechnieken (encryptie) voor het \emph{versturen} van data en/of documenten, bijvoorbeeld via e-mails
+        - Versleutelingstechnieken (encryptie) van data, documenten of e-mails
         - Op een andere fysieke  locatie (reserve)gegevens bewaren (offsite data-backup)\explanation{Opslag in de cloud telt ook mee.}
         - Netwerk access control\explanation{Alleen apparaten die voldoen aan bepaalde eisen krijgen toegang tot het bedrijfsnetwerk, bijvoorbeeld alleen  apparaten die de laatste update van een besturingssysteem hebben geïnstalleerd}
         - Virtual private network (VPN) bij internetgebruik buiten het bedrijf\explanation{Een VPN zorgt ervoor dat alle internetverkeer tussen de gebruiker en de VPN-server wordt versleuteld. Daardoor kan het verkeer niet worden afgeluisterd, en kan de inhoud van bezochte websites niet worden gemanipuleerd door kwaadwillenden (bijv. man-in-the-middle-aanvallen).}
         - Logbestanden opslaan om incidenten achteraf te analyseren
         - Methodes om de ICT-veiligheid in uwe bedrijf te kunnen beoordelen, zoals de veiligheidsmaatregelen laten controleren door derden, of tests uitvoeren\explanation{Bijvoorbeeld penetration testing (pen test), red teaming, 'ethisch hacken', back-up systemen testen of gesimuleerde ICT-veiligheidsincidenten zoal nep-phishing-emails versturen. Dergelijke tests worden uitgevoerd om op een veilige manier kwetsbaarheden in ICT-systemen op te sporen.}
         - Risicoanalyses\explanation{Periodiek beoordelen wat de kans is dat uw bedrijf wordt getroffen door een incident, en wat daarvan de mogelijke gevolgen zijn.}
-        - Andere maatregelen.
       ict_veiligheid_hoe_bewust_maken:
         question: "Maakt uw bedrijf het personeel op één van de volgende manieren bewust van hun verplichtingen ten op opzichte van ICT-veiligheidszaken:"
         eurostat:
@@ -388,7 +389,7 @@ questionnaire:
         - Eigen personeel\explanation{Inclusief het personeel  van moeder-, dochter-, of zustermaatschappijen}
         - Externe leveranciers
       ict_veiligheid_heeft_procedures:
-        question: "Heeft uw bedrijf documenten met maatregelen, praktijken of procedures  over ICT-veiligheid?\\explanation{Wordt al gevraag in E1j}"
+        question: "Heeft uw bedrijf documenten met maatregelen, praktijken of procedures  over ICT-veiligheid\\explanation{Documenten over ICT veiligheid en datavertrouwelijkheid hebben betrekking tot training in ICT gebruik, ICT veiligheidsmaatregelen, de evalutie van ICT veiligheidsmaatregelen, schema's om ICT veiligheidsdocumenten te updaten, enz.}"
         eurostat:
           refers_to: E4
         type: choices
