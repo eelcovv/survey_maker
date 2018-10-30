@@ -14,7 +14,7 @@ from setuptools import setup
 # Add here console scripts and other entry points in ini-style format
 entry_points = """
 [console_scripts]
-# script_name = cbs_utils.module:function
+survey_maker = survey_maker.survey_create:_run
 # For example:
 # fibonacci = cbs_utils.skeleton:run
 """
