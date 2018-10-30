@@ -86,7 +86,7 @@ class SurveyDocument(Document):
                                      NoEscape(r"\newline\footnotesize{\emph{#1}}")))
 
         # the filbreak makes sure that you do net get a lonely header at the bottom of the page
-        section_str = r"\filbreak{\sectionwithlabel{\textbf{\emph{#1}}}{#2}}"
+        section_str = r"\filbreak{\sectionwithlabel{\textbf{#1}}{#2}}"
         self.preamble.append(Command(r"newcommand\modulesection[2]", NoEscape(section_str)))
 
         self.preamble.append(Command("setcounter{tocdepth}", "1"))
