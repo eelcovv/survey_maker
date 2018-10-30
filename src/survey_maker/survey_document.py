@@ -487,6 +487,8 @@ class SurveyDocument(Document):
             # in case we want to skip to another question for a certain outcome
             filter_prop = question_properties.get("filter")
 
+            increase_counter = question_properties.get("increase_counter")
+
             # if a sectiontitle field is given, start a new section title at this question
             section = question_properties.get("section")
             if section:
@@ -556,8 +558,8 @@ class SurveyDocument(Document):
                                                refers_to_label)
 
             if not exclude_from_count:
-                self.counts.update({"questions": 1})
-                self.counts_per_module[module_key].update({"questions": 1})
+                self.counts.update({COUNT_QUST_KEY: 1})
+                self.counts_per_module[module_key].update({COUNT_QUST_KEY: 1})
 
                 self.counts.update({"questions_incl_choices": n_question})
                 self.counts_per_module[module_key].update({"questions_incl_choices": n_question})
@@ -568,6 +570,14 @@ class SurveyDocument(Document):
                 if refers_to_label is not None and refers_to_key != color_key:
                     self.counts.update({refers_to_key: n_question})
                     self.counts_per_module[module_key].update({refers_to_key: n_question})
+
+                if increase_counter is not None:
+                    # this allow to increase the counter of one extra feature in case the
+                    # 'increase_counter' key is defined in a question
+                    self.counts.update({COUNT_QUST_TOTAL_KEY: 1})
+                    self.counts_per_module[module_key].update({COUNT_QUST_TOTAL_KEY: 1})
+                    self.counts.update({increase_counter: 1})
+                    self.counts_per_module[module_key].update({increase_counter: 1})
 
     def get_refers_to_label(self, question_properties):
         """
