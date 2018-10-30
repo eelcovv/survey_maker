@@ -34,13 +34,13 @@ class SurveyDocument(Document):
                  colorize_questions=None,
                  add_summary=True,
                  summary_title="Summary",
-                 review_references=False
+                 review_references=False,
+                 use_cbs_font=True
                  ):
         if document_options is None:
             # take the default options if they are not passed to the class
             document_options = ["dutch", "final", "oneside", "a4paper"]
 
-            # inputenc="latin1",
         super().__init__(
             documentclass="sdaps",
             document_options=document_options
@@ -49,6 +49,20 @@ class SurveyDocument(Document):
         self.add_summary = add_summary
         self.summary_title = summary_title
         self.review_references = review_references
+
+        # this part comes from the cbsreport class to make sure we have the same font
+        # more importantly, under windows it allows to have a proper euro font
+        if use_cbs_font:
+            ligatures = NoEscape(r"Ligatures={Common, Tex}")
+            numbers = NoEscape(r"Numbers = {Lining}")
+            scale = NoEscape(r"Scale = MatchLowercase")
+            self.preamble.append(Package("fontspec"))
+            self.preamble.append(Command("setmainfont", "Calibri",
+                                         options=[ligatures,  numbers]))
+            self.preamble.append(Command("setmonofont", "Consolas",
+                                         options=[ligatures,  scale]))
+            self.preamble.append(Command("setsansfont", "Cambria", options=[ligatures]))
+            self.preamble.append(Command(r"newfontfamily\serif", "Cambria"))
 
         date_and_version = "{}\\\\ Version: {}".format(date, survey_version)
         self.preamble.append(Command("title", title))
