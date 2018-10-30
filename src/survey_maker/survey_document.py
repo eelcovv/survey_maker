@@ -43,6 +43,7 @@ class SurveyDocument(Document):
 
         super().__init__(
             documentclass="sdaps",
+            inputenc="latin1",
             document_options=document_options
         )
 
@@ -53,9 +54,9 @@ class SurveyDocument(Document):
         # this part comes from the cbsreport class to make sure we have the same font
         # more importantly, under windows it allows to have a proper euro font
         if use_cbs_font:
-            ligatures = NoEscape(r"Ligatures={Common, Tex}")
-            numbers = NoEscape(r"Numbers = {Lining}")
-            scale = NoEscape(r"Scale = MatchLowercase")
+            ligatures = NoEscape(r"Ligatures={Common,TeX}")
+            numbers = NoEscape(r"Numbers={Lining}")
+            scale = NoEscape(r"Scale=MatchLowercase")
             self.preamble.append(Package("fontspec"))
             self.preamble.append(Command("setmainfont", "Calibri",
                                          options=[ligatures,  numbers]))
