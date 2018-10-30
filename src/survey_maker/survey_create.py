@@ -189,6 +189,9 @@ def main(args_in):
 
         survey_version = get_version(preamble)
 
+        if args.review_references:
+            output_file += "_draft"
+
         output_file = "_".join([output_file, re.sub("-.*", "", survey_version)])
 
         # create the object and do you thing

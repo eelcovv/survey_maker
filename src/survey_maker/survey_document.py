@@ -465,15 +465,15 @@ class SurveyDocument(Document):
         self.append(Section(title=title, label=NoEscape(label_module(module_key))))
 
         if goto is not None and isinstance(goto, str):
-            # A goto string is pased to the module. Prepend a Ga naar label before we start with
+            # A goto string is passed to the module. Prepend a Ga naar label before we start with
             # this module
             if color_label is not None:
                 if re.match("^mod", goto):
                     # remove all underscores for mod: reference
                     goto = re.sub("_", "", goto)
-                ref_str = f"{color_label}" + " $\\rightarrow$ Ga naar \\ref{" + goto + "}"
+                ref_str = f"{color_label}" + " $\\rightarrow$ Ga naar \\textbf{\\ref{" + goto + "}}"
                 with self.create(InfoEnvironment()):
-                    self.append(Command("emph", NoEscape(ref_str)))
+                    self.append(Command("normalsize", NoEscape(ref_str)))
 
         if info is not None:
             # in case a info section is given, at it at the top of the module
@@ -508,7 +508,8 @@ class SurveyDocument(Document):
                             # remove all underscores for mod: reference
                             goto = re.sub("_", "", goto)
                         if label is not None:
-                            ref_str = f"{label}" + " $\\rightarrow$ Ga naar \\ref{" + goto + "}"
+                            ref_str = f"{label}" + \
+                                      " $\\rightarrow$ Ga naar \\textbf{\\ref{" + goto + "}}"
                     break
 
                 title = section["title"]
@@ -520,7 +521,7 @@ class SurveyDocument(Document):
                         self.append(ModuleSection([NoEscape(title), title_label]))
                         if ref_str is not None:
                             with self.create(InfoEnvironment()):
-                                self.append(Command("emph", NoEscape(ref_str)))
+                                self.append(Command("normalsize", NoEscape(ref_str)))
                 else:
                     self.append(ModuleSection([NoEscape(title), title_label]))
                     if ref_str is not None:
