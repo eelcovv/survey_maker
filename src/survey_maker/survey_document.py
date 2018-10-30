@@ -41,11 +41,12 @@ class SurveyDocument(Document):
             # take the default options if they are not passed to the class
             document_options = ["dutch", "final", "oneside", "a4paper"]
 
-        super().__init__(
-            documentclass="sdaps",
-            inputenc=None,
-            document_options=document_options
-        )
+        # with this trick we can preceed the documentclass command with the PassOptionsToPackage
+        # command such that we can add some more color definitions to xcolor.
+        command = Command(r"PassOptionsToPackage{dvipsnames,usenames}{xcolor}\documentclass",
+                          options=document_options,
+                          arguments=["sdaps"])
+        super().__init__( documentclass=command)
 
         self.add_summary = add_summary
         self.summary_title = summary_title
@@ -498,12 +499,14 @@ class SurveyDocument(Document):
                     if goto is None:
                         continue
                     color_all_in_section = cprop["color"]
-                    if re.match("^mod", goto):
-                        # remove all underscores for mod: reference
-                        goto = re.sub("_", "", goto)
                     label = cprop.get("label")
-                    if isinstance(goto, str) and label is not None:
-                        ref_str = f"{label}" + " $\\rightarrow$ Ga naar \\ref{" + goto + "}"
+
+                    if isinstance(goto, str):
+                        if re.match("^mod", goto):
+                            # remove all underscores for mod: reference
+                            goto = re.sub("_", "", goto)
+                        if label is not None:
+                            ref_str = f"{label}" + " $\\rightarrow$ Ga naar \\ref{" + goto + "}"
                     break
 
                 title = section["title"]
