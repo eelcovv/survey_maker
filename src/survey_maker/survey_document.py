@@ -35,7 +35,8 @@ class SurveyDocument(Document):
                  add_summary=True,
                  summary_title="Summary",
                  review_references=False,
-                 use_cbs_font=True
+                 use_cbs_font=True,
+                 draft=False
                  ):
         if document_options is None:
             # take the default options if they are not passed to the class
@@ -46,7 +47,7 @@ class SurveyDocument(Document):
         command = Command(r"PassOptionsToPackage{dvipsnames,usenames}{xcolor}\documentclass",
                           options=document_options,
                           arguments=["sdaps"])
-        super().__init__( documentclass=command)
+        super().__init__(documentclass=command, inputenc=None)
 
         self.add_summary = add_summary
         self.summary_title = summary_title
@@ -60,26 +61,25 @@ class SurveyDocument(Document):
             scale = NoEscape(r"Scale=MatchLowercase")
             self.preamble.append(Package("fontspec"))
             self.preamble.append(Command("setmainfont", "Calibri",
-                                         options=[ligatures,  numbers]))
+                                         options=[ligatures, numbers]))
             self.preamble.append(Command("setmonofont", "Consolas",
-                                         options=[ligatures,  scale]))
+                                         options=[ligatures, scale]))
             self.preamble.append(Command("setsansfont", "Cambria", options=[ligatures]))
             self.preamble.append(Command(r"newfontfamily\serif", "Cambria"))
 
-        if review_references:
+        if draft:
             self.preamble.append(Package("background"))
             self.preamble.append(Command("backgroundsetup", NoEscape(
-                                             r"position=current page.north west,"
-                                             r"angle=0,"
-                                             r"nodeanchor=north west,"
-                                             r"vshift=-2 mm,"
-                                             r"hshift=2 mm,"
-                                             r"opacity=1,"
-                                             r"scale=3,"
-                                             r"contents=Draft")))
+                r"position=current page.north west,"
+                r"angle=0,"
+                r"nodeanchor=north west,"
+                r"vshift=-2 mm,"
+                r"hshift=2 mm,"
+                r"opacity=1,"
+                r"scale=3,"
+                r"contents=Draft")))
 
-
-            date_and_version = "{}\\\\ Version: {}".format(date, survey_version)
+        date_and_version = "{}\\\\ Version: {}".format(date, survey_version)
         self.preamble.append(Command("title", title))
         self.preamble.append(Command("author", NoEscape(author)))
         self.preamble.append(Command("date", NoEscape(date_and_version)))
