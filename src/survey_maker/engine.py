@@ -73,7 +73,7 @@ class SurveyMaker(object):
                     clean_latex = False
 
                 logger.info("Writing Survey to {}.pdf ({}/{})".format(
-                    self.output_file.name, cnt, n_compile))
+                    self.output_file.name, cnt + 1, n_compile))
 
                 self.document.generate_pdf(filepath=self.output_file.name,
                                            clean_tex=False,
