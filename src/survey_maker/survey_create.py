@@ -75,6 +75,8 @@ def _parse_the_command_line_arguments(args):
                         help="Use the cbs font to allow for the euro symbol")
     parser.add_argument("--no_use_cbs_font", action="store_false", dest="use_cbs_font",
                         help="Do not use the cbs font to allow for the euro symbol")
+    parser.add_argument("--draft", action="store_true",
+                        help="Add a draft stamp to the document. Doesn not work at cbs yet")
 
     # parse the command line
     parsed_arguments = parser.parse_args(args)
@@ -189,10 +191,10 @@ def main(args_in):
 
         survey_version = get_version(preamble)
 
-        if args.review_references:
-            output_file += "_draft"
-
         output_file = "_".join([output_file, re.sub("-.*", "", survey_version)])
+
+        if args.review_references:
+            output_file += "_review"
 
         # create the object and do you thing
         SurveyMaker(
@@ -208,7 +210,8 @@ def main(args_in):
             survey_version=survey_version,
             colorize_questions=colorize_questions,
             review_references=args.review_references,
-            use_cbs_font=args.use_cbs_font
+            use_cbs_font=args.use_cbs_font,
+            draf=args.draft
         )
 
 
