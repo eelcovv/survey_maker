@@ -60,6 +60,7 @@ class SurveyMaker(object):
             draft=draft
         )
 
+        logger.info("Writing Survey to {}".format(self.output_file.name))
         if pdf:
             # create the pdf file for this document
             for cnt in range(n_compile):

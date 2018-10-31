@@ -213,6 +213,7 @@ def main(args_in):
             use_cbs_font=args.use_cbs_font,
             draft=args.draft
         )
+        logger.info("Done. Goodbye...")
 
 
 def _run():
