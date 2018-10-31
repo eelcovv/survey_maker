@@ -211,7 +211,7 @@ def main(args_in):
             colorize_questions=colorize_questions,
             review_references=args.review_references,
             use_cbs_font=args.use_cbs_font,
-            draf=args.draft
+            draft=args.draft
         )
 
 
