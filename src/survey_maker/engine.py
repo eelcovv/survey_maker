@@ -60,7 +60,6 @@ class SurveyMaker(object):
             draft=draft
         )
 
-        logger.info("Writing Survey to {}".format(self.output_file.name))
         if pdf:
             # create the pdf file for this document
             for cnt in range(n_compile):
@@ -73,6 +72,9 @@ class SurveyMaker(object):
                     # labels right
                     clean_latex = False
 
+                logger.info("Writing Survey to {}.pdf ({}/{})".format(
+                    self.output_file.name, cnt, n_compile))
+
                 self.document.generate_pdf(filepath=self.output_file.name,
                                            clean_tex=False,
                                            clean=clean_latex,
@@ -80,5 +82,6 @@ class SurveyMaker(object):
                                            silent=silent
                                            )
         else:
+            logger.info("Writing Survey to {}.tex".format(self.output_file.name))
             # only create the tex document without compiling the source
             self.document.generate_tex(filepath=self.output_file.name)
