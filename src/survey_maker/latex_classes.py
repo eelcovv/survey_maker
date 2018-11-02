@@ -110,6 +110,11 @@ class ChoiceGroupQuestion(Environment):
     content_separator = "\n"
 
 
+class ChoiceRangeGroupQuestion(Environment):
+    _latex_name = "markgroup"
+    escape = False
+    content_separator = "\n"
+
 class ChoiceItemText(CommandBase):
     _latex_name = "choiceitemtext"
     escape = False
@@ -134,8 +139,20 @@ class GroupChoice(CommandBase):
     content_separator = "\n"
 
 
+class MarkLine(CommandBase):
+    _latex_name = "markline"
+    escape = False
+    content_separator = "\n"
+
+
 class TextBox(CommandBase):
     _latex_name = "textbox*"
+    escape = False
+    content_separator = "\n"
+
+
+class SingleMark(CommandBase):
+    _latex_name = "singlemark"
     escape = False
     content_separator = "\n"
 

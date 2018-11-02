@@ -10,7 +10,7 @@ from pylatex.utils import NoEscape
 from cbs_utils.misc import get_logger
 from survey_maker.latex_classes import *
 
-QUESTION_TYPES = ["quantity", "choices", "group", "textbox"]
+QUESTION_TYPES = ["quantity", "choices", "group", "textbox", "range", "rangegroup"]
 SPECIAL_KEYS = ("fontsize", "above")
 
 COUNT_QUST_KEY = "questions"
@@ -733,6 +733,19 @@ class SurveyDocument(Document):
             if info is not None and above:
                 self.add_info(info)
             self.add_textbox_question(key, question, text_width)
+        elif question_type == "range":
+            range_items = question_properties["range_labels"]
+            if info is not None and above:
+                self.add_info(info)
+            self.add_range_question(key, question, range_items)
+        elif question_type == "rangegroup":
+            question_lines = question_properties["question_lines"]
+            range_labels = question_properties["range_labels"]
+
+            with self.create(ChoiceRangeGroupQuestion(arguments=NoEscape(question))):
+                if info is not None and above:
+                    self.add_info(info)
+                n_questions = self.add_range_group_question(key, question_lines, range_labels)
         else:
             raise AssertionError("question type not known. Check if type of question {} is one of "
                                  "the following: {} ".format(key, QUESTION_TYPES))
@@ -741,6 +754,53 @@ class SurveyDocument(Document):
             self.add_info(info)
 
         return n_questions
+
+    def add_range_group_question(self, key, question_lines, range_items):
+
+        items = list()
+        for cnt, item in enumerate(range_items):
+            if cnt == 2:
+                logger.warning("Only two range items allowed")
+                break
+            items.append(NoEscape(item))
+
+        n_questions = 0
+
+        for cnt, line in enumerate(question_lines):
+            char = string.ascii_lowercase[cnt] + ")"
+            if re.search("colorline", line):
+                # in case we color the line, do the same for the character
+                char = "\colorline{" + char + "}"
+            line_with_char = "\\textbf{" + char + "} " + line
+
+            args = [NoEscape(line_with_char)] + items
+            self.append(MarkLine(args))
+            n_questions += 1
+
+        return n_questions
+
+    def add_range_question(self, key, question, range_items):
+        """
+        Add a range kquestion
+        Parameters
+        ----------
+        key: str
+            Unqique key of the question
+        question: str
+            The question
+        range_items:
+            list of strings to mark the lower and upper range
+        """
+        single_mark_arguments = [NoEscape(question)]
+        for cnt, item in enumerate(range_items):
+            if cnt == 2:
+                logger.warning("Only two range items allowed")
+                break
+            single_mark_arguments.append(NoEscape(item))
+
+        self.append(SingleMark(arguments=single_mark_arguments))
+
+        self.append(Command("label", NoEscape(label_question(key))))
 
     def add_textbox_question(self, key, question, text_width=None):
         """
