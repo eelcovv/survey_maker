@@ -67,7 +67,7 @@ questionnaire:
       wp_met_computer:
         # replaces the *wp_aantal* question A1, which is mandatory
         alleengrotebedrijven: "quest:wp_met_computer_en_intenet"
-        eurostat:
+        eurostatoptional:
           refers_to: A2
         question: Hoeveel procent van de werkzame personen gebruikt een computer (inclusief laptops, tablets en smartphones) voor het werk?\explanation{Een schatting volstaat}
         quantity_label: Percentage (\%)
@@ -112,25 +112,12 @@ questionnaire:
         info:
           items: 
           - "\\textbf{Let op}: FTE’s besteed aan werk voor derden \\emph{niet} meetellen."
-      ict_specialisten_cursussen_intern:
-        question: "Bood uw bedrijf de binnen uw bedrijf werkzame ICT-specialisten in 2018 opleidingen of cursussen aan om hun ICT-vaardigheden verder te ontwikkelen?"
-        type: choices
-        info:
-          above: true
-          title: Antwoord \emph{Nee} als uw bedrijf in 2018 geen ICT-specialisten in dienst had.
-        eurostatoptional:
-          refers_to: B2a
-      ict_specialisten_cursussen_intern_personeel:
-        question: "Bood uw bedrijf ander personeel werkzaam in uw bedrijf in 2018 opleidingen of cursussen aan om hun ICT-vaardigheden verder te ontwikkelen?"
-        type: choices
-        eurostatoptional:
-          refers_to: B2b
       ict_specialisten_willen_aannemen:
         question: "Heeft uw bedrijf in 2018 ICT-specialisten aangenomen of willen aannemen?"
         type: choices
         filter:
           condition: Nee
-          goto: "quest:ict_specialisten_door_wie_uitgevoerd"
+          goto: "mod:internet"
         eurostatoptional:
           refers_to: B3
         choices:
@@ -141,36 +128,13 @@ questionnaire:
         type: choices
         eurostatoptional:
           refers_to: B4
-      ict_specialisten_door_wie_uitgevoerd:
-        question: Wie voerde het onderstaande ICT-werk binnen uw bedrijf in 2018 voornamelijk uit?
-        eurostatoptional:
-          refers_to: B5
-        info:
-          above: true
-          items:
-          - "\\emph{Eigen personeel}: Voornamelijk uitgevoerd door eigen personeel, inclusief personeel dat werkzaam is in gelieerde bedrijven (moeder- of dochterondernemingen)"
-          - "\\emph{Extern personeel}: Voornamelijk uitgevoerd door externe leverancier(s)"
-        type: group
-        groups:
-        - Eigen personeel
-        - Extern personeel
-        - N.V.T.
-        choicelines:
-        - \colorline{Onderhoud van ICT-infrastructuur (servers, computers, printers, netwerken)}
-        - \colorline{Ondersteuning van office software (tekstverwerkingsprogramma’s, spreadsheets e.d.)}
-        - \colorline{Ontwikkeling van bedrijfsvoeringssoftware/-systemen (bijv. ERP-software om informatie te delen over verschillende afdelingen (zoals boekhouding, planning, productie, marketing); CRM-software om informatie over klanten te beheren, software voor Human Resource Management, databases)}
-        - \colorline{Ondersteuning van bedrijfsvoeringssoftware/-systemen (bijv. ERP-, CRM-, HRM-software, databases)}
-        - \colorline{Ontwikkeling van web-applicaties (bijv. websites, toepassingen voor e-commerce)}
-        - \colorline{Ondersteuning van web-applicaties (bijv. websites, toepassingen voor e-commerce)}
-        - ICT-beveiliging en bescherming van data (bijv. beveiligingstests, beveiligingssoftware)
-  internet:                
+  internet:
     title: Internet
     add_this: true
     questions:
       internet_vaste_verbinding:
         section:
           title: Vaste internetverbinding
-          alleengrotebedrijven: "modsec:website"
         question: Gebruikt uw bedrijf een vaste internetverbinding\supscript{$\ast$}?
         eurostat:
           refers_to: C4
@@ -180,10 +144,9 @@ questionnaire:
         type: choices
         filter:
           condition: Nee
-          goto: "modsec:mobieleinternetverbinding"
+          goto: "quest:internet_voice_or_video_applications"
       internet_download_snelheid:
         question: Wat is de maximale downloadsnelheid van uw snelste vaste internetverbinding volgens uw internetabonnement/-contract
-        alleengrotebedrijven: true
         eurostat:
           refers_to: C5
         type: choices
@@ -196,6 +159,7 @@ questionnaire:
       internet_voice_or_video_applications:
         question: Gebruikt uw bedrijf \emph{voice-} of \emph{video}applicaties (zoals Skype/Skype voor business, WhatsApp/WhatsApp business, Facetime, Viber) voor bedrijfsdoeleinden
         type: choices
+        alleengrotebedrijven: "modsec:website"
         eurostatoptional:
           refers_to: C3
       internet_mobiel_aan_personeel:
@@ -229,19 +193,6 @@ questionnaire:
         info:
           above: true
           title:  \supscript{$\star$}Als de internetverbinding \emph{uitsluitend} via Wifi loopt en \emph{niet} via mobiele-telefoonnetwerken, telt dit niet mee.
-      internet_apparaten_voor_toegang:
-        question: Verstrekte uw bedrijf dergelijke apparatuur (draagbare computers, smartphones) aan de werkzame personen voor
-        alleengrotebedrijven: true
-        type: group
-        groups:
-        - Ja
-        - Nee
-        choicelines:
-        - Toegang tot het e-mailsysteem van uw bedrijf?
-        - Toegang tot bestanden van uw bedrijf om daarin wijzigingen aan te brengen?
-        - Toegang tot specifieke bedrijfssystemen\supscript{$\ddag$}?  
-        info:
-          title: \supscript{$\ddag$}Bijvoorbeeld om orders te registreren/bewaken, Enterprise Resource Planning (ERP)
       internet_heeft_website:
         section:
           title: Website
@@ -256,7 +207,7 @@ questionnaire:
         - Ja
         - Nee
       internet_website_wat_is_url:
-        question: Wat is the URL van uw website?\explanation{In het geval van meerdere website, degene met de meeste bezoekers invullen}
+        question: Wat is the URL van de website van uw bedrijf?\explanation{In het geval van meerdere websites, degene met de meeste bezoekers invullen}
         type: textbox
       internet_website_bevat:
         question: "Bevat uw website één of meerdere van de volgende items:"
@@ -274,7 +225,7 @@ questionnaire:
         - Klantspecifieke informatie voor reguliere bezoekers
         - Verwijzingen of links naar pagina’s van uw bedrijf op sociale media
       internet_website_use_info_visitors:
-        question: Gebruikt uw bedrijf gegevens over het gedrag van bezoekers op de website zoals muisklikken en/of bekeken items voor advertentiedoeleinden of ter verbetering van de  gebruikerstevredenheid
+        question: Gebruikt uw bedrijf gegevens over het gedrag van bezoekers op de website zoals muisklikken en/of bekeken items voor bijvoorbeeld advertentiedoeleinden of ter verbetering van de  gebruikerstevredenheid
         type: choices
         eurostatoptional:
           refers_to: C10
@@ -283,7 +234,7 @@ questionnaire:
           title: Gebruik van Sociale Media
           info:
             title: Bedrijven die Social Media gebruiken hebben een eigen gebruikersnaam, account, of een gebuikerslicentie afhankelijk van het type Social Media dat gebruikt wordt.
-        question: "Gebruikt uw bedrijf één of meerdere van de volgende sociale media:"
+        question: "Gebruikt uw bedrijf de volgende sociale media:\\explanation{Wanneer u deze sociale media uitsluitend gebruikt voor het plaatsen van advertenties graag 'nee' antwoorden}"
         eurostat:
           refers_to: C11
         filter:
@@ -294,12 +245,12 @@ questionnaire:
         - Ja
         - Nee
         choicelines:
-        - Sociale netwerken \explanation{b.v. Facebook, LinkedIn, Xing, Viadeo, Yammer, enz.}
-        - Een blog of microblog van het bedrijf\explanation{b.v. Twitter, Present.ly, enz.}
-        - Multimedia website\explanation{b.v. Instagram, YouTube, Flickr, SlideShare, enz.}
-        - Op Wiki gebaseerde kennisdeelapplicaties
+        - Sociale netwerken zoals Facebook, LinkedIn, Yammer
+        - Blogs of microblogs zoals Twitter
+        - Websites die multimedia (filmpjes, foto's) delen zoals YouTube, Flickr, Picasa
+        - Op Wiki gebaseerde middelen om kennis te delen
       internet_social_media_gebruikt_voor:
-        question: "Gebruikt uw bedrijf Social Media voor één van de volgende redenen:"
+        question: "Gebruikt uw bedrijf Social Media om:"
         eurostat:
           refers_to: C12
         type: group
@@ -307,30 +258,30 @@ questionnaire:
         - Ja
         - Nee
         choicelines:
-        - Ontwikkelen van het bedrijfsimago of -producten\explanation{b.v. adverteren of het lanceren van producten, enz}
-        - Verkrijgen van of reageren op van klantenmeningen, -recensies en -vragen
-        - Betrekken van klanten bij het ontwikkelen of innoveren van producten of diensten
-        - Samenwerken met zakelijke klanten (b.v. leveranciers, enz.) of andere organisaties (b.v. (semi-)overheidsorganisaties, stichtingen, enz.)
-        - Recruiteren van werknemers
-        - Delen van meningen of kennis \emph{binnen} het bedrijf.
+        - Het imago van het bedrijf te ontwikkelen of voor de marketing van producten (adverteren, productenlancering)
+        - Meningen/recensies van klanten te verkrijgen of vragen te beantwoorden
+        - Klanten te betrekken bij het ontwikkelen of vernieuwen van goederen of diensten
+        - Samen te werken met zakenrelaties of andere organisaties
+        - Personeel te werven
+        - Meningen, kennis of visies uit te wisselen binnen het bedrijf
   databeheer_binnen_het_bedrijf:
-    title: Data- en informatiebeheer
+    title: Databeheer
     questions:
-      informatie_delen_binnen_bedrijf_erp_software:
+      databeheer_erp_software:
         section:
           title: Enterprise Resource Planning (ERP)
           info:
-            title: Enterprise Resource Planning (ERP) is een computerprogramma gebruikt binnen organisaties ter ondersteuning van alle processen binnen  het bedrijf. Met ERP kan elektronisch informatie tussen de verschillende disciplines (zoals accounting, planning, productie, marketing, etc) gedeeld worden.
-        question: Gebuikt uw bedrijf een ERP computerprogramma?
+            title: Enterprise Resource Planning (ERP) software wordt gebruikt om bedrijfsprocessen te ondersteunen zoals informatie delen over verschillende afdelingen (bijvoorbeeld boekhouding, planning, productie, marketing)
+        question: Gebuikt uw bedrijf een ERP-software om informatie te delen tussen verschillende afdelingen?
         eurostat:
           refers_to: D1
         type: choices
-      informatie_delen_binnen_bedrijf_crm_software:
+      databeheer_crm_software:
         section:
           title: Customer Relationship Management (CRM)
           info:
-            title: Customer Relationship Management (CRM) is een computerprogramma gebruikt om klantinformatie te beheren.
-        question: "Gebuikt uw bedrijf een CRM computerprogramma voor het volgende:"
+            title: Customer Relationship Management (CRM) software wordt gebruikt om informatie over klantinformatie te beheren.
+        question: "Gebuikt uw bedrijf een CRM-software voor:"
         eurostat:
           refers_to: D2
         type: group
@@ -338,9 +289,18 @@ questionnaire:
         - Ja
         - Nee
         choicelines:
-        - Verzamelen, opslaan en ter beschikking stellen van informatie over klanten voor verschillende bedrijfsfuncties
-        - Analyseren van klantinformatie voor marketingdoeleinden\explanation{b.v. prijzen vaststellen, aanbiedingen, keuze van distributiekanalen, etc.}
-  ict_veiligheid:
+        - Opslaan/distributie van klantengegevens binnen uw bedrijf
+        - Analyse van klantgegevens voor marketingdoeleinden\explanation{b.v. prijsstelling, promotie, keuze van distributiekanalen}
+      databeheer_data_inzette_welke_mate:
+        question: "In welke mate heeft uw bedrijf informatie en data gedigitaliseerd om de (interne) bedrijfsvoering te optimaliseren?\explanation{Aangeven op een schaal van 1 (Niet gedigitaliseerd) tot 5 (Volledig gedigitaliseerd)}"
+        type: choices
+        choices:
+        - "1) Niet gedigitaliseerd"
+        - "2) Nauwelijks gedigitaliseerd"
+        - "3) Gemiddeld gedigitaliseerd"
+        - "4) Veel gedigitaliseerd"
+        - "5) Alles gedigitaliseerd"
+  ict_veilig"heid:
     title: ICT-veiligheid
     add_this: true
     info: De volgende vragen gaan over ICT-veiligheid. Op deze vragenlijst bedoelen we daarmee alle maatregelen, controles en procedures die een bedrijf toepast met betrekking tot ICT-systemen, met als doel de integriteit, authenticiteit, beschikbaarheid en vertrouwelijkheid van gegevens (data) en systemen te borgen.
@@ -354,6 +314,7 @@ questionnaire:
         - Ja
         - Nee
         choicelines:
+        - Antivirussoftware\explanation{Gratis en/of betaald}.
         - Beleid voor sterke wachtwoorden\explanation{Wachtwoorden die ten minste acht gemengde karakters hebben, die veranderd moeten worden na een bepaalde periode en/of naar aanleiding van bijvoorbeeld een ICT-veiligheidsincident, en die versleuteld worden verstuurd en opgeslagen.}
         - Up-to-date houden van de software en besturingsysteem
         - Identificatie en authenticatie van gebruikers via software of hardware tokens om toegang te krijgen tot de
@@ -410,7 +371,7 @@ questionnaire:
         - Opslaan, bescherming, toegang en behandeling van data
         - Preventie van veiligheidsincidenten zoals \emph{pharming, phishing attackts, ransomware}, etc.
         - Verantwoordelijkheden, rechten, en plichten  van het ICT-personeel
-        - Opleiding van de werknemers in het veilig ICT gebruik
+        - Opleiden van de werknemers in het veilig gebruik van ICT
       ict_veiligheid_procedures_wanneer_gereviewed:
         question: Wanneer zijn uw bedrijfsdocumenten met maatregelen, praktijken of procedures van ICT-veiligheid gedefinieerd of meest recentelijk gereviewed?
         eurostat:
@@ -421,80 +382,45 @@ questionnaire:
         - Meer dan 12 maanden maar minder dan 24 maanden geleden
         - Meer dan 24 maanden geleden
       ict_veiligheid_incidenten:
-        question: "Heeft uw bedrijf in 2018 ten minste één keer met één of meer van de volgende incidenten te maken gehad:"
-        eurostat:
-          refers_to: E7
+        question:  Hoe vaak kwamen onderstaande ICT-veiligheidsincidenten in 2018 voor in uw bedrijf?
         type: group
+        group_width: 0.075\textwidth
         groups:
-        - Ja
-        - Nee
+        - Niet voorgekomen
+        - 1 of 2 keer
+        - 3 of 4 keer
+        - Meer dan 4 keer
         choicelines:
+        - Uitval van ICT-diensten als gevolg van ICT-gerelateerde veiligheidsincidenten, zoals een storing in hardware of software
         - Uitval van ICT-diensten als gevolg van een aanval van buitenaf, bijvoorbeeld DoS (\emph{Denial of Service}) of \emph{ransomeware}-aanvallen
+        - Vernietiging of verminking van data als gevolg van ICT-gerelateerde veiligheidsincidenten, zoals een storing in hardware of software
         - Vernietiging of verminking van data als gevolg van infectie met kwaadaardige software of door ongeoorloofde elektronische toegang
-        - Onthulling van vertrouwelijke elektronische gegevens\explanation{bv. door inbraak, pharming,  phishing aanvallen, of door toedoen van het eigen personeel (al dan niet bewust)}
+        - Onthulling van vertrouwelijke elektronische gegevens door inbraak, pharming of phishing
+        - Onthulling van vertrouwelijke elektronische gegevens door acties van eigen personeel, opzettelijk of per ongeluk
+      ict_veiligheid_kosten:
+        question:  Hoe hoog waren de totale kosten van dit soort incidenten voor uw bedrijf in 2017?
+        type: group
+        group_width: 0.1\textwidth
+        groups:
+        - Niet of nauwelijks kosten
+        - Wel kosten maar deze waren niet hoog
+        - De kosten waren hoog
+        choicelines:
+        - Uitval van ICT-diensten als gevolg van ICT-gerelateerde veiligheidsincidenten, zoals een storing in hardware of software
+        - Uitval van ICT-diensten als gevolg van een aanval van buitenaf, bijvoorbeeld DoS (\emph{Denial of Service}) of \emph{ransomeware}-aanvallen
+        - Vernietiging of verminking van data als gevolg van ICT-gerelateerde veiligheidsincidenten, zoals een storing in hardware of software
+        - Vernietiging of verminking van data als gevolg van infectie met kwaadaardige software of door ongeoorloofde elektronische toegang
+        - Onthulling van vertrouwelijke elektronische gegevens door inbraak, pharming of phishing
+        - Onthulling van vertrouwelijke elektronische gegevens door acties van eigen personeel, opzettelijk of per ongeluk
       ict_veiligheid_verzekering:
-        question: Is uw bedrijf verzekerd voor schade ten gevolge van ICT-veiligheidsincidenten?
+        question: Is uw bedrijf verzekerd voor ICT-veiligheidsincidenten?
         type: choices
         eurostat:
           refers_to: E8
-      ict_veiligheid_welke_websites_geraadpleegd:
-        question: "Welke website worden regelmatig\\supscript{$\\ast$} door uw bedrijf geraadpleegd voor informatie ICT-veiligheidsincidenten?"
-        info:
-          above: true
-          items:
-           - "\\supscript{$\\ast$}Regelmatig: meerdere keren per jaar"
-           - Meerdere antwoorden mogelijk
-        type: choices
-        increase_counter: dtc
-        choices:
-        - www.ncsc.nl
-        - www.veiliginternetten.nl
-        - www.veiligzakelijkinternetten.nl
-        - \colordtc{www.dtc.nl}
-        - www.ondernemersplein.nl
-        - www.security.nl
-        - www.alertonline.nl
-        - Ander website
-        - Geen
-      ict_veiligheid_welke_instanties_waarschuwden:
-        question: "Van wie ontvangt uw bedrijf waarschuwingen voor (nieuwe) cyberdreigingen en kwetsbaarheden  in de ICT-systemen van uw bedrijf?"
-        info:
-          above: true
-          items:
-          - Meerdere antwoorden mogelijk
-        type: choices
-        increase_counter: dtc
-        choices:
-        - De IT-leverancier/automatiseerder van uw bedrijf
-        - De brancheorganisatie
-        - \colordtc{Digital Trust Center}
-        - Het Nationaal Cyber Security Centrum
-        - Medewerkers van uw eigen bedrijf
-        - Anderen
-        - Niemand
-      ict_veiligheid_bij_wie_zoekt_u_hulp:
-        question: "Bij wie zoekt uw bedrijf advies of hulp als binnen uw bedrijf een ICT-veiligheidsincident heeft plaatsgevonden"
-        info:
-          above: true
-          items:
-          - Meerdere antwoorden mogelijk
-        type: choices
-        increase_counter: dtc
-        choices:
-        - De IT-leverancier/automatiseerder van uw bedrijf
-        - De Politie
-        - De Autoriteit Persoonsgegevens
-        - Het Nationaal Cyber Security Centrum
-        - \colordtc{Digital Trust Center}
-        - Bij andere ondernemers in de buurt of branche
-        - Medewerkers van uw eigen bedrijf
-        - Zou niet weten  bij wie hulp en/of advies te vragen
-        - Anderen websites, organisaties of personen
-        - Niemand
       ict_veiligheid_dtc_bekendheid:
         section:
           dtc: true
-          title: Bekendheid Digital Trust Centre (DTC)
+          title: Digital Trust Center (DTC)
           info:
             title: "De DTC is een overheidsorganisatie met als missie het weerbaar maken van bedrijven in Nederland tegen cyberdreigingen door middel van:"
             items:
@@ -505,6 +431,9 @@ questionnaire:
         choices:
         - Ja
         - Nee
+        filter:
+          condition: Nee
+          goto: "mod:facturen"
         dtc: true  # need to add explicity the dtc group in order to increase the counters
       ict_veiligheid_dtc_samenwerking:
         question: Neemt u deel aan een DTC samenwerkingsverband (regionaal of via de branche)?
@@ -513,6 +442,87 @@ questionnaire:
         - Ja
         - Nee
         dtc: true
+      ict_veiligheid_dtc_bezoek_website:
+        question: Bezoekt u wel eens de website van de Digital Trust Center voor informatie over veiligheidsincidenten?
+        type: choices
+        choices:
+        - Ja
+        - Nee
+        dtc: true
+      ict_veiligheid_dtc_waarschuwingen:
+        question: Ontvangt uw bedrijf wel eens waarschuwingen voor (nieuwe) cyberdreigingen en kwetsbaarheden in de ICT-systemen van uw bedrijf van de DTC of de daaraan gelieerde samenwerkingsverbanden?
+        type: choices
+        choices:
+        - Ja
+        - Nee
+        dtc: true
+      ict_veiligheid_dtc_hulp_zoeken:
+        question: Zoekt uw bedrijf wel eens hulp op het gebied van ICT-veiligheid bij de DTC of de daaraan gelieerde samenwerkingsverbanden?
+        type: choices
+        choices:
+        - Ja
+        - Nee
+        dtc: true
+  facturen:
+    add_this: true
+    title: Facturen (elektronisch en papier)
+    info:
+      title:  Er zijn twee soorten elektronische facturen
+      items:
+        voor_automatische_verwerking:
+          title: E-facturen geschikt voor automatische verwerking
+          items:
+          - "Voorbeelden: Electronic Data Interchange (EDI), XML, UBL"
+          - Worden ofwel direct uitgewisseld door elektronische systemen van bedrijven onderling, of via  elektronische systemen van dienstverleners zoals \emph{Billing Service Provides}
+        niet_voor_automatische_verwerking:
+          title: Facturen in elektronische vorm \emph{niet} geschikt voor automatische verwerking
+          items:
+          - "Voorbeelden: Factuur in e-mail of als e-mailbijlagen in de vorm van een PDF-bestand"
+    questions:
+      facturen_verzonden_welke:
+        question: Heeft uw bedrijf in 2017 de volgende soorten facturen verzonden?
+        section:
+          title: Verzonden facturen
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+          - E-factuur in een standaardformaat, geschikt voor automatische verwerking (bijv. EDI, XML, UBL)
+          - Elektronische vorm, niet geschikt voor automatische verwerking (bijv. e-mail, PDF-bestand)
+          - Uitsluitend in papieren vorm
+        info:
+          title: "Indien alles Nee $\\rightarrow$ Ga naar module sectie \\ref{modsec:ontvangenfacturen}"
+      facturen_verzonden_naar_wie:
+        question: "Heeft uw bedrijf in 2017 facturen verzonden, elektronisch en/of op papier, aan:"
+        type: group
+        groups:
+        - Ja
+        - Nee
+        choicelines:
+          - Andere bedrijven
+          - Overheden
+          - Consumenten
+        info:
+          title: "Indien zowel \\emph{Andere bedrijven} alsmede \\emph{Overheden} 'Nee' is $\\rightarrow$ Ga naar vraag \\ref{modsec:ontvangenfacturen}"
+      facturen_verzonden_percentages_naar_wie:
+        question: "Hoeveel procent van alle facturen aan andere bedrijven of overheden heeft uw bedrijf in 2017 verzonden:\\explanation{Een schatting volstaat}"
+        quantity_label:
+          - E-factuur in een standaardformaat, geschikt voor automatische verwerking (bijv. EDI, XML, UBL)
+          - In elektronische vorm, \emph{niet geschikt} voor automatische verwerking (bijv. e-mail, PDF-bestand)
+          - Uitsluitend in papieren vorm
+        info:
+          title: Het totaal van \textbf{a}, \textbf{b} en \textbf{c} moet 100\% zijn
+      facturen_ontvangen:
+        question: "Hoeveel procent van alle ontvangen facturen heeft uw bedrijf in 2017 ontvangen:"
+        section:
+          title: Ontvangen facturen
+        quantity_label:
+          - E-factuur in een standaardformaat, geschikt voor automatische verwerking (bijv. EDI, XML, UBL)
+          - In papieren vorm en/of in een elektronische vorm, \emph{niet geschikt} voor automatische verwerking
+            (bijv. e-mail, PDF-bestand)
+        info:
+          title: Het totaal van \textbf{a} en \textbf{b} moet 100\% zijn
   ecommerce:
     add_this: true
     title: "E-commerce"
@@ -520,7 +530,7 @@ questionnaire:
       ecommerce_totale_omzet:
         section:
           title: Totale omzet
-        question: Wat was in 2018 de totale omzet van het Nederlandse gedeelte van uw bedrijf, excl. btw?\explanation{Opgeven in duizendtallen (dwz k€). Noteer € 23.568,- dus als 24.}
+        question: Wat was in 2018 de totale omzet van het Nederlandse gedeelte van uw bedrijf, excl. btw?\explanation{Opgeven in duizendtallen (dwz k€). Noteer € 23.568,- dus als k€ 24.}
         quantity_label: k€
         info:
           title: Omschrijving Ecommerce
@@ -539,7 +549,7 @@ questionnaire:
           title:  "$^\\dagger$Het gaat hier om verkopen via een online winkel (webshop), via webformulieren op een website of extranet, of via een \\emph{app}. \\textbf{Ook meetellen}: orders die uw bedrijf heeft ontvangen via een website of app die niet van uw bedrijf is, bijvoorbeeld een platform zoals booking.com, bol.com, e.d. Handgetypte e-mails niet meetellen."
         filter:
           condition: Nee
-          goto: "modsec:omzetviaedi"
+          goto: "quest:ecommerce_effect_op_omzet_van_platforms"
         type: choices
         choices:
         - Ja
@@ -550,40 +560,18 @@ questionnaire:
         eurostat:
           refers_to: F2
         info:
-          title: \supscript{$\dagger$}Opgeven in duizendtallen. Noteer € 23.568,- dus als 24. Een schatting volstaat.
+          title: \supscript{$\dagger$}Opgeven in duizendtallen (k€). Noteer € 23.568,- dus als k€ 24. Een schatting volstaat.
       ecommerce_web_orders_omzetw_per_doelgroep:
         question: "Hoeveel procent van de in 2018 via een website of app behaalde omzet betrof verkoop aan:"
         quantity_label:
-        - B2C (Verkoop aan consumenten)
-        - B2B en B2G (Verkoop aan andere bedrijven en overheidsinstanties)
+        - Bedrijven
+        - Overheidsorganisaties
+        - Nederlandse consumenten
+        - Buitenlandse consumenten
         eurostat:
           refers_to: F3
         info:
-          title: Het totaal van \textbf{a} en \textbf{b} moet 100\% zijn
-      ecommerce_web_orders_via_welke_apps:
-        question: "Via welke websites of \\emph{apps} heeft uw bedrijf in 2018 orders van goederen of
-        diensten ontvangen?"
-        eurostat:
-          refers_to: F4
-        type: group
-        groups:
-        - Ja
-        - Nee
-        choicelines:
-        - De website of apps van uw \emph{eigen} bedrijf\explanation{Inclusief die  van moeder-, dochter-, of zustermaatschappijen}
-        - "Websites of apps van \\emph{andere} bedrijven: platforms voor e-commerce die meerdere aanbieders gebruiken om hun producten te verkopen\\explanation{Bijvoorbeeld booking.com, bol.com, eBay, Amazon}"
-        filter:
-          condition: Als \textbf{a} en/of \textbf{b} 'Nee'
-          goto: "quest:ecommerce_web_orders_gehad_per_regio"
-      ecommerce_web_orders_omzet_per_app:
-        question: "Hoeveel procent bedroeg de omzet  van orders van goederen en diensten in 2018 ontvangen via websites en apps ?"
-        eurostat:
-          refers_to: F5
-        quantity_label:
-        - De website of apps van uw \emph{eigen} bedrijf\explanation{Inclusief die  van moeder-, dochter-, of zustermaatschappijen}
-        - "Websites of apps van \\emph{andere} bedrijven: platforms voor e-commerce die meerdere aanbieders gebruiken om hun producten te verkopen\\explanation{Bijvoorbeeld booking.com, bol.com, eBay, Amazon}"
-        info:
-          title: Het totaal van \textbf{a} en \textbf{b} moet 100\% zijn
+          title: Het totaal van \textbf{a} t/m \textbf{d} moet 100\% zijn
       ecommerce_web_orders_gehad_per_regio:
         question: "Heeft uw bedrijf in 2018 omzet behaald uit orders via website en apps   vanuit de volgende geografische locaties:"
         alleengrotebedrijven: true
@@ -612,7 +600,7 @@ questionnaire:
         info:
           title: Het totaal van \textbf{a}, \textbf{b} en \textbf{c} moet 100\% zijn
       ecommerce_omzet_web_moeilijkheid_met_eu_verkoop:
-        question: "Heeft uw bedrijf bij de verkoop via een website of app aan andere EU landen in 2018 moeilijkheden ondervonden met één van de onderstaande zaken: "
+        question: "Heeft uw bedrijf in 2018 de volgende moeilijkheden ondervonden bij de verkoop via websites of apps aan klanten in andere EU-landen?"
         info:
           above: true
           title: Alleen in te vullen als  bij vraag \ref{quest:ecommerce_web_orders_gehad_per_regio}b 'Ja' ingevuld is
@@ -624,11 +612,19 @@ questionnaire:
         - Ja
         - Nee
         choicelines:
-        - Hoge leverings- of retourkosten bij de verkoop aan andere EU landen
-        - Moeilijkheden met het oplossen van klachten en geschillen bij de verkoop aan andere EU landen
-        - Aanpassen van productlabels bij de verkoop aan andere EU landen
-        - Tekort aan talenkennis bij de communicatie met klanten in andere EU landen
-        - Beperkingen van uw zakelijke partners om aan andere EU lande te verkopen
+        - Hoge kosten voor het bezorgen of retourneren van producten bij de verkoop aan andere EU-landen
+        - Moeilijkheden bij het oplossen van klachten en geschillen bij de verkoop aan andere EU-landen
+        - Labels/etiketten van producten aanpassen voor verkoop aan andere EU-landen
+        - Onvoldoende kennis van andere talen om te communiceren met klanten in andere EU-landen
+        - Beperkingen opgelegd door uw zakenpartners  om te mogen verkopen aan andere EU-landen
+      ecommerce_effect_op_omzet_van_platforms:
+        question: Wat is uw inschatting van het effect van het bestaan van online platforms in uw bedrijfstak, op de omzet van uw bedrijf
+        type: choices
+        choices:
+        - Negatief (omzet daalt)
+        - Neutraal (omzet blijft min of meer gelijk)
+        - Positief (omzet stijgt)
+        - Ik ben niet bekend met online platforms die actief zijn binnen de bedrijfstak van ons bedrijf
       ecommerce_omzet_via_edi_gehad:
         section:
           title: Omzet via EDI
@@ -654,7 +650,7 @@ questionnaire:
           refers_to: F10
         quantity_label: k€
         info:
-          title: \supscript{$\ast$}Opgeven in duizendtallen. Noteer € 23.568,- dus als 24. Een schatting volstaat.
+          title: \supscript{$\ast$}Opgeven in duizendtallen (k€). Noteer € 23.568,- dus als k€ 24. Een schatting volstaat.
       ecommerce_edi_per_regio_gehad:
         question: "Heeft uw bedrijf in 2018 omzet behaald uit orders via EDI van klanten uit de volgende geografische locaties:"
         eurostat:
@@ -676,7 +672,61 @@ questionnaire:
         question: "Hoeveel bedroeg in 2018 de totale inkoop, exclusief investeringen van het Nederlandse gedeelte van uw bedrijf, excl. btw\\supscript{$\\ast$}?"
         quantity_label: k€
         info:
-          title: \supscript{$\ast$}Opgeven in duizendtallen. Noteer € 23.568,- dus als 24. Een schatting volstaat.
+          title: \supscript{$\ast$}Opgeven in duizendtallen (k€). Noteer € 23.568,- dus als k€ 24. Een schatting volstaat.
+      ecommerce_inkoop_online_gedaan:
+        section:
+          title: Inkoop via websites en apps
+        question: "Heeft uw bedrijf in 2017 via een website of \\emph{app} goederen of diensten besteld bij een ander bedrijf?"
+        type: choices
+        filter:
+          condition: Nee
+          goto: "modsec:inkoopviaedi"
+        choices:
+          - Ja
+          - Nee
+        info:
+          title: "\\emph{Let op}: inkopen via handgetypte e-mails tellen niet mee als inkopen via e-commerce."
+      ecommerce_inkoop_online_hoeveel:
+        question: "Hoeveel heeft uw bedrijf in 2017 uitgeven aan bestellingen via websites of apps, excl. btw?"
+        quantity_label: k€
+        info:
+          title: \supscript{$\ast$}Opgeven in duizendtallen (k€). Noteer € 23.568,- dus als k€ 24. Een schatting volstaat.
+      ecommerce_inkoop_online_per_regio:
+        question: "Hoeveel procent van deze uitgaven is gedaan bij aanbieders in:"
+        alleengrotebedrijven: "modsec:ecommerce_inkoop_via_edi_gehad"
+        quantity_label:
+        - Nederland
+        - Andere EU-landen
+        - Niet EU-landen
+        info:
+          title: Het totaal van \textbf{a}, \textbf{b} en \textbf{c} moet 100\% zijn
+      ecommerce_inkoop_via_edi_gehad:
+        section:
+          title: Inkoop via EDI
+          info:
+            title: "\\supscript{$\\ddag$}Met EDI wordt hier bedoeld:" 
+            items: 
+            - Informatie zenden of ontvangen in een afgesproken format dat automatische verwerking mogelijk maakt, bijvoorbeeld EDIFACT, XML, UBL, en XBRL. 
+            - Inkopen via handgetypte e-mails tellen \emph{niet} mee.
+        question: "Heeft uw bedrijf in 2017 via EDI goederen of diensten besteld bij een ander bedrijf?"
+        type: choices
+        filter:
+          condition: Nee
+          goto: "mod:contactgegevens"
+      ecommerce_inkoop_via_edi_hoeveel:
+        question: Hoeveel heeft uw bedrijf in 2017 uitgegeven aan bestellingen via EDI, excl. btw.?
+        quantity_label: k€
+        info:
+          title: \supscript{$\ast$}Opgeven in duizendtallen (k€). Noteer € 23.568,- dus als k€ 24. Een schatting volstaat.
+      ecommerce_inkoop_edi_per_regio:
+        question: "Hoeveel procent van deze uitgaven is gedaan bij aanbieders in:"
+        alleengrotebedrijven: "mod:contactgegevens"
+        quantity_label:
+        - Nederland
+        - Andere EU-landen
+        - Niet EU-landen
+        info:
+          title: Het totaal van \textbf{a}, \textbf{b} en \textbf{c} moet 100\% zijn
   contactgegevens:
     exclude_from_count: true
     add_this: true
