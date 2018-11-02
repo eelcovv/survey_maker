@@ -292,7 +292,7 @@ questionnaire:
         - Opslaan/distributie van klantengegevens binnen uw bedrijf
         - Analyse van klantgegevens voor marketingdoeleinden\explanation{b.v. prijsstelling, promotie, keuze van distributiekanalen}
       databeheer_data_inzette_welke_mate:
-        question: "In welke mate heeft uw bedrijf informatie en data gedigitaliseerd om de (interne) bedrijfsvoering te optimaliseren?\explanation{Aangeven op een schaal van 1 (Niet gedigitaliseerd) tot 5 (Volledig gedigitaliseerd)}"
+        question: "In welke mate heeft uw bedrijf informatie en data gedigitaliseerd om de (interne) bedrijfsvoering te optimaliseren?\\explanation{Aangeven op een schaal van 1 (Niet gedigitaliseerd) tot 5 (Volledig gedigitaliseerd)}"
         type: choices
         choices:
         - "1) Niet gedigitaliseerd"
