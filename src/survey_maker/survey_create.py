@@ -171,6 +171,8 @@ def main(args_in):
     output_directory = general["output_directory"]
     preamble = general["preamble"]
     colorize_questions = general.get("colorize_questions")
+    
+    hyphenation = general.get("hyphenation")
 
     info_items = general.get("info")
 
@@ -201,6 +203,7 @@ def main(args_in):
             output_directory=output_directory,
             output_file=output_file,
             questionnaire=questionnaire,
+            hyphenation=hyphenation,
             preamble=preamble,
             pdf=args.pdf,
             info_items=info_items,

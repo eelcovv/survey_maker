@@ -25,6 +25,7 @@ class SurveyDocument(Document):
                  title="Default Title",
                  author="TheAuthor",
                  survey_version=None,
+                 hyphenation=None,
                  date=NoEscape(r"\today"),
                  document_options=None,
                  questionnaire=None,
@@ -78,6 +79,10 @@ class SurveyDocument(Document):
                 r"opacity=1,"
                 r"scale=3,"
                 r"contents=Draft")))
+
+        if hyphenation is not None:
+            word_list = [NoEscape(word + " ") for word in hyphenation]
+            self.preamble.append(Command("hyphenation", word_list))
 
         date_and_version = "{}\\\\ Version: {}".format(date, survey_version)
         self.preamble.append(Command("title", title))
