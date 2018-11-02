@@ -300,6 +300,21 @@ questionnaire:
         - "3) Gemiddeld gedigitaliseerd"
         - "4) Veel gedigitaliseerd"
         - "5) Alles gedigitaliseerd"
+      databeheer_data_inzette_welke_mate2:
+        question: "In welke mate heeft uw bedrijf informatie en data gedigitaliseerd om de (interne) bedrijfsvoering te optimaliseren?\\explanation{Aangeven op een schaal van 1 (Niet gedigitaliseerd) tot 5 (Volledig gedigitaliseerd)}"
+        type: range
+        range_labels:
+        - Niet
+        - Veel
+      databeheer_data_inzette_welke_mate3:
+        question: "In hoeverre bent u het eens met de volgende stellingen?"
+        type: rangegroup
+        range_labels:
+        - Volledig Oneens
+        - Volledig Eens
+        question_lines:
+        - Uw bedrijf is volledig gedigitaliseerd
+        - Uw bedrijf is doet veel aan digitale dienstvelening
   ict_veilig"heid:
     title: ICT-veiligheid
     add_this: true
