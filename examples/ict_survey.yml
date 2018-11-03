@@ -99,7 +99,7 @@ questionnaire:
         type: choices
         filter:
           condition: Nee
-          goto: "quest:ict_specialisten_cursussen_intern"
+          goto: "quest:ict_specialisten_willen_aannemen"
         choices:
           - Ja
           - Nee
