@@ -40,7 +40,9 @@ class SurveyMaker(object):
                  colorize_questions=None,
                  review_references=False,
                  use_cbs_font=True,
-                 draft=False
+                 draft=False,
+                 add_summary=True,
+                 summary_title="Summary"
                  ):
 
         logger.info("Starting Survey Maker")
@@ -59,7 +61,9 @@ class SurveyMaker(object):
             colorize_questions=colorize_questions,
             review_references=review_references,
             use_cbs_font=use_cbs_font,
-            draft=draft
+            draft=draft,
+            add_summary=add_summary,
+            summary_title=summary_title
         )
 
         if pdf:

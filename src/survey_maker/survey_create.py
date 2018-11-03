@@ -178,6 +178,10 @@ def main(args_in):
 
     questionnaire = settings["questionnaire"]
 
+    summary = general["summary"]
+    add_summary = summary.get("add_this", True)
+    summary_title = summary["title"]
+
     output_file = os.path.splitext(args.survey_settings)[0]
 
     if args.twice:
@@ -214,7 +218,9 @@ def main(args_in):
             colorize_questions=colorize_questions,
             review_references=args.review_references,
             use_cbs_font=args.use_cbs_font,
-            draft=args.draft
+            draft=args.draft,
+            add_summary=add_summary,
+            summary_title=summary_title
         )
         logger.info("Done. Goodbye...")
 
