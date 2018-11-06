@@ -42,7 +42,7 @@ def _parse_the_command_line_arguments(args):
     parser.add_argument("survey_settings", action="store",
                         help="The yaml survey input file")
     parser.add_argument("--version", help="Show the current version", action="version",
-                        version="{}".format(__version__))
+                        version=f"{__version__}")
     parser.add_argument('-d', '--debug', help="Print lots of debugging statements",
                         action="store_const", dest="log_level", const=logging.DEBUG,
                         default=logging.INFO)
