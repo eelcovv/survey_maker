@@ -577,23 +577,24 @@ class SurveyDocument(Document):
                                                refers_to_label)
 
             logger.debug("Count and keys {} {} {}".format(n_question, color_key, refers_to_key))
+
+            # the refers to key may have a count field set to overrule the true
+            # count. Check that here, and if so, impose it
+            try:
+                count = question_properties[refers_to_key]["count"]
+            except (KeyError, TypeError):
+                # if count was not set, just continue
+                logger.debug("Keeping count: {} ".format(n_question))
+            else:
+                logger.info("Changing count: {} -> {}".format(n_question, count))
+                n_question = count
+
             if not exclude_from_count:
                 self.counts.update({COUNT_QUST_KEY: 1})
                 self.counts_per_module[module_key].update({COUNT_QUST_KEY: 1})
 
                 self.counts.update({"questions_incl_choices": n_question})
                 self.counts_per_module[module_key].update({"questions_incl_choices": n_question})
-
-                # the refers to key may have a count field set to overrule the true
-                # count. Check that here, and if so, impose it
-                try:
-                    count = question_properties[refers_to_key]["count"]
-                except (KeyError, TypeError):
-                    # if count was not set, just don't to anything.
-                    logger.debug("Keeping count: {} ".format(n_question))
-                else:
-                    logger.info("Changing count: {} -> {}".format(n_question, count))
-                    n_question = count
 
                 if color_local is not None:
                     self.counts.update({color_key: n_question})
