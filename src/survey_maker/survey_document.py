@@ -358,8 +358,7 @@ class SurveyDocument(Document):
 
             self.preamble.append(color_command)
 
-    @staticmethod
-    def process_this_colorize(color_prop):
+    def process_this_colorize(self, color_prop):
         """
         For this colorize properties, check if the add_this flag is there and is false
 
@@ -376,6 +375,10 @@ class SurveyDocument(Document):
         add_this = color_prop.get("add_this")
         if add_this is None:
             add_this = True
+        review_only = color_prop.get("review_only", False)
+        if review_only and not self.review_references:
+            # in case we have the review only flag and are not reviewing: do not use this color
+            add_this = False
         return add_this
 
     def add_all_modules(self):
