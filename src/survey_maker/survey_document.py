@@ -507,7 +507,7 @@ class SurveyDocument(Document):
 
             increase_counter = question_properties.get("increase_counter")
 
-            # if a sectiontitle field is given, start a new section title at this question
+            # if a section title field is given, start a new section title at this question
             section = question_properties.get("section")
             if section:
                 ref_str = None
@@ -575,6 +575,19 @@ class SurveyDocument(Document):
                 # there is no local color and no overall section color defined. Write without color
                 n_question = self.add_question(key, question_properties, filter_prop,
                                                refers_to_label)
+
+            logger.debug("Count and keys {} {} {}".format(n_question, color_key, refers_to_key))
+
+            # the refers to key may have a count field set to overrule the true
+            # count. Check that here, and if so, impose it
+            try:
+                count = question_properties[refers_to_key]["count"]
+            except (KeyError, TypeError):
+                # if count was not set, just continue
+                logger.debug("Keeping count: {} ".format(n_question))
+            else:
+                logger.info("Changing count: {} -> {}".format(n_question, count))
+                n_question = count
 
             if not exclude_from_count:
                 self.counts.update({COUNT_QUST_KEY: 1})
@@ -712,7 +725,8 @@ class SurveyDocument(Document):
                     logger.warning("Above option not possible for quantity question! "
                                    "Put this info box below")
                     above = False
-                self.add_quantity_question(key, quantity_label, box_width=box_width)
+                n_questions = self.add_quantity_question(key, quantity_label, box_width=box_width,
+                                                         filter_properties=filter_prop)
         elif question_type == "choices":
             logger.debug("Adding a choice question")
             choices = question_properties.get("choices")
@@ -1025,7 +1039,7 @@ class SurveyDocument(Document):
         self.append(Command("label", NoEscape(label_question(key))))
 
     def add_quantity_question(self, key=None, quantity_label=None, label_width=None,
-                              box_width=4):
+                              box_width=4, filter_properties=None):
         """
         A a question with a quantity answer to the document
 
@@ -1052,6 +1066,7 @@ class SurveyDocument(Document):
         else:
             width = label_width
 
+        n_questions = 0
         for cnt, label in enumerate(label_list):
             if isinstance(quantity_label, list):
                 char = string.ascii_lowercase[cnt]
@@ -1065,5 +1080,16 @@ class SurveyDocument(Document):
                     lbl = label
 
             self.append(ChoiceItemText(arguments=["1.2em", box_width, NoEscape(lbl)]))
+            n_questions += 1
+
+        if n_questions == 0:
+            n_questions = 1
 
         self.append(Command("label", NoEscape(label_question(key))))
+
+        if filter_properties is not None:
+            condition = filter_properties["condition"]
+            redirection_str = self.get_redirection_string_for_filter(filter_properties)
+            self.add_info(condition + redirection_str)
+
+        return n_questions
