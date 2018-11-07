@@ -725,8 +725,8 @@ class SurveyDocument(Document):
                     logger.warning("Above option not possible for quantity question! "
                                    "Put this info box below")
                     above = False
-                self.add_quantity_question(key, quantity_label, box_width=box_width,
-                                           filter_properties=filter_prop)
+                n_questions = self.add_quantity_question(key, quantity_label, box_width=box_width,
+                                                         filter_properties=filter_prop)
         elif question_type == "choices":
             logger.debug("Adding a choice question")
             choices = question_properties.get("choices")
@@ -1066,6 +1066,7 @@ class SurveyDocument(Document):
         else:
             width = label_width
 
+        n_questions = 0
         for cnt, label in enumerate(label_list):
             if isinstance(quantity_label, list):
                 char = string.ascii_lowercase[cnt]
@@ -1079,6 +1080,10 @@ class SurveyDocument(Document):
                     lbl = label
 
             self.append(ChoiceItemText(arguments=["1.2em", box_width, NoEscape(lbl)]))
+            n_questions += 1
+
+        if n_questions == 0:
+            n_questions = 1
 
         self.append(Command("label", NoEscape(label_question(key))))
 
@@ -1087,3 +1092,4 @@ class SurveyDocument(Document):
             redirection_str = self.get_redirection_string_for_filter(filter_properties)
             self.add_info(condition + redirection_str)
 
+        return n_questions
