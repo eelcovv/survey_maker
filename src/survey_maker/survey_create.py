@@ -17,6 +17,7 @@ import re
 import subprocess
 import yaml
 import yamlloader
+import collections
 
 from cbs_utils.misc import (create_logger, merge_loggers, Chdir, make_directory)
 from survey_maker.engine import SurveyMaker
@@ -77,6 +78,9 @@ def _parse_the_command_line_arguments(args):
                         help="Do not use the cbs font to allow for the euro symbol")
     parser.add_argument("--draft", action="store_true",
                         help="Add a draft stamp to the document. Doesn not work at cbs yet")
+    parser.add_argument("--color",
+                        help="Define the key of the colorize items which should be treated as"
+                             "main color. If this is not given, the first item is taken")
 
     # parse the command line
     parsed_arguments = parser.parse_args(args)
@@ -141,6 +145,33 @@ def get_version(preamble):
     return survey_version
 
 
+def reorganize_colors(colorize_questions, main_color):
+    """
+    Change the order of the colors
+
+    :param colorize_questions: OrderDitc
+    :param main_color: Name of the main color
+    :return: New OrderedDict
+    """
+    new_colorize_order = collections.OrderedDict()
+    try:
+        color_properties = colorize_questions[main_color]
+    except KeyError:
+        raise ValueError("Color '{}' was not defined in the colorize properties.\nPlease pick "
+                         "one of: {}".format(main_color, list(colorize_questions.keys())))
+    else:
+        logger.debug("Adding colorize {}".format(main_color))
+        new_colorize_order[main_color] = color_properties
+        for color_key, color_properties in colorize_questions.items():
+            if color_key == main_color:
+                continue
+            else:
+                logger.debug("Adding colorize {}".format(color_key))
+                new_colorize_order[color_key] = color_properties
+
+    return new_colorize_order
+
+
 def main(args_in):
     args, parser = _parse_the_command_line_arguments(args_in)
 
@@ -171,7 +202,11 @@ def main(args_in):
     output_directory = general["output_directory"]
     preamble = general["preamble"]
     colorize_questions = general.get("colorize_questions")
-    
+
+    if colorize_questions is not None and args.color is not None:
+        logger.info("Setting {} as main color".format(args.color))
+        colorize_questions = reorganize_colors(colorize_questions, args.color)
+
     hyphenation = general.get("hyphenation")
 
     info_items = general.get("info")
@@ -201,6 +236,9 @@ def main(args_in):
 
         if args.review_references:
             output_file += "_review"
+
+        if args.color:
+            output_file += ("_" + args.color)
 
         # create the object and do you thing
         SurveyMaker(

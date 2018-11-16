@@ -320,6 +320,12 @@ class SurveyDocument(Document):
     def create_color_latex_command(self):
         """
         Loop over all the color properties and create the command in latex to make them
+
+        Notes
+        -----
+        The color properties are stored in an Ordered dict 'self.colorize_properties'. The
+        first item in this dict is the main color which is assigned to a question, even of
+        more colors are related to the same question
         """
 
         for col_key, col_prop in self.colorize_properties.items():
