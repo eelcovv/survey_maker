@@ -162,6 +162,8 @@ def reorganize_colors(colorize_questions, main_color):
     else:
         logger.debug("Adding colorize {}".format(main_color))
         new_colorize_order[main_color] = color_properties
+        new_colorize_order[main_color]["add_this"] = True
+        new_colorize_order[main_color]["apply_color"] = True
         for color_key, color_properties in colorize_questions.items():
             if color_key == main_color:
                 continue

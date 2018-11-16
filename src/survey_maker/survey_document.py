@@ -415,11 +415,14 @@ class SurveyDocument(Document):
 
             self.append(Command("clearpage"))
 
-            color_name, goto, label = self.get_colorize_properties(module_properties)
+            color_key, color_name, goto, label = self.get_colorize_properties(module_properties)
 
             if color_name is not None:
                 with self.create(Colorize(options=color_name)):
-                    self.add_module(module_key, module_properties, goto, color_label=label,
+                    self.add_module(module_key, module_properties, goto,
+                                    module_color_key=color_key,
+                                    module_color_name=color_name,
+                                    module_color_label=label,
                                     exclude_from_count=exclude_from_count)
             else:
                 # if color_name is None no color was found, so report without color
@@ -461,9 +464,12 @@ class SurveyDocument(Document):
                 # stop checking the other keys in case we have found the first
                 break
 
-        return color_name, goto, label
+        return ckey, color_name, goto, label
 
-    def add_module(self, module_key, module_properties, goto=None, color_label=None,
+    def add_module(self, module_key, module_properties, goto=None,
+                   module_color_key=None,
+                   module_color_name=None,
+                   module_color_label=None,
                    exclude_from_count=False):
         """
         Add a module to the document
@@ -522,7 +528,7 @@ class SurveyDocument(Document):
                 ref_str = None
                 color_all_in_section = False
                 for ckey, cprop in self.colorize_properties.items():
-                    if not self.process_this_colorize(cprop):
+                    if not self.process_this_colorize(cprop) or module_color_key is not None:
                         continue
                     goto = section.get(ckey)
                     if goto is None:
@@ -570,7 +576,10 @@ class SurveyDocument(Document):
                 continue
 
             logger.info("Adding question {}".format(key))
-            color_local, color_key = self.get_color_first_match(question_properties)
+            if module_color_key is None:
+                color_local, color_key = self.get_color_first_match(question_properties)
+            else:
+                color_local, color_key = module_color_name, module_color_key
             refers_to_label, refers_to_key = self.get_refers_to_label(question_properties)
             if color_local or color_all_in_section:
                 if color_all_in_section:
