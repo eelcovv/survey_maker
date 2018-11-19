@@ -185,20 +185,26 @@ class SurveyDocument(Document):
         Get the explanation field of all colorize items and add to the list of items
         """
         if self.colorize_properties is not None:
-            self.append(VSpace(NoEscape("\parskip")))
-            self.append(ModuleSection([NoEscape("Toelichting kleuren"), "kleuren"]))
-            with self.create(Itemize()):
-                for col_key, col_prop in self.colorize_properties.items():
-                    if not self.process_this_colorize(col_prop):
-                        continue
-                    try:
-                        explanation = col_prop["explanation"]
-                    except KeyError:
-                        logger.debug("No explanation added to {}".format(col_key))
-                    else:
+            have_any_color = False
+            for col_key, col_prop in self.colorize_properties.items():
+                if self.process_this_colorize(col_prop):
+                    have_any_color = True
 
-                        cmd = f"\\color{col_key}" + "{" + explanation + "}"
-                        self.write_info(NoEscape(cmd), is_item=True)
+            if have_any_color:
+                self.append(VSpace(NoEscape("\parskip")))
+                self.append(ModuleSection([NoEscape("Toelichting kleuren"), "kleuren"]))
+                with self.create(Itemize()):
+                    for col_key, col_prop in self.colorize_properties.items():
+                        if not self.process_this_colorize(col_prop):
+                            continue
+                        try:
+                            explanation = col_prop["explanation"]
+                        except KeyError:
+                            logger.debug("No explanation added to {}".format(col_key))
+                        else:
+
+                            cmd = f"\\color{col_key}" + "{" + explanation + "}"
+                            self.write_info(NoEscape(cmd), is_item=True)
 
     def make_report(self):
         """
