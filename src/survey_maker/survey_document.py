@@ -766,7 +766,7 @@ class SurveyDocument(Document):
         elif question_type == "group":
             logger.debug("Adding a group question")
             group_width = question_properties.get("group_width")
-            groups = question_properties["groups"]
+            groups = question_properties.get("groups", ["Ja", "Nee"])
             choice_lines = question_properties["choicelines"]
             with self.create(ChoiceGroupQuestion(arguments=NoEscape(question))):
                 if info is not None and above:
