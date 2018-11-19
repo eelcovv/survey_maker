@@ -506,11 +506,13 @@ class SurveyDocument(Document):
         if goto is not None and isinstance(goto, str):
             # A goto string is passed to the module. Prepend a Ga naar label before we start with
             # this module
-            if color_label is not None:
+            if module_color_label is not None:
                 if re.match("^mod", goto):
                     # remove all underscores for mod: reference
                     goto = re.sub("_", "", goto)
-                ref_str = f"{color_label}" + " $\\rightarrow$ Ga naar \\textbf{\\ref{" + goto + "}}"
+                ref_str = f"{module_color_label}" + \
+                          " $\\rightarrow$ Ga naar \\textbf{\\ref{" + \
+                          goto + "}}"
                 with self.create(InfoEnvironment()):
                     self.append(Command("normalsize", NoEscape(ref_str)))
 
