@@ -263,9 +263,10 @@ def main(args_in):
         make_directory(output_directory)
 
         # survey_version = get_version(preamble)
-        survey_version = get_branch(preamble)
+        survey_version = get_version(preamble)
+        survey_branch = get_branch(preamble)
 
-        output_file = "_".join([output_file, re.sub("-.*", "", survey_version)])
+        output_file = "_".join([output_file, re.sub("-.*", "", survey_branch)])
 
         if args.review_references:
             output_file += "_review"
