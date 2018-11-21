@@ -263,8 +263,9 @@ def main(args_in):
         make_directory(output_directory)
 
         # survey_version = get_version(preamble)
-        survey_version = get_version(preamble)
         survey_branch = get_branch(preamble)
+        survey_version = get_version(preamble)
+        survey_version = survey_branch + "-" + survey_version
 
         output_file = "_".join([output_file, re.sub("-.*", "", survey_branch)])
 
