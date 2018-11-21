@@ -145,6 +145,36 @@ def get_version(preamble):
     return survey_version
 
 
+def get_branch(preamble):
+    """
+    Get the current git version of this questionary
+
+    Returns
+    -------
+    str:
+        current git version
+    """
+    process = subprocess.Popen(["git", "branch", "--no-color"],
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stat1, stat2 = process.communicate()
+    git_branch = stat1.decode().strip()
+    branch_list = git_branch.split("\n")
+
+    survey_branch = preamble.get("version", "Unknown")
+
+    if not branch_list:
+        logger.info("No git version found in questionnaire folder. Is it under git control?")
+        logger.info("Overruling with version in yaml file: {}".format(survey_branch))
+    else:
+        for branch in branch_list:
+            match = re.match("\*\s(.*)", branch)
+            if bool(match):
+                survey_branch = match.group(1)
+                break
+
+    return survey_branch
+
+
 def reorganize_colors(colorize_questions, main_color):
     """
     Change the order of the colors
@@ -232,7 +262,8 @@ def main(args_in):
         # make the directories in case they do not exist yet
         make_directory(output_directory)
 
-        survey_version = get_version(preamble)
+        # survey_version = get_version(preamble)
+        survey_version = get_branch(preamble)
 
         output_file = "_".join([output_file, re.sub("-.*", "", survey_version)])
 
