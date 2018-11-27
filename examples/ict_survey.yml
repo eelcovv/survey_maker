@@ -5,7 +5,7 @@ general:
     forest_green:
   colorize_questions:
     alleengrotebedrijven:
-      add_this: true
+      add_this: false
       color:  roodvergrijsd  #  codekleur  # cbslichtblauw
       label:  Kleine bedrijven
       goto_condition_label:  Kleine bedrijven
@@ -24,8 +24,8 @@ general:
       label:  ESTAT optioneel
       explanation: Alle vragen en modules met een link in de kleur van deze regel zijn optionele Eurostat (ESTAT optioneel) vragen. De pijl verwijst naar de oorspronkelijk vraag in de model questionnaire 2019
     dtc:
-      add_this: true
-      review_only: true
+      add_this: false
+      review_only: false
       color: ForestGreen
       label:  DTC
       explanation: Alle vragen en modules met in deze kleur zijn extra vragen toegevoegd ten behoeve van de DTC
@@ -49,6 +49,7 @@ questionnaire:
   personeel_en_computers:
     add_this: true
     title: Personeel en computers
+    dtc: true
     questions:
       wp_aantal:
         add_this: true
@@ -89,7 +90,7 @@ questionnaire:
         alleengrotebedrijven: true
   ict_specialisten:
     add_this: true
-    info: 
+    info:
       items: 
         title: \supscript{$\ast$}ICT-specialisten
         items: 
@@ -140,6 +141,7 @@ questionnaire:
   internet:
     title: Internet
     add_this: true
+    dtc: true
     questions:
       internet_vaste_verbinding:
         section:
@@ -276,6 +278,7 @@ questionnaire:
         - Meningen, kennis of visies uit te wisselen binnen het bedrijf
   databeheer_binnen_het_bedrijf:
     title: Databeheer
+    dtc: true
     questions:
       databeheer_erp_software:
         section:
@@ -315,7 +318,8 @@ questionnaire:
   ict_veiligheid:
     title: ICT-veiligheid
     add_this: true
-    info: De volgende vragen gaan over ICT-veiligheid. Op deze vragenlijst bedoelen we daarmee alle maatregelen, controles en procedures die een bedrijf toepast met betrekking tot ICT-systemen, met als doel de integriteit, authenticiteit, beschikbaarheid en vertrouwelijkheid van gegevens (data) en systemen te borgen.
+    dtc: true
+    info: De volgende vragen gaan over ICT-veiligheid. In deze vragenlijst bedoelen we daarmee alle maatregelen, controles en procedures die een bedrijf toepast met betrekking tot ICT-systemen, met als doel de integriteit, authenticiteit, beschikbaarheid en vertrouwelijkheid van gegevens (data) en systemen te borgen.
     questions:
       ict_veiligheid_maatregelen:
         question: Gebruikt uw bedrijf de volgende ICT-veiligheidsmaatregelen?
@@ -329,7 +333,7 @@ questionnaire:
         choicelines:
         - Antivirussoftware\explanation{Gratis en/of betaald}.
         - Beleid voor sterke wachtwoorden\explanation{Wachtwoorden die ten minste acht gemengde karakters hebben, die veranderd moeten worden na een bepaalde periode en/of naar aanleiding van bijvoorbeeld een ICT-veiligheidsincident, en die versleuteld worden verstuurd en opgeslagen.}
-        - Up-to-date houden van de software en besturingssysteem
+        - Up-to-date houden van de software en het besturingssysteem
         - Identificatie en authenticatie van gebruikers via software of hardware tokens om toegang te krijgen tot de
           ICT-systemen (oftewel twee-factor authenticatie)\explanation{Bijvoorbeeld via smartcards, USB-beveiligingssleutels of mobiele telefoons (eenmalige inlogcodes via SMS of app).}
         - Versleutelingstechnieken (encryptie) van data, documenten of e-mails
@@ -592,6 +596,14 @@ questionnaire:
         - Onvoldoende kennis van andere talen om te communiceren met klanten in andere EU-landen
         - Beperkingen opgelegd door uw zakenpartners  om te mogen verkopen aan andere EU-landen
       ecommerce_web_orders_omzet_per_platform:
+        section:
+          title: "Omzet via online platforms"
+          info:
+            items:
+            - In deze sectie wordt een onderscheid gemaakt tussen  de omzet behaald via uw \emph{eigen} website of app en de website of app van een \emph{ander} bedrijf, ook wel aangeduid als \emph{online platform}.
+            - Online platforms brengen aanbieders van goederen en diensten in contact  met (potentiële) klanten en  ondersteunen eventueel transacties.
+            - Voorbeelden van online platforms zijn booking.com, bol.com, thuisbezorgd.nl, kieskeurig.nl, werkspot.nl, etc
+            - Een website of app in eigen beheer wordt dus \emph{niet} gezien als online platform
         question: "Hoeveel procent van de in 2018 via een website of app behaalde omzet betrof verkoop via:"
         eurostat:
           refers_to: F5
@@ -600,14 +612,14 @@ questionnaire:
           condition: Als bij \textbf{b} 0\% ingevuld
           goto: "quest:ecommerce_effect_op_omzet_van_platforms"
         quantity_label:
-        - Website of app van uw eigen bedrijf
-        - Website of app van een andere bedrijf, zoals booking.com, bol.com, etc.
+        - Website of app van uw \emph{eigen} bedrijf
+        - Een website of app van een \emph{ander} bedrijf, oftewel een online platform\explanation{voorbeelden zijn booking .com, bol.com, thuisbezorgd.nl, kieskeurig .nl, werkspot.nl}
         info:
           title: Het totaal van \textbf{a} en \textbf{b} moet 100\% zijn
       ecommerce_web_orders_platform_reden:
         question: Wat zijn de belangrijkste redenen om van een online platform gebruik te maken ?
         info:
-          title: meer dan één antwoord mogelijk
+          title: Meer dan één antwoord mogelijk
           above: true
         type: group
         groups:
@@ -629,7 +641,7 @@ questionnaire:
         - Negatief (omzet daalt)
         - Neutraal (omzet blijft min of meer gelijk)
         - Positief (omzet stijgt)
-        - Ik ben niet bekend met online platforms die actief zijn binnen de bedrijfstak van ons bedrijf
+        - Ik ben niet bekend met online platforms die actief zijn binnen de bedrijfstak van ons bedrijf\explanation{Als bij vraag \ref{quest:ecommerce_web_orders_omzet_per_platform}b een waarde $>0$\%, deze optie niet tonen}
       ecommerce_omzet_via_edi_gehad:
         section:
           title: Omzet via EDI
@@ -723,7 +735,7 @@ questionnaire:
         question: "Hoeveel procent van deze uitgaven is gedaan bij aanbieders in:"
         alleengrotebedrijven: "mod:contactgegevens"
         quantity_label:
-        - Nederland
+        - Nederland 
         - Andere EU-landen
         - Niet EU-landen
         info:
