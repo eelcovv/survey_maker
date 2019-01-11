@@ -3,17 +3,18 @@ survey_maker
 ============
 
 
-Add a short description here!
+Maakt vragenlijsten (pdf) file uit een yaml file input
 
 
 Description
 ===========
 
-A longer description of your project goes here...
+Deze script lijst een yaml file in met een lijst van vragen en
+genereert een mooi opgemaakte vragen lijst in een pdf document
 
 
 Note
 ====
+* Gebruikt MikTex xelatex compiler om de tex file die uit de yaml gemaakt wordt
+  in een PDF om te zetten
 
-This project has been set up using PyScaffold 3.1. For details and usage
-information on PyScaffold see https://pyscaffold.org/.
