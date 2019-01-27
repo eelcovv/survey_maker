@@ -452,6 +452,7 @@ class SurveyDocument(Document):
             and label a prefix add to the goto
         """
 
+        ckey = None
         color_name = None
         goto = None
         label = None
