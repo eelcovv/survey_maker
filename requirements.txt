@@ -1,6 +1,7 @@
 pandas
 PyYAML
 yamlloader
+pylatex
 # =============================================================================
 # DEPRECATION WARNING:
 #

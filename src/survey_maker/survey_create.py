@@ -230,8 +230,8 @@ def main(args_in):
         settings = yaml.load(stream=stream, Loader=yamlloader.ordereddict.CLoader)
 
     general = settings["general"]
-    working_directory = general["working_directory"]
-    output_directory = general["output_directory"]
+    working_directory = general.get("working_directory", ".")
+    output_directory = general.get("output_directory", ".")
     preamble = general["preamble"]
     colorize_questions = general.get("colorize_questions")
 
@@ -245,9 +245,13 @@ def main(args_in):
 
     questionnaire = settings["questionnaire"]
 
-    summary = general["summary"]
-    add_summary = summary.get("add_this", True)
-    summary_title = summary["title"]
+    summary = general.get("summary")
+    if summary is not None:
+        add_summary = summary.get("add_this", True)
+        summary_title = summary["title"]
+    else:
+        add_summary = False
+        summary_title = None
 
     output_file = os.path.splitext(args.survey_settings)[0]
 
