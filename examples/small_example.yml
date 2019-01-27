@@ -1,0 +1,20 @@
+general:
+  preamble:
+    title: Gewetensvragen
+    author: Eelco van Vliet
+questionnaire:
+  inleiding_gewetensvragen:
+    title: Module gewetensvragen
+    questions:
+      welke_het_liefst:
+        question: Welk programma heeft jou voorkeur voor de volgende taken?
+        type: group
+        groups:
+        - \LaTeX
+        - LibreOffice
+        - Microsoft Word
+        - Personeel dat buiten Nederland werkt.
+        choicelines:
+        - Generieke tekstlayout
+        - Documenten met formules
+        -  Het maken van vragenlijsten
