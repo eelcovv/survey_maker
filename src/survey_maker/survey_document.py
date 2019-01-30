@@ -187,6 +187,7 @@ class SurveyDocument(Document):
         # these attributes get the properties of the first colorize item
         self.colorize_key = None
         self.colorize_label = None
+        self.colorline = None
         self.colorize_color = None
 
         # initialise the counter with one counter for the total already
@@ -204,7 +205,7 @@ class SurveyDocument(Document):
             # we can start with a info block in case that is given in the *general* section of
             # the yaml file
             if info_items is not None:
-                self.append(VSpace(NoEscape("\parskip")))
+                self.append(VSpace(NoEscape(r"\parskip")))
                 self.append(ModuleSection([NoEscape("Toelichting vragen"), "toelichting"]))
                 self.add_info(info_items, fontsize="normalsize")
 
@@ -220,9 +221,8 @@ class SurveyDocument(Document):
             self.make_report()
 
     def write_colorize_explanation(self):
-        """
-        Get the explanation field of all colorize items and add to the list of items
-        """
+        """ Get the explanation field of all colorize items and add to the list of items """
+
         if self.colorize_properties is not None:
             have_any_color = False
             for col_key, col_prop in self.colorize_properties.items():
@@ -230,7 +230,7 @@ class SurveyDocument(Document):
                     have_any_color = True
 
             if have_any_color:
-                self.append(VSpace(NoEscape("\parskip")))
+                self.append(VSpace(NoEscape(r"\parskip")))
                 self.append(ModuleSection([NoEscape("Toelichting kleuren"), "kleuren"]))
                 with self.create(Itemize()):
                     for col_key, col_prop in self.colorize_properties.items():
@@ -246,15 +246,13 @@ class SurveyDocument(Document):
                             self.write_info(NoEscape(cmd), is_item=True)
 
     def make_report(self):
-        """
-        Report the counts of the questions
-        """
+        """ Report the counts of the questions """
 
         if self.add_summary:
             self.append(Command("clearpage"))
             self.append(Command("setcounter", arguments=["secnumdepth", 0]))
             self.append(Section(title=self.summary_title,
-                                label=NoEscape(re.sub("\s+", "_", self.summary_title).lower())))
+                                label=NoEscape(re.sub(r"\s+", "_", self.summary_title).lower())))
             self.create_summary_table()
 
         logger.info("Counts")
@@ -346,6 +344,19 @@ class SurveyDocument(Document):
             self.append(Command("bottomrule"))
 
     def get_name_of_key(self, key):
+        """
+        Get the name of the key
+
+        Parameters
+        ----------
+        key: str
+            The key we are dealing with, ie 'questions', 'modules' or 'questions_incl_choices'
+
+        Returns
+        -------
+        str:
+            The name of the quantity belong to the key
+        """
 
         if key == COUNT_QUST_KEY:
             name = "Vragen Alleen Main"
@@ -435,6 +446,10 @@ class SurveyDocument(Document):
     def add_all_modules(self):
         """
         Add all the modules
+
+        Notes
+        -----
+        * Loop over all the modules of the questionnaire and add the questions per module
         """
 
         for module_key, module_properties in self.questionnaire.items():
@@ -512,11 +527,8 @@ class SurveyDocument(Document):
 
         return ckey, color_name, goto, label
 
-    def add_module(self, module_key, module_properties, goto=None,
-                   module_color_key=None,
-                   module_color_name=None,
-                   module_color_label=None,
-                   exclude_from_count=False):
+    def add_module(self, module_key, module_properties, goto=None, module_color_key=None,
+                   module_color_name=None, module_color_label=None, exclude_from_count=False):
         """
         Add a module to the document
 
@@ -530,11 +542,14 @@ class SurveyDocument(Document):
             In case goto is not none, we have requested to colorize this module because we are
             dealing for instance with a moduel which can be skipped for small companies. In case
             this value is a str, it is interpreted as a goto label
-        color_label: str
-            Name of the color label
+        module_color_key: str
+            Name of the key of the color module
+        module_color_label: str
+            Name of the color label of the module
+        module_color_name: str
+            Name of the color name of the module
         exclude_from_count: bool
             If True, do not count this module and its questions
-
         """
 
         title = module_properties["title"]
@@ -736,6 +751,7 @@ class SurveyDocument(Document):
     def add_question(self, key, question_properties, filter_prop=None, refers_to_label=None):
         """
         Add the current question to the document
+
         Parameters
         ----------
         key: str
@@ -866,11 +882,12 @@ class SurveyDocument(Document):
 
     def add_range_question(self, key, question, range_items):
         """
-        Add a range kquestion
+        Add a range question
+
         Parameters
         ----------
         key: str
-            Unqique key of the question
+            Unique key of the question
         question: str
             The question
         range_items:
@@ -1113,12 +1130,20 @@ class SurveyDocument(Document):
         Parameters
         ----------
         key: str
+            Name of the key
         quantity_label: str or list
+            Name of the quantity label. Can also be a list
         label_width: int
-        box_width: fliat
+            Width of the label
+        box_width: float
+            Width of the box around the label
+        filter_properties: dict
+            Dict containing the properties of the filter
 
         Returns
         -------
+        int:
+            Number of questions
 
         """
         logger.debug("Adding a quantity question")
