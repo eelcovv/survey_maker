@@ -21,6 +21,44 @@ logger = get_logger(__name__)
 
 
 class SurveyDocument(Document):
+    """
+    Create the preample of the latex document and add all the module
+
+    Parameters
+    ----------
+    title: str
+        Title of the survey. Default = "Default Title"
+    author: str
+        Author of the survey. Default = "TheAuthor"
+    survey_version: str
+        Add a version to the document. Default = None (no version added)
+    hyphenation: list
+        List of string with hyphenations imposed in LaTeX
+    date: str
+        Date adde to the document
+    document_options:  list or None
+        Add these option the the sdaps class
+    questionnaire: dict
+        Dictionary with the total questionnaire contents as obtained from the yaml file
+    info_items: dict or None
+        Add some information to the seconds page of the questionnaire
+    global_label_width: str
+        Global settings of the width of all the labels
+    global_box_width: str
+        Global settings of the width of all the boxes
+    colorize_questions: dict
+        Give the colorize options
+    add_summary: bool
+        If true, add a sumary add the end of the questionnaire
+    summary_title: str
+        The title of the sumary added at the end of the questionnaire
+    review_references: bool
+        If true, add a link to all the references of the questions
+    use_cbs_font: bool
+        Use the CBS font insteat of the default font
+    draft: bool
+        If true, add a draft stamp
+    """
     def __init__(self,
                  title="Default Title",
                  author="TheAuthor",
@@ -39,6 +77,7 @@ class SurveyDocument(Document):
                  use_cbs_font=True,
                  draft=False
                  ):
+
         if document_options is None:
             # take the default options if they are not passed to the class
             document_options = ["dutch", "final", "oneside", "a4paper"]
@@ -914,7 +953,7 @@ class SurveyDocument(Document):
             self.write_info(info, fontsize=fontsize)
         self.append(VSpace(NoEscape("\parskip")))
 
-    def write_info(self, info, fontsize="footnotesize", is_item=False, info_above_items=False):
+    def write_info(self, info, fontsize="footnotesize", is_item=False):
         """
         A recursive method to create a nested block of text with itemizes
 
@@ -925,13 +964,14 @@ class SurveyDocument(Document):
         fontsize: str
             The size of the font
         is_item: bool
-            If true,  strings are items of a itemize environment and need a ítem command
+            If true,  strings are items of a itemize environment and need a item command
 
+        Notes
+        -----
         The *info* dictionary has the following format::
 
             info:
-              fontsize: this field is used to set the font size of the info block. Default is
-                         footnotesize
+              fontsize: this field is used to set the font size of the info block. Default is footnotesize
               title: The title added outside the itemize block
               items: # either a list or a dict can follow the items.
                 wel:
