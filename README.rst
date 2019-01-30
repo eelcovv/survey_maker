@@ -3,13 +3,15 @@ survey_maker
 ============
 
 
-Add a short description here!
+SurveyMaker kan gebruikt worden om een vragen lijst te bouwen
 
 
 Description
 ===========
 
-A longer description of your project goes here...
+SurveyMaker is een Python script om vragenlijst te maken. Hiertoe kan de
+vragenlijst in een Yaml-file ingevoerd worden. SurveyMaker zal deze in een
+PDF-document omzetten
 
 
 Note
