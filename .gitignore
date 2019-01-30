@@ -55,4 +55,4 @@ MANIFEST
 *.toc
 *.bundle
 !docs/presentations/presentatie_survey_maker_intro.pdf
-!examples/small_example_master.pdf
+!examples/small_example.pdf
