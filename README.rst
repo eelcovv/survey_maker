@@ -57,15 +57,23 @@ De meeste beknopt vorm van een input file ziet er als volgt uit::
 
 De PDF file compileren we met het volgende commando::
 
-    >>> survey_maker small_example.yml --twice --clean
+    >>> survey_maker small_example.yml --twice --clean --no_date --no_git_branch --no_git_version
 
-We geven nu de optie --twice en --clean mee. De eerste optie is nodig om de inhoudsopgave goed te
-krijgen (dit is iets van Latex: je moet twee keer compileren als je voor het eerst de inhoudsopgave
-wil maken; iedere volgende keer hoeft maar 1 keer gecompileerd te worden). De tweede opties gooit
-alle intermediate Latex files weg als het script klaar is.
-
-De resulteren PDF file kan hier geopend worden :download:`examples/small_example_master.pdf`. Het
+De resulteren PDF file kan hier geopend worden :download:`../examples/small_example.pdf`. Het
 stuk met de vraag ziet er als volgt uit
+
+.. image:: ../examples/small_example_vraag1.png
+
+Te zien is dat inderdaad de items die onder *groups* gegeven worden rechts weergegeven worden,
+terwijl de *choicelines* de regels zijn waarvoor je één van de items uit de groups moet selecteren
+
+We geven bij het aanroepen van survey_maker in dit voorbeeld de opties --twice en --clean mee. De
+eerste optie is nodig om de inhoudsopgave goed te krijgen (dit is iets van Latex: je moet twee keer
+compileren als je voor het eerst de inhoudsopgave wil maken; iedere volgende keer hoeft maar 1 keer
+gecompileerd te worden). De tweede opties gooit alle intermediate Latex files weg als het script
+klaar is. De opties --no_date, --no_git_branch en --no_git_version worden gegeven om te voorkomen
+dat de git versie en datum in het document meegenomen worden. Dit is het default gedrag, maar willen
+we nu even niet gebruiken
 
 
 
