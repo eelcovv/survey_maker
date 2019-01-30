@@ -1,20 +1,20 @@
-general:
-  preamble:
-    title: Gewetensvragen
-    author: Eelco van Vliet
-questionnaire:
-  inleiding_gewetensvragen:
-    title: Module gewetensvragen
-    questions:
-      welke_het_liefst:
+general:                            # dit hoofdstuk bevat alle generiek instellingen
+  preamble:                         # preamble slaat op alles wat in de Latex preamble komt
+    title: Gewetensvragen           # hooftitle van vragenlijst
+    author: Eelco van Vliet         # Auteur van vragen lijst
+questionnaire:                      # het hoofdstuk 'questionnaire' bevat alle modules
+  inleiding_gewetensvragen:         # Dit is module A
+    title: Module gewetensvragen    # Hier wordt de title van module A gegeven
+    questions:                      # in dit hoofdstuk staan alle vragen van module A
+      welke_het_liefst:             # De eerste vraag van module A
         question: Welk programma heeft jou voorkeur voor de volgende taken?
-        type: group
-        groups:
+        type: group                 # De vraag (gegeven met 'question' is van het type 'group'
+        groups:                     # Onder 'groups' worden de keuzes gegevens die rechts komen
         - \LaTeX
         - LibreOffice
         - Microsoft Word
-        - Personeel dat buiten Nederland werkt.
-        choicelines:
+        choicelines:                # Choice lines zijn de regels waarvoor we kiezen uit groups
         - Generieke tekstlayout
         - Documenten met formules
-        -  Het maken van vragenlijsten
+        - Het maken van vragenlijsten
+

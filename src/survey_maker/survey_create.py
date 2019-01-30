@@ -81,6 +81,12 @@ def _parse_the_command_line_arguments(args):
     parser.add_argument("--color",
                         help="Define the key of the colorize items which should be treated as"
                              "main color. If this is not given, the first item is taken")
+    parser.add_argument("--no_git_branch", action="store_true",
+                        help="Do not add the git branch name to the version")
+    parser.add_argument("--no_git_version", action="store_true",
+                        help="Do not use the git version name to the version")
+    parser.add_argument("--no_date", action="store_true",
+                        help="Do not add a date to the document")
 
     # parse the command line
     parsed_arguments = parser.parse_args(args)
@@ -122,7 +128,7 @@ def setup_logging(write_log_to_file=False,
     return _logger
 
 
-def get_version(preamble):
+def get_version(default_version=None):
     """
     Get the current git version of this questionary
 
@@ -136,7 +142,7 @@ def get_version(preamble):
     stat1, stat2 = process.communicate()
     if stat1.decode() == "":
         logger.info("No git version found in questionnaire folder. Is it under git control?")
-        survey_version = preamble.get("version", "Unknown")
+        survey_version = default_version
         logger.info("Overruling with version in yaml file: {}".format(survey_version))
     else:
         survey_version = stat1.decode().strip()
@@ -145,14 +151,19 @@ def get_version(preamble):
     return survey_version
 
 
-def get_branch(preamble):
+def get_branch(default_branch=None):
     """
     Get the current git version of this questionary
+
+    Parameters
+    ----------
+    default_branch: str
+        De default naam die we aan het branch geven als we niks kunnen vinden
 
     Returns
     -------
     str:
-        current git version
+        current branch version
     """
     process = subprocess.Popen(["git", "branch", "--no-color"],
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -160,13 +171,14 @@ def get_branch(preamble):
     git_branch = stat1.decode().strip()
     branch_list = git_branch.split("\n")
 
-    survey_branch = preamble.get("version", "Unknown")
+    survey_branch = default_branch
 
     if not branch_list:
         logger.info("No git version found in questionnaire folder. Is it under git control?")
         logger.info("Overruling with version in yaml file: {}".format(survey_branch))
     else:
         for branch in branch_list:
+            # deze regex matcht de actieve branch (met de * voor de branch naam)
             match = re.match("\*\s(.*)", branch)
             if bool(match):
                 survey_branch = match.group(1)
@@ -266,12 +278,30 @@ def main(args_in):
         # make the directories in case they do not exist yet
         make_directory(output_directory)
 
-        # survey_version = get_version(preamble)
-        survey_branch = get_branch(preamble)
-        survey_version = get_version(preamble)
-        survey_version = survey_branch + "-" + survey_version
+        if not args.no_git_version:
+            survey_version = preamble.get("version")
+            if survey_version is None:
+                survey_version = get_version()
+        else:
+            survey_version = None
 
-        output_file = "_".join([output_file, re.sub("-.*", "", survey_branch)])
+        if not args.no_git_branch:
+            # first choice: get the branch name from the input file
+            survey_branch = preamble.get("branch")
+            if survey_branch is None:
+                # no branch name in input file, try to get it from the git repo
+                survey_branch = get_branch()
+            if survey_branch is not None:
+                # only add the branch name if we have o ne
+                output_file = "_".join([output_file, re.sub("-.*", "", survey_branch)])
+                if survey_version is not None:
+                    survey_version = survey_branch + "-" + survey_version
+
+        if not args.no_date:
+            date = preamble.get("date")
+        else:
+            # in case the no that option is given, do not add a date
+            date = ""
 
         if args.review_references:
             output_file += "_review"
@@ -292,6 +322,7 @@ def main(args_in):
             silent=args.silent,
             clean=args.clean,
             survey_version=survey_version,
+            survey_date=date,
             colorize_questions=colorize_questions,
             review_references=args.review_references,
             use_cbs_font=args.use_cbs_font,

@@ -32,10 +32,10 @@ class SurveyDocument(Document):
         Author of the survey. Default = "TheAuthor"
     survey_version: str
         Add a version to the document. Default = None (no version added)
+    survey_date: str
+        Date adde to the document
     hyphenation: list
         List of string with hyphenations imposed in LaTeX
-    date: str
-        Date adde to the document
     document_options:  list or None
         Add these option the the sdaps class
     questionnaire: dict
@@ -63,8 +63,8 @@ class SurveyDocument(Document):
                  title="Default Title",
                  author="TheAuthor",
                  survey_version=None,
+                 survey_date=None,
                  hyphenation=None,
-                 date=NoEscape(r"\today"),
                  document_options=None,
                  questionnaire=None,
                  info_items=None,
@@ -123,7 +123,16 @@ class SurveyDocument(Document):
             word_list = [NoEscape(word + " ") for word in hyphenation]
             self.preamble.append(Command("hyphenation", word_list))
 
-        date_and_version = "{}\\\\ Version: {}".format(date, survey_version)
+        date_and_version = ""
+        if survey_date != "":
+            if survey_date is None:
+                date_and_version += "{}\\\\".format(NoEscape(r"\today"))
+            else:
+                date_and_version += "{}\\\\".format(survey_date)
+
+        if survey_version is not None:
+            date_and_version += "{}".format(survey_version)
+
         self.preamble.append(Command("title", title))
         self.preamble.append(Command("author", NoEscape(author)))
         self.preamble.append(Command("date", NoEscape(date_and_version)))
@@ -131,8 +140,11 @@ class SurveyDocument(Document):
         self.preamble.append(Package("booktabs"))
         self.preamble.append(Package("tocloft"))
         self.preamble.append(Command("makeatletter"))
-        self.preamble.append(
-            Command("chead[]", NoEscape(r"\@title\\Version {}".format(survey_version))))
+        if survey_version is not None:
+            self.preamble.append(
+                Command("chead[]", NoEscape(r"\@title\\Version {}".format(survey_version))))
+        else:
+            self.preamble.append(Command("chead[]", NoEscape(r"\@title")))
         self.preamble.append(
             Command(r"newcommand{\sectionwithlabel}[2]",
                     NoEscape(r"\phantomsection #1\def\@currentlabel{\unexpanded{#1}}\label{#2}")))
