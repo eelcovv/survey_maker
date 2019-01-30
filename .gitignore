@@ -54,3 +54,5 @@ MANIFEST
 *.out
 *.toc
 *.bundle
+!docs/presentations/presentatie_survey_maker_intro.pdf
+
