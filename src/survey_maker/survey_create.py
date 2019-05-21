@@ -106,13 +106,14 @@ def setup_logging(write_log_to_file=False,
 
     _logger = create_logger(file_log_level=log_level_file,
                             console_log_level=log_level,
+                            console_log_format_long=True,
                             log_file=log_file_base)
 
     # with this call we merge the settings of our logger with the logger in the cbs_utils logger
     # so we can control the output
-    merge_loggers(_logger, "cbs_utils")
-    merge_loggers(_logger, "survey_maker.engine")
-    merge_loggers(_logger, "survey_maker.survey_document")
+    _logger = merge_loggers(_logger, "cbs_utils")
+    _logger = merge_loggers(_logger, "survey_maker.engine", logger_level_to_merge=log_level)
+    _logger = merge_loggers(_logger, "survey_maker.survey_document", logger_level_to_merge=log_level)
 
     _logger.info("{:10s}: {}".format("Running", sys.argv))
     _logger.info("{:10s}: {}".format("Version", __version__))
