@@ -1,3 +1,3 @@
-include survey_maker/sdaps.cls
-include survey_maker/qrcode.sty
-include survey_maker/code128.tex
+include src/survey_maker/sdaps.cls
+include src/survey_maker/qrcode.sty
+include src/survey_maker/code128.tex
