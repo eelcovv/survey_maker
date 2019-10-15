@@ -1,2 +1,2 @@
-include tex/sdaps.cls
-include tex/qrcode.sty
+include sdaps.cls
+include qrcode.sty
