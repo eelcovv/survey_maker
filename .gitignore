@@ -56,3 +56,4 @@ MANIFEST
 *.out
 *.toc
 *.bundle
+!src/survey_maker/code128.tex

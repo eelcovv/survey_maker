@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
 from shutil import copy2
+from pkgutil import get_data
 
 from cbs_utils.misc import get_logger
 from survey_maker.survey_document import SurveyDocument
@@ -56,16 +57,14 @@ class SurveyMaker(object):
         self.output_file = self.output_directory / output_file
 
         for sty_file in TEX_STY_FILES:
-            source_sty_file = Path(__file__).parent / ".." / ".." / "tex" / sty_file
             dest_style_file = self.output_directory / sty_file
             if not dest_style_file.exists():
-                if source_sty_file.exists():
-                    logger.debug("Copying latex sty file: {} -> {}".format(source_sty_file, dest_style_file))
-                    copy2(source_sty_file, dest_style_file)
-                else:
-                    logger.warning("Could not find latex sty file: {}".format(source_sty_file))
+                logger.info(f"Copying tex style file {sty_file} to {dest_style_file}")
+                data = get_data("survey_maker", sty_file)
+                with open(dest_style_file, "wb") as fp:
+                    fp.write(data)
             else:
-                logger.debug("Latex sty {} already present".format(dest_style_file))
+                logger.debug("Latex sty {} already present in {}".format(sty_file, dest_style_file))
 
         self.document = SurveyDocument(
             questionnaire=questionnaire,
