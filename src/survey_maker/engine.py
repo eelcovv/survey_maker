@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
+from shutil import copy2
+from pkgutil import get_data
 
 from cbs_utils.misc import get_logger
 from survey_maker.survey_document import SurveyDocument
@@ -8,6 +10,8 @@ try:
     from survey_maker import __version__
 except ModuleNotFoundError:
     __version__ = "unknown"
+
+TEX_STY_FILES = ["sdaps.cls", "code128.tex"]
 
 __author__ = "Eelco van Vliet"
 __copyright__ = "CBS"
@@ -47,10 +51,21 @@ class SurveyMaker(object):
                  ):
 
         logger.info("Starting Survey Maker")
+        logger.debug("With debugging on")
 
         self.output_directory = Path(output_directory)
 
         self.output_file = self.output_directory / output_file
+
+        for sty_file in TEX_STY_FILES:
+            dest_style_file = self.output_directory / sty_file
+            if not dest_style_file.exists():
+                logger.info(f"Copying tex style file {sty_file} to {dest_style_file}")
+                data = get_data("survey_maker", sty_file)
+                with open(dest_style_file, "wb") as fp:
+                    fp.write(data)
+            else:
+                logger.debug("Latex sty {} already present in {}".format(sty_file, dest_style_file))
 
         self.document = SurveyDocument(
             questionnaire=questionnaire,

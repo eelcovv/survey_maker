@@ -36,6 +36,8 @@ coverage.xml
 .pytest_cache/
 
 # Build and docs folder/files
+examples/*
+!examples/*.yml
 build/*
 dist/*
 sdist/*
@@ -56,3 +58,4 @@ MANIFEST
 *.bundle
 !docs/presentations/presentatie_survey_maker_intro.pdf
 !examples/small_example.pdf
+!src/survey_maker/code128.tex

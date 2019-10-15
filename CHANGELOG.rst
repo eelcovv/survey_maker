@@ -7,7 +7,12 @@ Version 1.7
 
 - Documentatie toegevoegd
 
+Version 1.6.1
+=============
+
+- Final version for 2019 survey's
+
 Version 1.0
 ===========
 
-- Intial version of survey maker
+- Initial version of survey maker
