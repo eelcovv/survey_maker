@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 1.8
+===========
+
+- Bug fix om latex foutmelding mbt srcpage2 te voorkomen
+
 Version 1.7
 ===========
 
