@@ -10,13 +10,13 @@ This script runs the following steps
 
 Generates a wheel file in the dest directory
 
-2.: pip install ict_analyser --no-index --find-links <name of the wheel file> --prefix <location> -U
+2.: pip install surver_maker --no-index --find-links <name of the wheel file> --prefix <location> -U
 
 Installs the APP as a library
 
 3.: python install.py install --prefix <location>
 
-Installs the ict_analyser executable
+Installs the surver_maker executable
 
 See python install_exe.py --help for the options
 """
@@ -27,10 +27,10 @@ from subprocess import Popen, PIPE
 import logging
 import argparse
 
-parser = argparse.ArgumentParser("Install the python executable of the ict_analyser")
+parser = argparse.ArgumentParser("Install the python executable of the surver_maker")
 parser.add_argument("--debug", help="Give debug info", dest="log_level", default=logging.INFO, const=logging.DEBUG,
                     action="store_const")
-parser.add_argument("--app_name", help="Name of the application", default="ict_analyser")
+parser.add_argument("--app_name", help="Name of the application", default="surver_maker")
 parser.add_argument("--destination", help="Destination where the app is installed",
                     default="\\\\cbsp.nl\\Productie\\secundair\\DecentraleTools\\Output\\CBS_Python\\Python3.6")
 parser.add_argument("--update", help="App date a previous installed version", default="-U", const="-U",
