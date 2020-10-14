@@ -84,7 +84,12 @@ class SurveyDocument(Document):
 
         # with this trick we can preceed the documentclass command with the PassOptionsToPackage
         # command such that we can add some more color definitions to xcolor.
-        command = Command(r"PassOptionsToPackage{dvipsnames,usenames}{xcolor}\documentclass",
+        # The construciton with scrlfile replacing the srcpage2 is needed because scrpage2 is
+        # obsoleter and not include in the miktex distribution anymore.
+        command = Command(r"PassOptionsToPackage{dvipsnames,usenames}{xcolor}"
+                          r"\RequirePackage{scrlfile}"
+                          r"\ReplacePackage{scrpage2}{scrlayer-scrpage}"
+                          r"\documentclass",
                           options=document_options,
                           arguments=["sdaps"])
         super().__init__(documentclass=command, inputenc=None)
