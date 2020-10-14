@@ -7,7 +7,7 @@ questionnaire:                      # het hoofdstuk 'questionnaire' bevat alle m
     title: Module gewetensvragen    # Hier wordt de title van module A gegeven
     questions:                      # in dit hoofdstuk staan alle vragen van module A
       welke_het_liefst:             # De eerste vraag van module A
-        question: Welk programma heeft jou voorkeur voor de volgende taken?
+        question: Welk programma heeft jouw voorkeur voor de volgende taken?
         type: group                 # De vraag (gegeven met 'question' is van het type 'group'
         groups:                     # Onder 'groups' worden de keuzes gegevens die rechts komen
         - \LaTeX
