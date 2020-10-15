@@ -35,6 +35,12 @@ general:
       color: ForestGreen
       label:  DTC
       explanation: Alle vragen en modules met in deze kleur zijn extra vragen toegevoegd ten behoeve van de DTC
+    dvz:
+      apply_color: true
+      dvz_only: true
+      color:  red
+      label:  DVZ
+      explanation: "Alle tekst in deze kleur zijn aanwijzingen voor de webbouwer"
   preamble:
     title: ICT-gebruik bedrijven 2019
     author: Eelco van Vliet
@@ -140,6 +146,13 @@ questionnaire:
         choices:
           - Ja
           - Nee
+        dvz:
+          info:
+            above: true
+            title: Hier maak ik een opmerking naar de bouwer
+            items:
+              - let hier op
+              - als ja, ga naar \ref{quest:internet_vaste_verbinding}
       ict_specialisten_moeilijk_te_vervullen:
         question: "Had uw bedrijf in 2018 vacatures voor ICT-specialisten die moeilijk te vervullen waren?"
         type: choices
