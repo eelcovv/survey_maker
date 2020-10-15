@@ -59,6 +59,7 @@ class SurveyDocument(Document):
     draft: bool
         If true, add a draft stamp
     """
+
     def __init__(self,
                  title="Default Title",
                  author="TheAuthor",
@@ -93,6 +94,14 @@ class SurveyDocument(Document):
                           options=document_options,
                           arguments=["sdaps"])
         super().__init__(documentclass=command, inputenc=None)
+
+        package_to_remove = list()
+        exclude_packages = list(['lastpage', 'fontenc', 'color'])
+        for package in self.packages:
+            arguments = package.arguments._positional_args
+            if arguments[0] in exclude_packages:
+                package_to_remove.append(package)
+        self.packages = self.packages.difference(package_to_remove)
 
         self.add_summary = add_summary
         self.summary_title = summary_title
@@ -141,7 +150,6 @@ class SurveyDocument(Document):
         self.preamble.append(Command("title", title))
         self.preamble.append(Command("author", NoEscape(author)))
         self.preamble.append(Command("date", NoEscape(date_and_version)))
-        self.preamble.append(Package("color"))
         self.preamble.append(Package("booktabs"))
         self.preamble.append(Package("tocloft"))
         self.preamble.append(Command("makeatletter"))
