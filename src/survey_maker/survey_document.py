@@ -87,21 +87,20 @@ class SurveyDocument(Document):
         # command such that we can add some more color definitions to xcolor.
         # The construciton with scrlfile replacing the srcpage2 is needed because scrpage2 is
         # obsoleter and not include in the miktex distribution anymore.
+        # also de expression RequirePackage{ifpdf} are include to suppressed all the warnings
         command = Command(r"PassOptionsToPackage{dvipsnames,usenames}{xcolor}"
                           r"\RequirePackage{scrlfile}"
                           r"\ReplacePackage{scrpage2}{scrlayer-scrpage}"
+                          r"\RequirePackage{ifpdf}"
+                          r"\RequirePackage{ifluatex}"
                           r"\documentclass",
                           options=document_options,
                           arguments=["sdaps"])
-        super().__init__(documentclass=command, inputenc=None)
+        # noinspection PyTypeChecker
+        super().__init__(documentclass=command, inputenc=None, fontenc=None)
 
-        package_to_remove = list()
-        exclude_packages = list(['lastpage', 'fontenc', 'color'])
-        for package in self.packages:
-            arguments = package.arguments._positional_args
-            if arguments[0] in exclude_packages:
-                package_to_remove.append(package)
-        self.packages = self.packages.difference(package_to_remove)
+        # lastpage and fontenc are defined twice. Remove them from the preamble
+        self.exclude_packages(['lastpage'])
 
         self.add_summary = add_summary
         self.summary_title = summary_title
@@ -244,6 +243,15 @@ class SurveyDocument(Document):
             self.add_all_modules()
 
             self.make_report()
+
+    def exclude_packages(self, packages_to_exclude: list):
+        """ remove the packages in *package_to_exclude* from the preamble """
+        package_to_remove = list()
+        for package in self.packages:
+            arguments = package.arguments._positional_args
+            if arguments[0] in packages_to_exclude:
+                package_to_remove.append(package)
+        self.packages = self.packages.difference(package_to_remove)
 
     def write_colorize_explanation(self):
         """ Get the explanation field of all colorize items and add to the list of items """
@@ -871,7 +879,8 @@ class SurveyDocument(Document):
             with self.create(ChoiceRangeGroupQuestion(arguments=NoEscape(question))):
                 if info is not None and above:
                     self.add_info(info)
-                n_questions = self.add_range_group_question(key, question_lines, range_labels)
+                n_questions = self.add_range_group_question(question_lines=question_lines,
+                                                            range_items=range_labels)
         else:
             raise AssertionError("question type not known. Check if type of question {} is one of "
                                  "the following: {} ".format(key, QUESTION_TYPES))
@@ -881,7 +890,7 @@ class SurveyDocument(Document):
 
         return n_questions
 
-    def add_range_group_question(self, key, question_lines, range_items):
+    def add_range_group_question(self, question_lines, range_items):
 
         items = list()
         for cnt, item in enumerate(range_items):

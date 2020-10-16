@@ -26,15 +26,16 @@ general:
       review_only: true
       color:  cbslichtblauw
       label:  ESTAT optioneel
-      explanation: Alle vragen en modules met een link in de kleur van deze regel zijn optionele
+      explanation: "Alle vragen en modules met een link in de kleur van deze regel zijn optionele
       Eurostat (ESTAT optioneel) vragen. De pijl verwijst naar de oorspronkelijk vraag in de model
-      questionnaire 2019
+      questionnaire 2019"
     dtc:
       add_this: false
       review_only: false
       color: ForestGreen
       label:  DTC
-      explanation: Alle vragen en modules met in deze kleur zijn extra vragen toegevoegd ten behoeve van de DTC
+      explanation: "Alle vragen en modules met in deze kleur zijn extra vragen toegevoegd ten
+      behoeve van de DTC"
     dvz:
       apply_color: true
       dvz_only: true
