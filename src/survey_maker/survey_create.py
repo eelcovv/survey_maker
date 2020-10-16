@@ -72,6 +72,7 @@ def _parse_the_command_line_arguments(args):
                         help="Do not clean the latex temp files after processing")
     parser.add_argument("--review_references", action="store_true",
                         help="Add the references to the original questions for review purpose only")
+    parser.add_argument("--dvz_references", action="store_true", help="Add the remarks to DVZ")
     parser.add_argument("--use_cbs_font", action="store_true", default=True,
                         help="Use the cbs font to allow for the euro symbol")
     parser.add_argument("--no_use_cbs_font", action="store_false", dest="use_cbs_font",
@@ -307,6 +308,9 @@ def main(args_in):
         if args.review_references:
             output_file += "_review"
 
+        if args.dvz_references:
+            output_file += "_dvz"
+
         if args.color:
             output_file += ("_" + args.color)
 
@@ -326,6 +330,7 @@ def main(args_in):
             survey_date=date,
             colorize_questions=colorize_questions,
             review_references=args.review_references,
+            dvz_references=args.dvz_references,
             use_cbs_font=args.use_cbs_font,
             draft=args.draft,
             add_summary=add_summary,

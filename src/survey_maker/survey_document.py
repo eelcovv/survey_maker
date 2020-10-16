@@ -817,10 +817,6 @@ class SurveyDocument(Document):
             above = info.get("above", False)
         else:
             above = False
-        if dvz:
-            dvz_above = dvz.get("above", False)
-        else:
-            dvz_above = False
 
         if question_type not in QUESTION_TYPES:
             logger.info("question type {} not yet implemented. Skipping".format(question_type))
@@ -847,10 +843,6 @@ class SurveyDocument(Document):
                 quantity_label += ":"
             box_width = question_properties.get("box_width", self.global_box_width)
             with self.create(QuantityQuestion(arguments=NoEscape(question))):
-                if dvz is not None and above:
-                    logger.warning("Above option for dvz not possible for quantity question! "
-                                   "Put this info box below")
-                    dvz_above = False
                 if info is not None and above:
                     logger.warning("Above option not possible for quantity question! "
                                    "Put this info box below")
@@ -865,10 +857,6 @@ class SurveyDocument(Document):
                                             arguments=NoEscape(question))):
                 if info is not None and above:
                     self.add_info(info)
-                if dvz is not None and dvz_above:
-                    col_prop =  self.colorize_properties["dvz"]
-                    color = col_prop["color"]
-                    self.add_info(dvz, color)
                 self.add_choice_question(key, choices, filter_prop)
 
         elif question_type == "group":
@@ -906,6 +894,12 @@ class SurveyDocument(Document):
 
         if info is not None and not above:
             self.add_info(info)
+
+        if dvz is not None:
+            col_prop = self.colorize_properties["dvz"]
+            color = col_prop["color"]
+            with self.create(Colorize(options=color)):
+                self.add_info(dvz)
 
         return n_questions
 
@@ -1019,11 +1013,16 @@ class SurveyDocument(Document):
             a description of the dictionary
         """
 
-        with self.create(InfoEnvironment()):
-            self.write_info(info, fontsize=fontsize, color=color)
+        if color is None:
+            with self.create(InfoEnvironment()):
+                self.write_info(info, fontsize=fontsize)
+        else:
+            with self.create(Colorize(options=color)):
+                with self.create(InfoEnvironment()):
+                    self.write_info(info, fontsize=fontsize)
         self.append(VSpace(NoEscape("\parskip")))
 
-def write_info(self, info, fontsize="footnotesize", is_item=False, color=None):
+    def write_info(self, info, fontsize="footnotesize", is_item=False):
         """
         A recursive method to create a nested block of text with itemizes
 
@@ -1062,11 +1061,6 @@ def write_info(self, info, fontsize="footnotesize", is_item=False, color=None):
         The routine below is recursively calling itself so that in the items can be nested
         """
 
-        if color is None:
-            fcolor = "black"
-        else:
-            fcolor = color
-
         try:
             # in case
             fsize = info["fontsize"]
@@ -1089,7 +1083,7 @@ def write_info(self, info, fontsize="footnotesize", is_item=False, color=None):
                     # we the key is a title field. Create a entry for this by recursively calling
                     # this function again. If this is the first entry, is_item is false and
                     # therefore the title is put outside the itemize block without a item
-                    self.write_info(value, is_item=is_item, fontsize=fsize, color=fcolor)
+                    self.write_info(value, is_item=is_item, fontsize=fsize)
                     # after the first call, the is_item flag is set to true, which means that all
                     # the other titles are preceded with the \items
                     is_item = True
@@ -1097,17 +1091,17 @@ def write_info(self, info, fontsize="footnotesize", is_item=False, color=None):
                     # if we find a items key, open a new itemize block add call this function
                     # recursively with the list or dict
                     with self.create(Itemize()):
-                        self.write_info(value, is_item=True, fontsize=fsize, color=fcolor)
+                        self.write_info(value, is_item=True, fontsize=fsize)
                 elif key in SPECIAL_KEYS:
                     # skip the fontsize key field
                     continue
                 else:
                     # the other values  are just added the the cursive call
-                    self.write_info(value, is_item=is_item, fontsize=fsize, color=fcolor)
+                    self.write_info(value, is_item=is_item, fontsize=fsize)
         elif isinstance(info, list):
             # we have a list. Just added all the items to the itemize environment
             for item in info:
-                self.write_info(item, is_item=True, fontsize=fsize, color=fcolor)
+                self.write_info(item, is_item=True, fontsize=fsize)
         else:
             raise AssertionError("Only valid for str, dict or list")
 

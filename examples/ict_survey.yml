@@ -37,7 +37,7 @@ general:
       explanation: "Alle vragen en modules met in deze kleur zijn extra vragen toegevoegd ten
       behoeve van de DTC"
     dvz:
-      apply_color: true
+      apply_color: false
       dvz_only: true
       color:  red
       label:  DVZ
@@ -134,8 +134,13 @@ questionnaire:
         question: Hoeveel van deze FTE’s werden besteed aan de ontwikkeling of het onderhoud van software die in uw bedrijf wordt gebruikt?
         quantity_label: FTE
         info:
-          items: 
+          items:
           - "\\textbf{Let op}: FTE’s besteed aan werk voor derden \\emph{niet} meetellen."
+        dvz:
+          title: Dit is een opmerking naar de webbouwer van
+          items:
+            - Let op dit en dit punt
+            - "Als vraag \\ref{quest:ict_specialisten_aantal_fte} niet waar is ga dan naar vraag \\ref{quest:ict_specialisten_moeilijk_te_vervullen}"
       ict_specialisten_willen_aannemen:
         question: "Heeft uw bedrijf in 2018 ICT-specialisten aangenomen of willen aannemen?"
         type: choices
@@ -148,12 +153,10 @@ questionnaire:
           - Ja
           - Nee
         dvz:
-          info:
-            above: true
-            title: Hier maak ik een opmerking naar de bouwer
-            items:
-              - let hier op
-              - als ja, ga naar \ref{quest:internet_vaste_verbinding}
+          title: Hier maak ik een opmerking naar de bouwer
+          items:
+            - let hier op
+            - als ja, ga naar \ref{quest:internet_vaste_verbinding}
       ict_specialisten_moeilijk_te_vervullen:
         question: "Had uw bedrijf in 2018 vacatures voor ICT-specialisten die moeilijk te vervullen waren?"
         type: choices
