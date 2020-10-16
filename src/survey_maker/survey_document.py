@@ -898,7 +898,7 @@ class SurveyDocument(Document):
         if info is not None and not above:
             self.add_info(info)
 
-        if dvz is not None:
+        if dvz is not None and self.dvz_references:
             col_prop = self.colorize_properties["dvz"]
             color = col_prop["color"]
             with self.create(Colorize(options=color)):
