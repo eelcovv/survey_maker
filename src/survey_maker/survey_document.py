@@ -59,6 +59,7 @@ class SurveyDocument(Document):
     draft: bool
         If true, add a draft stamp
     """
+
     def __init__(self,
                  title="Default Title",
                  author="TheAuthor",
@@ -74,6 +75,7 @@ class SurveyDocument(Document):
                  add_summary=True,
                  summary_title="Summary",
                  review_references=False,
+                 dvz_references=False,
                  use_cbs_font=True,
                  draft=False
                  ):
@@ -104,6 +106,7 @@ class SurveyDocument(Document):
         self.add_summary = add_summary
         self.summary_title = summary_title
         self.review_references = review_references
+        self.dvz_references = dvz_references
 
         # this part comes from the cbsreport class to make sure we have the same font
         # more importantly, under windows it allows to have a proper euro font
@@ -470,7 +473,11 @@ class SurveyDocument(Document):
         if add_this is None:
             add_this = True
         review_only = color_prop.get("review_only", False)
+        dvz_only = color_prop.get("dvz_only", False)
         if review_only and not self.review_references:
+            # in case we have the review only flag and are not reviewing: do not use this color
+            add_this = False
+        if dvz_only and not self.dvz_references:
             # in case we have the review only flag and are not reviewing: do not use this color
             add_this = False
         return add_this
@@ -572,7 +579,7 @@ class SurveyDocument(Document):
             A dictionary with the properties of the module
         goto:  str or bool
             In case goto is not none, we have requested to colorize this module because we are
-            dealing for instance with a moduel which can be skipped for small companies. In case
+            dealing for instance with a module which can be skipped for small companies. In case
             this value is a str, it is interpreted as a goto label
         module_color_key: str
             Name of the key of the color module
@@ -805,10 +812,15 @@ class SurveyDocument(Document):
         question = question_properties["question"]
         question_type = question_properties.get("type", "quantity")
         info = question_properties.get("info")
+        dvz = question_properties.get("dvz")
         if info:
             above = info.get("above", False)
         else:
             above = False
+        if dvz:
+            dvz_above = dvz.get("above", False)
+        else:
+            dvz_above = False
 
         if question_type not in QUESTION_TYPES:
             logger.info("question type {} not yet implemented. Skipping".format(question_type))
@@ -835,6 +847,10 @@ class SurveyDocument(Document):
                 quantity_label += ":"
             box_width = question_properties.get("box_width", self.global_box_width)
             with self.create(QuantityQuestion(arguments=NoEscape(question))):
+                if dvz is not None and above:
+                    logger.warning("Above option for dvz not possible for quantity question! "
+                                   "Put this info box below")
+                    dvz_above = False
                 if info is not None and above:
                     logger.warning("Above option not possible for quantity question! "
                                    "Put this info box below")
@@ -849,6 +865,10 @@ class SurveyDocument(Document):
                                             arguments=NoEscape(question))):
                 if info is not None and above:
                     self.add_info(info)
+                if dvz is not None and dvz_above:
+                    col_prop =  self.colorize_properties["dvz"]
+                    color = col_prop["color"]
+                    self.add_info(dvz, color)
                 self.add_choice_question(key, choices, filter_prop)
 
         elif question_type == "group":
@@ -988,7 +1008,7 @@ class SurveyDocument(Document):
 
         return n_questions
 
-    def add_info(self, info, fontsize="footnotesize"):
+    def add_info(self, info, fontsize="footnotesize", color=None):
         """
         Add a info block with a nested block it bullet points
 
@@ -1000,10 +1020,10 @@ class SurveyDocument(Document):
         """
 
         with self.create(InfoEnvironment()):
-            self.write_info(info, fontsize=fontsize)
+            self.write_info(info, fontsize=fontsize, color=color)
         self.append(VSpace(NoEscape("\parskip")))
 
-    def write_info(self, info, fontsize="footnotesize", is_item=False):
+def write_info(self, info, fontsize="footnotesize", is_item=False, color=None):
         """
         A recursive method to create a nested block of text with itemizes
 
@@ -1042,6 +1062,11 @@ class SurveyDocument(Document):
         The routine below is recursively calling itself so that in the items can be nested
         """
 
+        if color is None:
+            fcolor = "black"
+        else:
+            fcolor = color
+
         try:
             # in case
             fsize = info["fontsize"]
@@ -1064,7 +1089,7 @@ class SurveyDocument(Document):
                     # we the key is a title field. Create a entry for this by recursively calling
                     # this function again. If this is the first entry, is_item is false and
                     # therefore the title is put outside the itemize block without a item
-                    self.write_info(value, is_item=is_item, fontsize=fsize)
+                    self.write_info(value, is_item=is_item, fontsize=fsize, color=fcolor)
                     # after the first call, the is_item flag is set to true, which means that all
                     # the other titles are preceded with the \items
                     is_item = True
@@ -1072,17 +1097,17 @@ class SurveyDocument(Document):
                     # if we find a items key, open a new itemize block add call this function
                     # recursively with the list or dict
                     with self.create(Itemize()):
-                        self.write_info(value, is_item=True, fontsize=fsize)
+                        self.write_info(value, is_item=True, fontsize=fsize, color=fcolor)
                 elif key in SPECIAL_KEYS:
                     # skip the fontsize key field
                     continue
                 else:
                     # the other values  are just added the the cursive call
-                    self.write_info(value, is_item=is_item, fontsize=fsize)
+                    self.write_info(value, is_item=is_item, fontsize=fsize, color=fcolor)
         elif isinstance(info, list):
             # we have a list. Just added all the items to the itemize environment
             for item in info:
-                self.write_info(item, is_item=True, fontsize=fsize)
+                self.write_info(item, is_item=True, fontsize=fsize, color=fcolor)
         else:
             raise AssertionError("Only valid for str, dict or list")
 
