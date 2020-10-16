@@ -10,31 +10,32 @@ general:
       label:  Kleine bedrijven
       goto_condition_label:  Kleine bedrijven
       subtract_count_from_total: true
-      explanation: Alle vragen en modules weergeven in de kleur van deze regel, worden alleen aan
+      explanation: "Alle vragen en modules weergeven in de kleur van deze regel, worden alleen aan
       de grote bedrijven (10 of meer werknemers) voorgelegd. De klein bedrijven (2--10 werknemers)
-      kunnen deze vragen overslaan.
+      kunnen deze vragen overslaan."
     eurostat:
       apply_color: false
       review_only: true
       color:  cbsblauw
       label:  ESTAT verplicht
-      explanation: Alle vragen en modules weergeven in de kleur van deze regel zijn verplichte
+      explanation: "Alle vragen en modules weergeven in de kleur van deze regel zijn verplichte
       Eurostat (ESTAT verplicht) vragen. De pijl verwijst naar de oorspronkelijk vraag in de model
-      questionnaire 2019
+      questionnaire 2019"
     eurostatoptional:
       apply_color: false
       review_only: true
       color:  cbslichtblauw
       label:  ESTAT optioneel
-      explanation: Alle vragen en modules met een link in de kleur van deze regel zijn optionele
+      explanation: "Alle vragen en modules met een link in de kleur van deze regel zijn optionele
       Eurostat (ESTAT optioneel) vragen. De pijl verwijst naar de oorspronkelijk vraag in de model
-      questionnaire 2019
+      questionnaire 2019"
     dtc:
       add_this: false
       review_only: false
       color: ForestGreen
       label:  DTC
-      explanation: Alle vragen en modules met in deze kleur zijn extra vragen toegevoegd ten behoeve van de DTC
+      explanation: "Alle vragen en modules met in deze kleur zijn extra vragen toegevoegd ten
+      behoeve van de DTC"
     dvz:
       apply_color: true
       dvz_only: true
