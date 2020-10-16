@@ -130,7 +130,8 @@ questionnaire:
         quantity_label: FTE
       ict_specialisten_voor_ontwikkeling:
         alleengrotebedrijven: true
-        question: Hoeveel van deze FTE’s werden besteed aan de ontwikkeling of het onderhoud van software die in uw bedrijf wordt gebruikt?
+        question: "Hoeveel van deze FTE’s werden besteed aan de ontwikkeling of het onderhoud van
+         software die in uw bedrijf wordt gebruikt?"
         quantity_label: FTE
         info:
           items:
@@ -139,7 +140,8 @@ questionnaire:
           title: Dit is een opmerking naar de webbouwer van
           items:
             - Let op dit en dit punt
-            - "Als vraag \\ref{quest:ict_specialisten_aantal_fte} niet waar is ga dan naar vraag \\ref{quest:ict_specialisten_moeilijk_te_vervullen}"
+            - "Als vraag \\ref{quest:ict_specialisten_aantal_fte} niet waar is ga dan naar vraag
+            \\ref{quest:ict_specialisten_moeilijk_te_vervullen}"
       ict_specialisten_willen_aannemen:
         question: "Heeft uw bedrijf in 2018 ICT-specialisten aangenomen of willen aannemen?"
         type: choices
@@ -154,8 +156,8 @@ questionnaire:
         dvz:
           title: Hier maak ik een opmerking naar de bouwer
           items:
-            - let hier op
-            - als ja, ga naar \ref{quest:internet_vaste_verbinding}
+            - "Let hier op"
+            - "Als ja, ga naar \ref{quest:internet_vaste_verbinding}"
       ict_specialisten_moeilijk_te_vervullen:
         question: "Had uw bedrijf in 2018 vacatures voor ICT-specialisten die moeilijk te vervullen waren?"
         type: choices
