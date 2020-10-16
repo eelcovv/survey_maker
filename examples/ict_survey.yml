@@ -40,7 +40,6 @@ general:
       apply_color: false
       dvz_only: true
       color:  red
-      label:  DVZ
       explanation: "Alle tekst in deze kleur zijn aanwijzingen voor de webbouwer"
   preamble:
     title: ICT-gebruik bedrijven 2019

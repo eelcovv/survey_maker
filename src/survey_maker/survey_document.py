@@ -17,6 +17,8 @@ COUNT_QUST_KEY = "questions"
 COUNT_MODULES_KEY = "modules"
 COUNT_QUST_TOTAL_KEY = "questions_incl_choices"
 
+DVZ_KEY = "dvz"
+
 logger = get_logger(__name__)
 
 
@@ -428,7 +430,8 @@ class SurveyDocument(Document):
             if re.search("_", col_key):
                 raise ValueError("No _ allowed in the color keys")
 
-            self.counts.update({col_key: 0})
+            if col_key != DVZ_KEY:
+                self.counts.update({col_key: 0})
 
             color_name = col_prop["color"]
 
@@ -438,8 +441,8 @@ class SurveyDocument(Document):
             if self.colorize_key is None:
                 self.colorize_color = color_name
                 self.colorize_key = col_key
-                self.colorize_label = col_prop["label"]
-                self.colorline = col_prop["label"]
+                self.colorize_label = col_prop.get("label")
+                self.colorline = col_prop.get("label")
 
                 # create a new command for setting the color of a single line
                 self.preamble.append(Command(r"newcommand\colorline[1]",
@@ -507,7 +510,7 @@ class SurveyDocument(Document):
                 init_count = {"questions": 0, "questions_incl_choices": 0}
                 self.counts_per_module[module_key] = collections.Counter(init_count)
                 for ckey, cprop in self.colorize_properties.items():
-                    if cprop.get("add_this", True):
+                    if cprop.get("add_this", True) and ckey != DVZ_KEY:
                         self.counts_per_module[module_key].update({ckey: 0})
 
             logger.info("Adding module {}".format(module_key))
@@ -716,7 +719,7 @@ class SurveyDocument(Document):
                 self.counts.update({"questions_incl_choices": n_question})
                 self.counts_per_module[module_key].update({"questions_incl_choices": n_question})
 
-                if color_local is not None:
+                if color_local is not None and color_key != DVZ_KEY :
                     self.counts.update({color_key: n_question})
                     self.counts_per_module[module_key].update({color_key: n_question})
                 if refers_to_label is not None and refers_to_key != color_key:
