@@ -86,9 +86,9 @@ class SurveyDocument(Document):
         # command such that we can add some more color definitions to xcolor.
         # The construciton with scrlfile replacing the srcpage2 is needed because scrpage2 is
         # obsoleter and not include in the miktex distribution anymore.
-        command = Command(r"PassOptionsToPackage{dvipsnames,usenames}{xcolor}"
-                          r"\RequirePackage{scrlfile}"
-                          r"\ReplacePackage{scrpage2}{scrlayer-scrpage}"
+        command = Command(r"PassOptionsToPackage{dvipsnames,usenames}{xcolor}\n"
+                          r"\RequirePackage{scrlfile}\n"
+                          r"\ReplacePackage{scrpage2}{scrlayer-scrpage}\n"
                           r"\documentclass",
                           options=document_options,
                           arguments=["sdaps"])
