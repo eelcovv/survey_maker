@@ -100,7 +100,7 @@ class SurveyDocument(Document):
         super().__init__(documentclass=command, inputenc=None, fontenc=None)
 
         # lastpage and fontenc are defined twice. Remove them from the preamble
-        self.exclude_packages(['lastpage'])
+        self.remove_packages(['lastpage'])
 
         self.add_summary = add_summary
         self.summary_title = summary_title
@@ -244,7 +244,7 @@ class SurveyDocument(Document):
 
             self.make_report()
 
-    def exclude_packages(self, packages_to_exclude: list):
+    def remove_packages(self, packages_to_exclude: list):
         """ remove the packages in *package_to_exclude* from the preamble """
         package_to_remove = list()
         for package in self.packages:
