@@ -157,7 +157,7 @@ questionnaire:
           title: Hier maak ik een opmerking naar de bouwer
           items:
             - "Let hier op"
-            - "Als ja, ga naar \ref{quest:internet_vaste_verbinding}"
+            - "Als ja, ga naar \\ref{quest:internet_vaste_verbinding}"
       ict_specialisten_moeilijk_te_vervullen:
         question: "Had uw bedrijf in 2018 vacatures voor ICT-specialisten die moeilijk te vervullen waren?"
         type: choices
