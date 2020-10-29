@@ -137,7 +137,7 @@ class SurveyDocument(Document):
                 r"contents=Draft")))
 
         if hyphenation is not None:
-            word_list = [NoEscape(word + " ") for word in hyphenation]
+            word_list = NoEscape(" ".join(hyphenation))
             self.preamble.append(Command("hyphenation", word_list))
 
         date_and_version = ""

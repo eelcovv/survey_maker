@@ -50,6 +50,7 @@ general:
   hyphenation:
     # lijst van woorden met hun afbreekregels voor het geval het niet goed gaat in latex
   - samenwerkings-verbanden
+  - ICT-veiligheids-maatregelen
   summary:
     add_this: true
     title: Overzicht vragenlijst
