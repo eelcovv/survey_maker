@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 1.8.1
+=============
+
+- Hyphenation list met meerdere items werkt nu ook
+
 Version 1.8
 ===========
 

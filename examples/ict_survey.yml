@@ -4,6 +4,9 @@ general:
   color_definitions:
     forest_green:
   colorize_questions:
+    # let op dat de volgorde van de kleuren definities belangrijk is. Hoe hoger gedefineerd hoe
+    # belangrijker. Een vraag met 2 kleuren zal de hoogste aannemen (dus alleengrotebedrijven gaat
+    # voor dtc
     alleengrotebedrijven:
       add_this: false
       color:  roodvergrijsd  #  codekleur  # cbslichtblauw
@@ -47,6 +50,7 @@ general:
   hyphenation:
     # lijst van woorden met hun afbreekregels voor het geval het niet goed gaat in latex
   - samenwerkings-verbanden
+  - ICT-veiligheids-maatregelen
   summary:
     add_this: true
     title: Overzicht vragenlijst
@@ -104,12 +108,12 @@ questionnaire:
   ict_specialisten:
     add_this: true
     info:
-      items: 
+      items:
         title: \supscript{$\ast$}ICT-specialisten
-        items: 
+        items:
         - "Een ICT-specialist is een medewerker voor wie ICT \\emph{het belangrijkste werk} vormt . Bijvoorbeeld ICT-systemen of applicaties specificeren, ontwerpen, ontwikkelen, installeren en/of  beheren"
-        - "Een voltijdmedewerker die alle werktijd werkt als ICT-specialist telt als één FTE." 
-        - "Een medewerker die in deeltijd werkt of niet alle werktijd werkt als ICT-specialist moet slechts meegeteld worden voor een gedeelte van een arbeidsjaar. Bijvoorbeeld: een medewerker die twee dagen per week werkt als ICT-specialist telt voor 0,4 (namelijk 2/5) arbeidsjaar." 
+        - "Een voltijdmedewerker die alle werktijd werkt als ICT-specialist telt als één FTE."
+        - "Een medewerker die in deeltijd werkt of niet alle werktijd werkt als ICT-specialist moet slechts meegeteld worden voor een gedeelte van een arbeidsjaar. Bijvoorbeeld: een medewerker die twee dagen per week werkt als ICT-specialist telt voor 0,4 (namelijk 2/5) arbeidsjaar."
         - "Voor alle vragen waar het aantal FTE's ingevuld moet worden volstaat een schatting"
     title: ICT-specialisten
     questions:
@@ -187,7 +191,7 @@ questionnaire:
           refers_to: C5
         type: choices
         choices:
-          - Minder dan 2 Mbit/sec 
+          - Minder dan 2 Mbit/sec
           - 2 tot 10 Mbit/sec
           - 10 tot 30 Mbit/sec
           - 30 tot 100 Mbit/sec
@@ -204,8 +208,8 @@ questionnaire:
           alleengrotebedrijven: "modsec:website"
           info:
             items:
-            - Deze vragen gaan over het gebruik van draagbare apparaten zoals laptops, tablets en smartphones met internetverbinding via mobiele telefoonnetwerken voor het werk. 
-            - Het bedrijf verstrekt de draagbare apparaten en betaalt ten minste een deel van de abonnement- en gebruikskosten. 
+            - Deze vragen gaan over het gebruik van draagbare apparaten zoals laptops, tablets en smartphones met internetverbinding via mobiele telefoonnetwerken voor het werk.
+            - Het bedrijf verstrekt de draagbare apparaten en betaalt ten minste een deel van de abonnement- en gebruikskosten.
             - Wifi telt niet mee als mobiel internet
         question: Verstrekte uw bedrijf draagbare apparaten met mobiel internet\supscript{$\star$} aan de werkzame personen voor hun werk?
         type: choices
@@ -573,7 +577,7 @@ questionnaire:
         type: choices
         choices:
         - Ja
-        - Nee 
+        - Nee
       ecommerce_web_orders_omzet:
         question: Wat was in 2018 de omzet die uw bedrijf behaalde met orders ontvangen via een website of app, excl. btw?
         quantity_label: k€
@@ -672,8 +676,8 @@ questionnaire:
           title: Omzet via EDI
           info:
             title: Met EDI (Elektronic Data Interchange) wordt hier bedoeld
-            items: 
-            - Informatie zenden of ontvangen in een afgesproken format dat automatische verwerking mogelijk maakt, bijvoorbeeld EDIFACT, XML, UBL, en XBRL. 
+            items:
+            - Informatie zenden of ontvangen in een afgesproken format dat automatische verwerking mogelijk maakt, bijvoorbeeld EDIFACT, XML, UBL, en XBRL.
             - Inkopen via handgetypte e-mails tellen \emph{niet} mee.
         question: "Heeft uw bedrijf in 2018 orders ontvangen voor goederen of diensten via EDI?"
         eurostat:
@@ -705,7 +709,7 @@ questionnaire:
       ecommerce_inkoop:
         section:
           title: Totale inkoop
-          info: 
+          info:
             title: Tot de inkopen behoren bijvoorbeeld grondstoffen en halffabricaten, maar ook kantoorartikelen en energie (gas, water, elektriciteit). Ook diensten zoals externe accountants en juristen, onderhoud, telecom en verzekeringen horen bij de inkopen. Loonkosten van eigen personeel behoren niet tot de inkopen.
         question: "Hoeveel bedroeg in 2018 de totale inkoop, exclusief investeringen van het Nederlandse gedeelte van uw bedrijf, excl. btw\\supscript{$\\ast$}?"
         quantity_label: k€
@@ -742,9 +746,9 @@ questionnaire:
         section:
           title: Inkoop via EDI
           info:
-            title: "\\supscript{$\\ddag$}Met EDI wordt hier bedoeld:" 
-            items: 
-            - Informatie zenden of ontvangen in een afgesproken format dat automatische verwerking mogelijk maakt, bijvoorbeeld EDIFACT, XML, UBL, en XBRL. 
+            title: "\\supscript{$\\ddag$}Met EDI wordt hier bedoeld:"
+            items:
+            - Informatie zenden of ontvangen in een afgesproken format dat automatische verwerking mogelijk maakt, bijvoorbeeld EDIFACT, XML, UBL, en XBRL.
             - Inkopen via handgetypte e-mails tellen \emph{niet} mee.
         question: "Heeft uw bedrijf in 2017 via EDI goederen of diensten besteld bij een ander bedrijf?"
         type: choices
@@ -760,7 +764,7 @@ questionnaire:
         question: "Hoeveel procent van deze uitgaven is gedaan bij aanbieders in:"
         alleengrotebedrijven: "mod:contactgegevens"
         quantity_label:
-        - Nederland 
+        - Nederland
         - Andere EU-landen
         - Niet EU-landen
         info:
@@ -782,7 +786,7 @@ questionnaire:
       contact:
         question: Contactdetails
         quantity_label:
-        - e-mailadres 
+        - e-mailadres
         - telefoonnummer
       opmerkingen:
         question: Opmerkingen
