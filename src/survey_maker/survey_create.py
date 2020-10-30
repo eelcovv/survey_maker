@@ -132,7 +132,7 @@ def setup_logging(write_log_to_file=False,
 
 def get_version(default_version=None):
     """
-    Get the current git version of this questionary
+    Get the current git version of this questionnaire
 
     Returns
     -------
@@ -193,7 +193,7 @@ def reorganize_colors(colorize_questions, main_color):
     """
     Change the order of the colors
 
-    :param colorize_questions: OrderDitc
+    :param colorize_questions: OrderedDict
     :param main_color: Name of the main color
     :return: New OrderedDict
     """
@@ -274,7 +274,7 @@ def main(args_in):
     else:
         n_compile = 1
 
-    # create the KvKUrl object, but first move to the workding directory, so everything we do
+    # create the KvKUrl object, but first move to the working directory, so everything we do
     # is with respect to this directory
     with Chdir(working_directory) as _:
         # make the directories in case they do not exist yet
