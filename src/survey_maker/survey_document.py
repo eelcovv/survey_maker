@@ -24,7 +24,7 @@ logger = get_logger(__name__)
 
 class SurveyDocument(Document):
     """
-    Create the preample of the latex document and add all the module
+    Create the preamble of the latex document and add all the module
 
     Parameters
     ----------
@@ -35,7 +35,7 @@ class SurveyDocument(Document):
     survey_version: str
         Add a version to the document. Default = None (no version added)
     survey_date: str
-        Date adde to the document
+        Date added to the document
     hyphenation: list
         List of string with hyphenations imposed in LaTeX
     document_options:  list or None
@@ -51,13 +51,13 @@ class SurveyDocument(Document):
     colorize_questions: dict
         Give the colorize options
     add_summary: bool
-        If true, add a sumary add the end of the questionnaire
+        If true, add a summary add the end of the questionnaire
     summary_title: str
-        The title of the sumary added at the end of the questionnaire
+        The title of the summary added at the end of the questionnaire
     review_references: bool
         If true, add a link to all the references of the questions
     use_cbs_font: bool
-        Use the CBS font insteat of the default font
+        Use the CBS font instead of the default font
     draft: bool
         If true, add a draft stamp
     """
