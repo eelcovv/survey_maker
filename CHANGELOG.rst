@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 1.8.2
+=============
+
+- Above optie werkt nu ook dvz info
+
 Version 1.8.1
 =============
 
