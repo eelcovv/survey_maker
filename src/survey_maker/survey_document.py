@@ -815,11 +815,15 @@ class SurveyDocument(Document):
         question = question_properties["question"]
         question_type = question_properties.get("type", "quantity")
         info = question_properties.get("info")
-        dvz = question_properties.get("dvz")
         if info:
             above = info.get("above", False)
         else:
             above = False
+        dvz = question_properties.get("dvz")
+        if dvz:
+            dvz_above = info.get("above", False)
+        else:
+            dvz_above = False
 
         if question_type not in QUESTION_TYPES:
             logger.info("question type {} not yet implemented. Skipping".format(question_type))
@@ -847,9 +851,13 @@ class SurveyDocument(Document):
             box_width = question_properties.get("box_width", self.global_box_width)
             with self.create(QuantityQuestion(arguments=NoEscape(question))):
                 if info is not None and above:
-                    logger.warning("Above option not possible for quantity question! "
+                    logger.warning("Above option in info not possible for quantity question! "
                                    "Put this info box below")
                     above = False
+                if dvz is not None and dvz_above:
+                    logger.warning("Above option in dvz not possible for quantity question! "
+                                   "Put this info box below")
+                    dvz_above = False
                 n_questions = self.add_quantity_question(key, quantity_label, box_width=box_width,
                                                          filter_properties=filter_prop)
         elif question_type == "choices":
@@ -868,17 +876,23 @@ class SurveyDocument(Document):
             groups = question_properties.get("groups", ["Ja", "Nee"])
             choice_lines = question_properties["choicelines"]
             with self.create(ChoiceGroupQuestion(arguments=NoEscape(question))):
+                if dvz is not None and dvz_above:
+                    self.add_info(dvz)
                 if info is not None and above:
                     self.add_info(info)
                 n_questions = self.add_choice_group_question(key, groups, choice_lines, group_width,
                                                              filter_prop)
         elif question_type == "textbox":
             text_width = question_properties.get("textbox", "1cm")
+            if dvz is not None and dvz_above:
+                self.add_info(dvz)
             if info is not None and above:
                 self.add_info(info)
             self.add_textbox_question(key, question, text_width)
         elif question_type == "range":
             range_items = question_properties["range_labels"]
+            if dvz is not None and dvz_above:
+                self.add_info(dvz)
             if info is not None and above:
                 self.add_info(info)
             self.add_range_question(key, question, range_items)
@@ -887,6 +901,8 @@ class SurveyDocument(Document):
             range_labels = question_properties["range_labels"]
 
             with self.create(ChoiceRangeGroupQuestion(arguments=NoEscape(question))):
+                if dvz is not None and dvz_above:
+                    self.add_info(dvz)
                 if info is not None and above:
                     self.add_info(info)
                 n_questions = self.add_range_group_question(question_lines=question_lines,
@@ -897,6 +913,8 @@ class SurveyDocument(Document):
 
         if info is not None and not above:
             self.add_info(info)
+        if dvz is not None and not dvz_above:
+            self.add_info(dvz)
 
         if dvz is not None and self.dvz_references:
             dvz_col_prop = self.colorize_properties["dvz"]
