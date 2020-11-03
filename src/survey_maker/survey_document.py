@@ -821,7 +821,7 @@ class SurveyDocument(Document):
             above = False
         dvz = question_properties.get("dvz")
         if dvz:
-            dvz_above = info.get("above", False)
+            dvz_above = dvz.get("above", False)
         else:
             dvz_above = False
 
