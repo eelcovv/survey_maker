@@ -866,6 +866,8 @@ class SurveyDocument(Document):
             number_of_columns = question_properties.get("number_of_columns", 1)
             with self.create(ChoiceQuestion(options=[number_of_columns],
                                             arguments=NoEscape(question))):
+                if dvz is not None and dvz_above:
+                    self.add_info(dvz)
                 if info is not None and above:
                     self.add_info(info)
                 self.add_choice_question(key, choices, filter_prop)
