@@ -820,10 +820,16 @@ class SurveyDocument(Document):
         else:
             above = False
         dvz = question_properties.get("dvz")
-        if dvz:
+        if dvz is not None:
             dvz_above = dvz.get("above", False)
+            if self.dvz_references:
+                dvz_col_prop = self.colorize_properties["dvz"]
+                dvz_color = dvz_col_prop["color"]
+            else:
+                dvz_color = "red"
         else:
             dvz_above = False
+            dvz_color = None
 
         if question_type not in QUESTION_TYPES:
             logger.info("question type {} not yet implemented. Skipping".format(question_type))
@@ -867,7 +873,8 @@ class SurveyDocument(Document):
             with self.create(ChoiceQuestion(options=[number_of_columns],
                                             arguments=NoEscape(question))):
                 if dvz is not None and dvz_above:
-                    self.add_info(dvz)
+                    with self.create(Colorize(options=dvz_color)):
+                        self.add_info(dvz)
                 if info is not None and above:
                     self.add_info(info)
                 self.add_choice_question(key, choices, filter_prop)
@@ -879,7 +886,8 @@ class SurveyDocument(Document):
             choice_lines = question_properties["choicelines"]
             with self.create(ChoiceGroupQuestion(arguments=NoEscape(question))):
                 if dvz is not None and dvz_above:
-                    self.add_info(dvz)
+                    with self.create(Colorize(options=dvz_color)):
+                        self.add_info(dvz)
                 if info is not None and above:
                     self.add_info(info)
                 n_questions = self.add_choice_group_question(key, groups, choice_lines, group_width,
@@ -887,14 +895,16 @@ class SurveyDocument(Document):
         elif question_type == "textbox":
             text_width = question_properties.get("textbox", "1cm")
             if dvz is not None and dvz_above:
-                self.add_info(dvz)
+                with self.create(Colorize(options=dvz_color)):
+                    self.add_info(dvz)
             if info is not None and above:
                 self.add_info(info)
             self.add_textbox_question(key, question, text_width)
         elif question_type == "range":
             range_items = question_properties["range_labels"]
             if dvz is not None and dvz_above:
-                self.add_info(dvz)
+                with self.create(Colorize(options=dvz_color)):
+                    self.add_info(dvz)
             if info is not None and above:
                 self.add_info(info)
             self.add_range_question(key, question, range_items)
@@ -904,7 +914,8 @@ class SurveyDocument(Document):
 
             with self.create(ChoiceRangeGroupQuestion(arguments=NoEscape(question))):
                 if dvz is not None and dvz_above:
-                    self.add_info(dvz)
+                    with self.create(Colorize(options=dvz_color)):
+                        self.add_info(dvz)
                 if info is not None and above:
                     self.add_info(info)
                 n_questions = self.add_range_group_question(question_lines=question_lines,
@@ -916,11 +927,6 @@ class SurveyDocument(Document):
         if info is not None and not above:
             self.add_info(info)
         if dvz is not None and not dvz_above:
-            self.add_info(dvz)
-
-        if dvz is not None and self.dvz_references:
-            dvz_col_prop = self.colorize_properties["dvz"]
-            dvz_color = dvz_col_prop["color"]
             with self.create(Colorize(options=dvz_color)):
                 self.add_info(dvz)
 
