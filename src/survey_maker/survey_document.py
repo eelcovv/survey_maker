@@ -839,8 +839,8 @@ class SurveyDocument(Document):
             if bool(match):
                 expl = match.group(1)
                 # als er haken in de explanation zitten moeten we ze speciaal maken
-                expl = expl.replace("(", "\(").replace(")", "\)")
-                question = re.sub(expl, "", question)
+                expl2 = expl.replace("(", "\(").replace(")", "\)")
+                question = re.sub(expl2, "", question)
                 question = re.sub("\\\\$", "", question)
             else:
                 expl = None
