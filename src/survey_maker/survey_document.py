@@ -278,7 +278,6 @@ class SurveyDocument(Document):
                         except KeyError:
                             logger.debug("No explanation added to {}".format(col_key))
                         else:
-
                             cmd = f"\\color{col_key}" + "{" + explanation + "}"
                             self.write_info(NoEscape(cmd), is_item=True)
 
@@ -839,11 +838,14 @@ class SurveyDocument(Document):
             match = re.search("(explanation.*$)", question)
             if bool(match):
                 expl = match.group(1)
+                # als er haken in de explanation zitten moeten we ze speciaal maken
+                expl = expl.replace("(", "\(").replace(")", "\)")
                 question = re.sub(expl, "", question)
+                question = re.sub("\\\\$", "", question)
             else:
                 expl = None
             question += " \emph{" + refers_to_label + "}"
-            if expl:
+            if expl is not None:
                 question += ("\\" + expl)
 
         n_questions = 1
