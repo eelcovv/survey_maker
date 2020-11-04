@@ -2,6 +2,12 @@
 Changelog
 =========
 
+Version 1.8.4
+=============
+
+- Laatste schoonheidsfoutjes eruit gehaald
+- een shell script toegevoegd om een html van git diff te maken
+
 Version 1.8.3
 =============
 
