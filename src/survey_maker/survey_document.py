@@ -74,6 +74,7 @@ class SurveyDocument(Document):
                  global_label_width="2.8cm",
                  global_box_width="4",
                  colorize_questions=None,
+                 prune_colors=False,
                  add_summary=True,
                  summary_title="Summary",
                  review_references=False,
@@ -190,11 +191,15 @@ class SurveyDocument(Document):
         self.append(Command("newpage"))
         self.append(Command("appendix"))
 
+        self.prune_colors = prune_colors
+
         if colorize_questions is not None:
             # the colorize keys are stored in a dictionary
             self.colorize_properties = colorize_questions
+            self.main_color = list(self.colorize_properties.keys())[0]
         else:
             self.colorize_properties = dict()
+            self.main_color = None
 
         self.preamble.append(Command(
             # this line changes the title of the table of contents
@@ -495,11 +500,22 @@ class SurveyDocument(Document):
 
         for module_key, module_properties in self.questionnaire.items():
             add_this = module_properties.get("add_this", True)
+
+            exclude_from_count = module_properties.get("exclude_from_count", False)
+
+            color_key, color_name, goto, label = self.get_colorize_properties(module_properties)
+
+            if self.prune_colors:
+                if color_key == self.main_color:
+                    # always add all modules if you are pruning and have the prune color
+                    add_this = True
+                else:
+                    logger.debug(f"Skipping module {module_key}:  {self.main_color} != {color_key}")
+                    continue
+
             if not add_this:
                 logger.debug("Skipping section {}".format(module_key))
                 continue
-
-            exclude_from_count = module_properties.get("exclude_from_count", False)
 
             # add one to the counter of the modules
             if not exclude_from_count:
@@ -515,8 +531,6 @@ class SurveyDocument(Document):
             logger.info("Adding module {}".format(module_key))
 
             self.append(Command("clearpage"))
-
-            color_key, color_name, goto, label = self.get_colorize_properties(module_properties)
 
             if color_name is not None:
                 with self.create(Colorize(options=color_name)):
@@ -684,6 +698,12 @@ class SurveyDocument(Document):
                 color_local, color_key = self.get_color_first_match(question_properties)
             else:
                 color_local, color_key = module_color_name, module_color_key
+            if self.prune_colors:
+                if color_key == self.main_color and question_properties.get(color_key, True):
+                    logger.debug(f"adding main color question {key}  {color_key}")
+                else:
+                    logger.debug(f"skipping {key}")
+                    continue
             refers_to_label, refers_to_key = self.get_refers_to_label(question_properties)
             if color_local or color_all_in_section:
                 if color_all_in_section:
@@ -718,7 +738,7 @@ class SurveyDocument(Document):
                 self.counts.update({"questions_incl_choices": n_question})
                 self.counts_per_module[module_key].update({"questions_incl_choices": n_question})
 
-                if color_local is not None and color_key != DVZ_KEY :
+                if color_local is not None and color_key != DVZ_KEY:
                     self.counts.update({color_key: n_question})
                     self.counts_per_module[module_key].update({color_key: n_question})
                 if refers_to_label is not None and refers_to_key != color_key:
