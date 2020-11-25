@@ -71,6 +71,7 @@ class SurveyDocument(Document):
                  document_options=None,
                  questionnaire=None,
                  info_items=None,
+                 info_items_per_color=None,
                  global_label_width="2.8cm",
                  global_box_width="4",
                  colorize_questions=None,
@@ -238,9 +239,20 @@ class SurveyDocument(Document):
             # we can start with a info block in case that is given in the *general* section of
             # the yaml file
             if info_items is not None:
+                add_info_items = info_items
+            else:
+                add_info_items = dict(items=list())
+            if info_items_per_color is not None:
+                try:
+                    info_for_color = info_items_per_color[self.main_color]
+                except KeyError:
+                    logger.info(f"No info color defined for {self.main_color}")
+                else:
+                    add_info_items["items"].extend(info_for_color["items"])
+            if add_info_items:
                 self.append(VSpace(NoEscape(r"\parskip")))
                 self.append(ModuleSection([NoEscape("Toelichting vragen"), "toelichting"]))
-                self.add_info(info_items, fontsize="normalsize")
+                self.add_info(add_info_items, fontsize="normalsize")
 
             # write the explanations per colorize item
             self.write_colorize_explanation()
@@ -703,9 +715,7 @@ class SurveyDocument(Document):
                 color_local, color_key = self.get_color_first_match(question_properties)
             else:
                 color_local, color_key = module_color_name, module_color_key
-            if exclude_question and not question_properties.get(self.main_color, True):
                 logger.debug(f"exclude is given but main_color {self.main_color} not set to true")
-                continue
             if self.prune_colors:
                 if color_key == self.main_color and question_properties.get(color_key, True):
                     logger.debug(f"adding main color question {key}  {color_key}")

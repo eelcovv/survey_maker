@@ -268,6 +268,7 @@ def main(args_in):
     hyphenation = general.get("hyphenation")
 
     info_items = general.get("info")
+    info_items_per_color = general.get("info_per_color")
 
     questionnaire = settings["questionnaire"]
 
@@ -335,6 +336,7 @@ def main(args_in):
             preamble=preamble,
             pdf=args.pdf,
             info_items=info_items,
+            info_items_per_color=info_items_per_color,
             n_compile=n_compile,
             silent=args.silent,
             clean=args.clean,
