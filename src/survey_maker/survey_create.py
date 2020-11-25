@@ -84,6 +84,8 @@ def _parse_the_command_line_arguments(args):
     parser.add_argument("--color",
                         help="Define the key of the colorize items which should be treated as"
                              "main color. If this is not given, the first item is taken")
+    parser.add_argument("--no_color",
+                        help="Turn of the color  defined by this key")
     parser.add_argument("--no_git_branch", action="store_true",
                         help="Do not add the git branch name to the version")
     parser.add_argument("--no_git_version", action="store_true",
@@ -254,6 +256,14 @@ def main(args_in):
     if colorize_questions is not None and args.color is not None:
         logger.info("Setting {} as main color".format(args.color))
         colorize_questions = reorganize_colors(colorize_questions, args.color)
+
+    if colorize_questions is not None and args.no_color is not None:
+        try:
+            colorize_questions[args.no_color]["add_this"] = False
+        except KeyError as err:
+            logger.warning(f"Could not find definition of color you are trying to turn of: "
+                           f"{args.no_color}")
+            raise KeyError(err)
 
     hyphenation = general.get("hyphenation")
 
