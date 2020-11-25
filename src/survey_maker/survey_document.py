@@ -640,8 +640,13 @@ class SurveyDocument(Document):
 
             increase_counter = question_properties.get("increase_counter")
 
+            exclude_question = question_properties.get("exclude")
+
             # if a section title field is given, start a new section title at this question
             section = question_properties.get("section")
+            if self.prune_colors and section is not None and not section.get(self.main_color, True):
+                logger.debug(f"Turning off info for section: {section}")
+                section = None
             if section:
                 ref_str = None
                 color_all_in_section = False
@@ -698,6 +703,9 @@ class SurveyDocument(Document):
                 color_local, color_key = self.get_color_first_match(question_properties)
             else:
                 color_local, color_key = module_color_name, module_color_key
+            if exclude_question and not question_properties.get(self.main_color, True):
+                logger.debug(f"exclude is given but main_color {self.main_color} not set to true")
+                continue
             if self.prune_colors:
                 if color_key == self.main_color and question_properties.get(color_key, True):
                     logger.debug(f"adding main color question {key}  {color_key}")
@@ -849,6 +857,9 @@ class SurveyDocument(Document):
         else:
             dvz_above = False
             dvz_color = None
+        if self.prune_colors and info is not None and not info.get(self.main_color, True):
+            logger.debug(f"Turning off info for question: {question}")
+            info = None
 
         if question_type not in QUESTION_TYPES:
             logger.info("question type {} not yet implemented. Skipping".format(question_type))
