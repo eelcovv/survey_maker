@@ -313,9 +313,6 @@ def main(args_in):
         if args.dvz_references:
             output_file += "_dvz"
 
-        if args.prune_colors:
-            output_file += "_pruned"
-
         if args.color:
             output_file += ("_" + args.color)
 
