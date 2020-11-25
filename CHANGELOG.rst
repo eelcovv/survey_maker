@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 1.8.5
+=============
+
+- prune optie toegevoegd om alleen vragen van 1 kleur te publiceren
+
 Version 1.8.4
 =============
 
