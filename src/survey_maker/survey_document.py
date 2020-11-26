@@ -248,7 +248,11 @@ class SurveyDocument(Document):
                 except KeyError:
                     logger.info(f"No info color defined for {self.main_color}")
                 else:
-                    add_info_items["items"].extend(info_for_color["items"])
+                    if isinstance(info_for_color, list):
+                        items = info_for_color
+                    else:
+                        items = info_for_color["items"]
+                    add_info_items["items"].extend(items)
             if add_info_items:
                 self.append(VSpace(NoEscape(r"\parskip")))
                 self.append(ModuleSection([NoEscape("Toelichting vragen"), "toelichting"]))
