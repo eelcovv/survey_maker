@@ -2,6 +2,10 @@
 Changelog
 =========
 
+Version 1.8.6
+=============
+- Laatste fixes voor enquetes 2020
+
 Version 1.8.5
 =============
 
