@@ -443,7 +443,7 @@ questionnaire:
           condition: Nee
           goto:
             default: "mod:databeheer"
-            zpp: "mod:ict_veiligheid"
+            zzp: "mod:ict_veiligheid"
         choices:
         - Ja
         - Nee
