@@ -2,9 +2,14 @@
 Changelog
 =========
 
+Version 1.8.7
+=============
+- Mogelijkheid om goto referentie als dict in te voeren zodat je hem van de kleur af kan laten
+  hangen
+
 Version 1.8.6
 =============
-- Laatste fixes voor enquetes 2020
+- Laatste fixes voor enquêtes 2020
 
 Version 1.8.5
 =============
