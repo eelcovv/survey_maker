@@ -22,6 +22,22 @@ DVZ_KEY = "dvz"
 logger = get_logger(__name__)
 
 
+def get_goto_reference(goto, main_color=None):
+    """
+    The goto label kan be a bool, a string or a dict. In case of a dict, pick the correct string
+    """
+    goto_reference = goto
+    if isinstance(goto, dict) and main_color is not None:
+        try:
+            goto_reference = goto[main_color]
+        except KeyError:
+            goto_reference = goto.get("default")
+            if goto_reference is None:
+                logger.warning("Goto was defined as a dict but no entry was found for the main "
+                               "color and no entry was found for 'default'")
+    return goto_reference
+
+
 class SurveyDocument(Document):
     """
     Create the preamble of the latex document and add all the module
@@ -598,7 +614,7 @@ class SurveyDocument(Document):
 
         return ckey, color_name, goto, label
 
-    def add_module(self, module_key, module_properties, goto=None, module_color_key=None,
+    def add_module(self, module_key, module_properties, goto_properties=None, module_color_key=None,
                    module_color_name=None, module_color_label=None, exclude_from_count=False):
         """
         Add a module to the document
@@ -609,10 +625,13 @@ class SurveyDocument(Document):
             The name key of the module. For internal use only
         module_properties: dict
             A dictionary with the properties of the module
-        goto:  str or bool
+        goto_properties:  dict,  str or bool
             In case goto is not none, we have requested to colorize this module because we are
             dealing for instance with a module which can be skipped for small companies. In case
-            this value is a str, it is interpreted as a goto label
+            this value is a str, it is interpreted as a goto label. In case this string is a dict
+            this is a goto label that may depend on the main_color value. If the main color has 
+            a key in de dict, we take this label, otherwise we take the label belonging to the
+            key 'default'
         module_color_key: str
             Name of the key of the color module
         module_color_label: str
@@ -629,7 +648,9 @@ class SurveyDocument(Document):
 
         self.append(Section(title=title, label=NoEscape(label_module(module_key))))
 
-        if goto is not None and isinstance(goto, str):
+        goto = get_goto_reference(goto_properties, self.main_color)
+
+        if goto is not None and not isinstance(goto, bool):
             # A goto string is passed to the module. Prepend a Ga naar label before we start with
             # this module
             if module_color_label is not None:
@@ -1182,7 +1203,7 @@ class SurveyDocument(Document):
             raise AssertionError("Only valid for str, dict or list")
 
     @staticmethod
-    def get_redirection_string_for_filter(filter_prop, choice=None):
+    def get_redirection_string_for_filter(filter_prop, choice=None, main_color=None):
         """
         In case we have a choice in the filter prop, return a redirection string
 
@@ -1200,7 +1221,8 @@ class SurveyDocument(Document):
         redirect_str = ""
         if filter_prop is not None:
             if filter_prop["condition"] == choice or choice is None:
-                goto = filter_prop["goto"]
+                goto_properties = filter_prop["goto"]
+                goto = get_goto_reference(goto_properties, main_color)
                 ref_cat = goto.split(":")[0]
                 if ref_cat == "quest":
                     category = "vraag"
@@ -1243,7 +1265,8 @@ class SurveyDocument(Document):
             choice_labels = choices
 
         for cnt, choice in enumerate(choice_labels):
-            redirection_str = self.get_redirection_string_for_filter(filter_prop, choice)
+            redirection_str = self.get_redirection_string_for_filter(filter_prop, choice, 
+                                                                     self.main_color)
             ch_str = choice + redirection_str
 
             self.append(ChoiceItem(NoEscape(ch_str)))
@@ -1309,7 +1332,8 @@ class SurveyDocument(Document):
 
         if filter_properties is not None:
             condition = filter_properties["condition"]
-            redirection_str = self.get_redirection_string_for_filter(filter_properties)
+            redirection_str = self.get_redirection_string_for_filter(filter_properties,
+                                                                     main_color=self.main_color)
             self.add_info(condition + redirection_str)
 
         return n_questions
