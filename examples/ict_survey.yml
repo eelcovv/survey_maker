@@ -441,7 +441,9 @@ questionnaire:
         type: choices
         filter:
           condition: Nee
-          goto: "mod:databeheer"
+          goto:
+            default: "mod:databeheer"
+            zpp: "mod:ict_veiligheid"
         choices:
         - Ja
         - Nee
