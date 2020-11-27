@@ -6,6 +6,7 @@ Version 1.8.7
 =============
 - Mogelijkheid om goto referentie als dict in te voeren zodat je hem van de kleur af kan laten
   hangen
+- voorbeeld van volle enquête geüpdatet
 
 Version 1.8.6
 =============
