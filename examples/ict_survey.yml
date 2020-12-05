@@ -1,18 +1,3 @@
-# Voorbeeld input file voor een vragen lijst
-#
-# Standaard volledige versie draaien met 
-# 
-# >>> python survey_maker.py ict_survey.yml
-#
-# Hier krijge we alle vragen behalve de vragen met een 'exclude' flag. De 
-# vragen met de alleengrotebedrijven label worden rood gekleurd 
-#
-# Als we een aparte vragenlijst voor bijvoorbeeld zzp'ers willen moeten we
-# draaien:
-# 
-# >>> python survey_maker.py ict_survey.yml --color zzp --no_color alleengrotebedrijven --prune
-#
-# Hiermee wordt de zzp kleur als main beschouwd. De alleengrotebedrijven kleur wordt uitgeschakeld. Door de --prune optie worden alle vragen die geen zzp label hebben overgeslagen. De vraag met exclude die *ook* een zzp vlag hebben worden nu wel geprint 
 general:
   output_directory: .
   working_directory: .
@@ -22,9 +7,9 @@ general:
     alleengrotebedrijven:
       add_this: true
       apply_color: true
-      color:  roodvergrijsd  #  codekleur  # cbslichtblauw
-      label:  Kleine bedrijven
-      goto_condition_label:  Kleine bedrijven
+      color: roodvergrijsd  #  codekleur  # cbslichtblauw
+      label: Kleine bedrijven
+      goto_condition_label: Kleine bedrijven
       subtract_count_from_total: true
       explanation: "Alle vragen en modules weergeven in de kleur van deze regel, worden alleen aan
       de grote bedrijven (10 of meer werknemers) voorgelegd. De klein bedrijven (2--10 werknemers)
@@ -32,16 +17,16 @@ general:
     eurostat:
       apply_color: true
       review_only: true
-      color:  cbsblauw
-      label:  ESTAT verplicht
+      color: cbsblauw
+      label: ESTAT verplicht
       explanation: "Alle vragen en modules weergegeven in de kleur van deze regel zijn verplichte
        Eurostat (ESTAT verplicht) vragen. De pijl verwijst naar de oorspronkelijk vraag in de model
        questionnaire 2021."
     eurostatoptional:
       apply_color: true
       review_only: true
-      color:  cbslichtblauw
-      label:  ESTAT optioneel
+      color: cbslichtblauw
+      label: ESTAT optioneel
       explanation: "Alle vragen en modules met een link in de kleur van deze regel zijn optionele
         Eurostat (ESTAT optioneel) vragen. De pijl verwijst naar de oorspronkelijk vraag in de
         model questionnaire 2021."
@@ -50,7 +35,7 @@ general:
       apply_color: false
       review_only: false
       color: ForestGreen
-      label:  DTC
+      label: DTC
       explanation: "Alle vragen en modules in deze kleur zijn extra vragen toegevoegd ten behoeve
                     van de DTC."
     zzp:
@@ -58,13 +43,13 @@ general:
       apply_color: false
       review_only: false
       color: Purple
-      label:  ZZP
+      label: ZZP
       explanation: "Deze vragen worden aan ZZP'-ers gevraagd."
     dvz:
       apply_color: true
       dvz_only: true
-      color:  red
-      label:  DVZ
+      color: red
+      label: DVZ
       explanation: "Alle tekst in deze kleur zijn aanwijzingen voor de webbouwer."
   preamble:
     title: ICT-gebruik bedrijven 2021
@@ -79,21 +64,21 @@ general:
     title: Overzicht vragenlijst
   info:
     items:
-    - De meeste vragen in deze enquête gaan over de \emph{huidige} situatie in uw bedrijf.
-    - Sommige vragen gaan over het jaar 2020. Dit wordt aangegeven in de vraag.
+      - De meeste vragen in deze enquête gaan over de \emph{huidige} situatie in uw bedrijf.
+      - Sommige vragen gaan over het jaar 2020. Dit wordt aangegeven in de vraag.
   info_per_color:
     alleengrotebedrijven:
       items:
-      - "De vragen kunnen over het algemeen het best beantwoord worden door een
+        - "De vragen kunnen over het algemeen het best beantwoord worden door een
          ICT-verantwoordelijke."
-      - "Als een percentage (\\%) of het aantal FTE's ingevuld moet worden volstaat een schatting."
-      - "Het vragenblok \\ref{mod:ecommerce} gaat echter over e-commerce. Wellicht kan een financieel
+        - "Als een percentage (\\%) of het aantal FTE's ingevuld moet worden volstaat een schatting."
+        - "Het vragenblok \\ref{mod:ecommerce} gaat echter over e-commerce. Wellicht kan een financieel
          medewerker deze het best invullen."
     dtc:
       items:
-      - "De vragen kunnen over het algemeen het best beantwoord worden door een
+        - "De vragen kunnen over het algemeen het best beantwoord worden door een
          ICT-verantwoordelijke."
-      - "Als een percentage (\\%) of het aantal FTE's ingevuld moet worden volstaat een schatting."
+        - "Als een percentage (\\%) of het aantal FTE's ingevuld moet worden volstaat een schatting."
     zzp:
       - "De vragen gaan over de ICT-situatie van uw eigen zakelijke werkomgeving, dus niet de
          ICT-infrastructuur van de klant voor wie u eventueel een opdracht uitvoert."
@@ -107,7 +92,7 @@ questionnaire:
         question: "Hoeveel uur per week werkte u gemiddeld in 2020"
         quantity_label: Aantal uur
       opdracht_gevers:
-        question:  "Voor hoeveel opdrachtgevers werkte u in 2020?"
+        question: "Voor hoeveel opdrachtgevers werkte u in 2020?"
         type: choices
         info:
           title: "Als één of twee opdrachtgevers
@@ -120,7 +105,7 @@ questionnaire:
         question: "Kwam meer dan de helft van de omzet in 2020 van slechts één opdrachtgever?"
         type: choices
       opdracht_gevers_ict_middelen:
-        question:  "Maakte u in 2020 gebruik van de ICT-voorzieningen van de één of meer van uw
+        question: "Maakte u in 2020 gebruik van de ICT-voorzieningen van de één of meer van uw
                     opdrachtgever."
         info:
           title: "Bijvoorbeeld in de situatie dat u in het bedrijf op de ICT-systemen van een klant
@@ -130,7 +115,7 @@ questionnaire:
           condition: Nee
           goto: "quest:openbare_wifi"
       opdracht_gevers_ict_middelen_hoeveel:
-        question:  "Hoeveel procent van uw tijd voerde u uw werkzaamheden uit via de
+        question: "Hoeveel procent van uw tijd voerde u uw werkzaamheden uit via de
         ICT-voorzieningen van uw opdrachtgevers"
         type: choices
         choices:
@@ -139,14 +124,14 @@ questionnaire:
           - Meer dan 50 maar minder dan 90 procent van de tijd
           - Ten minste 90 procent van de tijd
       openbare_wifi:
-        question:  "Maakte u in 2020 gebruik van de openbaar Wifi voor uw zakelijke werkzaamheden?"
+        question: "Maakte u in 2020 gebruik van de openbaar Wifi voor uw zakelijke werkzaamheden?"
         type: choices
         info:
           above: true
           title: "Dat wil zeggen de Wifi in openbare ruimtes, zoals koffietentjes, de trein, de
                   bibliotheek, enz."
       gebruik_devices:
-        question:  "Gebruikte u in 2020 dezelfde digitale apparaten (laptop, tablet o.i.d.) voor
+        question: "Gebruikte u in 2020 dezelfde digitale apparaten (laptop, tablet o.i.d.) voor
         zowel zakelijk als privé?"
         type: choices
       zzp_ict_veiligheid_door_wie_uitgevoerd:
@@ -170,7 +155,7 @@ questionnaire:
         add_this: true
         question: Wat was het totale aantal werkzame personen{$^\ast$} in uw bedrijf op 31 december 2020?
         eurostat:
-         refers_to: X2
+          refers_to: X2
         quantity_label: Aantal
         info:
           fontsize: footnotesize
@@ -179,19 +164,19 @@ questionnaire:
             wel:
               title: \emph{Wel} meetellen
               items:
-              - "Werknemers en directeuren die op de eigen loonlijst staan"
-              - "Werknemers die op de loonlijst staan van een ander bedrijf, maar bij uw bedrijf
+                - "Werknemers en directeuren die op de eigen loonlijst staan"
+                - "Werknemers die op de loonlijst staan van een ander bedrijf, maar bij uw bedrijf
                  werkzaam zijn en dus tot uw personeel behoren (ingeleend personeel)"
-              - "Werkzame eigenaren, firmanten, leden van maatschappen, vennoten en medewerkende
+                - "Werkzame eigenaren, firmanten, leden van maatschappen, vennoten en medewerkende
                  gezinsleden"
-              - "Uitzendkrachten"
-              - "Ingehuurde zzp’ers"
+                - "Uitzendkrachten"
+                - "Ingehuurde zzp’ers"
             niet:
               title: \emph{Niet} meetellen
               items:
-              - "Uitgeleend personeel (werknemers die op de loonlijst staan, maar werken bij een
+                - "Uitgeleend personeel (werknemers die op de loonlijst staan, maar werken bij een
                  andere onderneming of instelling)."
-              - "Personeel dat buiten Nederland werkt."
+                - "Personeel dat buiten Nederland werkt."
       wp_met_computer:
         question: "Hoeveel procent van de werkzame personen gebruikt een computer (inclusief
         laptops, tablets en smartphones) voor het werk? \\explanation{Een schatting volstaat}"
@@ -214,15 +199,15 @@ questionnaire:
       items:
         title: \supscript{$\ast$}ICT-specialisten
         items:
-        - "Een ICT-specialist is een medewerker voor wie ICT \\emph{het belangrijkste werk} vormt.
+          - "Een ICT-specialist is een medewerker voor wie ICT \\emph{het belangrijkste werk} vormt.
            Bijvoorbeeld ICT-systemen of applicaties specificeren, ontwerpen, ontwikkelen,
            installeren en/of  beheren"
-        - "Een voltijds medewerker die alle werktijd werkt als ICT-specialist telt als één FTE."
-        - "Een medewerker die in deeltijd werkt of niet alle werktijd werkt als ICT-specialist moet
+          - "Een voltijds medewerker die alle werktijd werkt als ICT-specialist telt als één FTE."
+          - "Een medewerker die in deeltijd werkt of niet alle werktijd werkt als ICT-specialist moet
            slechts meegeteld worden voor een gedeelte van een arbeidsjaar. Bijvoorbeeld: een
            medewerker die twee dagen per week werkt als ICT-specialist telt voor 0,4 (namelijk 2/5)
            arbeidsjaar."
-        - "Voor alle vragen waar het aantal FTE's ingevuld moet worden volstaat een schatting"
+          - "Voor alle vragen waar het aantal FTE's ingevuld moet worden volstaat een schatting"
     title: ICT-specialisten
     questions:
       ict_specialisten_in_dienst:
@@ -232,8 +217,8 @@ questionnaire:
           condition: Nee
           goto: "quest:werknemers_overig_trainingen"
         choices:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
       ict_specialisten_aantal_fte:
         alleengrotebedrijven: true
         question: "Hoeveel ICT-specialisten\\supscript{$\\ast$} stonden er op 31 december 2020 op de
@@ -260,8 +245,8 @@ questionnaire:
         question: Heeft uw bedrijf in 2020 ICT-specialisten aangenomen of willen aannemen?
         type: choices
         choices:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
       ict_specialisten_moeilijk_te_vervullen:
         question: Had uw bedrijf in 2020 vacatures voor ICT-specialisten die moeilijk te vervullen waren?
         type: choices
@@ -274,7 +259,7 @@ questionnaire:
         zzp: false
         section:
           zzp: false
-          title: Vaste internetverbinding
+          title: Vaste internetverbinding bedrijf
         question: "Gebruikt uw bedrijf een vaste internetverbinding\\supscript{$\\ast$}?"
         eurostat:
           refers_to: A2
@@ -309,11 +294,11 @@ questionnaire:
           refers_to: A3
         type: choices
         choices:
-        - Minder dan 30 Mbit/s
-        - 30 tot 100 Mbit/s
-        - 100 tot 500 Mbit/s
-        - 500 Mbit/s tot 1 Gbit/s
-        - Ten minste 1 Gbit/s
+          - Minder dan 30 Mbit/s
+          - 30 tot 100 Mbit/s
+          - 100 tot 500 Mbit/s
+          - 500 Mbit/s tot 1 Gbit/s
+          - Ten minste 1 Gbit/s
       internet_mobiel_aan_personeel:
         zzp: false
         section:
@@ -321,11 +306,11 @@ questionnaire:
           title: Mobiele internetverbinding
           info:
             items:
-            - "Deze vragen gaan over het gebruik van draagbare apparaten zoals laptops, tablets
+              - "Deze vragen gaan over het gebruik van draagbare apparaten zoals laptops, tablets
                en smartphones met internetverbinding via mobiele telefoonnetwerken voor het werk."
-            - "Het bedrijf verstrekt de draagbare apparaten en betaalt ten minste een deel van de
+              - "Het bedrijf verstrekt de draagbare apparaten en betaalt ten minste een deel van de
                abonnement- en gebruikskosten."
-            - "Wifi telt niet mee als mobiel internet."
+              - "Wifi telt niet mee als mobiel internet."
         question: "Verstrekt uw bedrijf draagbare apparaten met mobiel internet\\supscript{$\\star$}
         aan de werkzame personen voor hun werk?"
         eurostatoptional:
@@ -335,11 +320,11 @@ questionnaire:
           condition: Nee
           goto: "quest:internet_heeft_website"
         choices:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         info:
           above: true
-          title:  "\\supscript{$\\star$}Als de internetverbinding \\emph{uitsluitend} via Wifi loopt
+          title: "\\supscript{$\\star$}Als de internetverbinding \\emph{uitsluitend} via Wifi loopt
            en \\emph{niet} via mobiele-telefoonnetwerken, telt dit niet mee."
       internet_hoeveel_wp_perc_heeft_apparaat:
         zzp: false
@@ -363,8 +348,8 @@ questionnaire:
           condition: Nee
           goto: "quest:internet_sociale_media"
         choices:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
       internet_website_wat_is_url:
         question: "Wat is the URL van de website van uw bedrijf?
         \\explanation{In het geval van meerdere websites, de website met de meeste bezoekers
@@ -376,15 +361,15 @@ questionnaire:
         eurostatoptional:
           refers_to: A7
         groups:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         choicelines:
-        - Beschrijvingen van goederen/diensten of prijslijsten
-        - De mogelijkheid om online te bestellen, boeken of reserveren
-        - Een faciliteit waarmee de klant zelf zijn product kan ontwerpen/aanpassen (goederen of diensten)
-        - Informatie over de status van een bestelling
-        - Klantspecifieke informatie voor reguliere bezoekers
-        - Verwijzingen of links naar sociale media profielen van uw bedrijf
+          - Beschrijvingen van goederen/diensten of prijslijsten
+          - De mogelijkheid om online te bestellen, boeken of reserveren
+          - Een faciliteit waarmee de klant zelf zijn product kan ontwerpen/aanpassen (goederen of diensten)
+          - Informatie over de status van een bestelling
+          - Klantspecifieke informatie voor reguliere bezoekers
+          - Verwijzingen of links naar sociale media profielen van uw bedrijf
       internet_sociale_media:
         section:
           title: Gebruik van sociale media
@@ -397,13 +382,13 @@ questionnaire:
           refers_to: A8
         type: group
         groups:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         choicelines:
-        - Sociale netwerken zoals Facebook, LinkedIn, Yammer
-        - Blogs of microblogs zoals Twitter
-        - Websites die multimedia (filmpjes, foto’s) delen zoals YouTube, Flickr, Picasa
-        - Op Wiki gebaseerde middelen om kennis te delen
+          - Sociale netwerken zoals Facebook, LinkedIn, Yammer
+          - Blogs of microblogs zoals Twitter
+          - Websites die multimedia (filmpjes, foto’s) delen zoals YouTube, Flickr, Picasa
+          - Op Wiki gebaseerde middelen om kennis te delen
         filter:
           condition: Als alles 'Nee'
           goto: "mod:clouddiensten"
@@ -422,12 +407,12 @@ questionnaire:
         it2:
           title: Clouddiensten voldoen aan de volgende criteria
           items:
-          - Servers van de aanbieders leveren diensten
-          - "De gebruiker kan de diensten diensten eenvoudig zelf uitbreiden of juist verminderen
+            - Servers van de aanbieders leveren diensten
+            - "De gebruiker kan de diensten diensten eenvoudig zelf uitbreiden of juist verminderen
              (bijvoorbeeld de hoeveel opslagcapaciteit verhogen of verlagen)"
-          - "De gebruiker heeft na de installatie altijd toegang tot de diensten, zonder
+            - "De gebruiker heeft na de installatie altijd toegang tot de diensten, zonder
              tussenkomst van de aanbieder"
-          - De gebruiker betaalt voor de diensten
+            - De gebruiker betaalt voor de diensten
         it3:
           title: Een verbinding via VPN (Virtual Private Network) kan ook tot een clouddienst behoren
     questions:
@@ -445,8 +430,8 @@ questionnaire:
             default: "mod:databeheer"
             zzp: "mod:ict_veiligheid"
         choices:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
       cloud_diensten_welke:
         question: Gebruikt uw bedrijf de volgende betaalde clouddiensten
         eurostat:
@@ -456,20 +441,20 @@ questionnaire:
           title: Gratis clouddiensten niet meetellen
         type: group
         groups:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         choicelines:
-        - E-mail (als clouddienst)
-        - Office software, zoals tekstverwerkers, spreadsheetprogramma's (als clouddienst)
-        - Opslag (hosting) van databases van het bedrijf (als clouddienst)
-        - Bestanden opslaan (als clouddienst)
-        - Software voor boekhouding of financieel beheer (als clouddienst)
-        - Software om Enterprise Resource Planning te beheren (ERP)
-        - Software om informatie over klanten te beheren (CRM)
-        - "Veiligheidssoftware, zoals antivirus programmatuur, network access control (als
+          - E-mail (als clouddienst)
+          - Office software, zoals tekstverwerkers, spreadsheetprogramma's (als clouddienst)
+          - Opslag (hosting) van databases van het bedrijf (als clouddienst)
+          - Bestanden opslaan (als clouddienst)
+          - Software voor boekhouding of financieel beheer (als clouddienst)
+          - Software om Enterprise Resource Planning te beheren (ERP)
+          - Software om informatie over klanten te beheren (CRM)
+          - "Veiligheidssoftware, zoals antivirus programmatuur, network access control (als
            clouddienst)"
-        - Rekenkracht om software te draaien (als clouddienst)
-        - "Rekenplatform om hostomgeving te gebruiken voor ontwikkeling, testing or uitrollen van
+          - Rekenkracht om software te draaien (als clouddienst)
+          - "Rekenplatform om hostomgeving te gebruiken voor ontwikkeling, testing or uitrollen van
            applicaties zoals herbruikbaar software modulen, application programming interfaces
            (API's) (als clouddienst)"
   databeheer:
@@ -503,11 +488,11 @@ questionnaire:
           over klantinformatie te beheren."
         type: group
         groups:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         choicelines:
-        - Opslaan/distributie van klantengegevens binnen uw bedrijf
-        - "Analyse van klantgegevens voor marketingdoeleinden (\\emph{bijvoorbeeld prijsstelling,
+          - Opslaan/distributie van klantengegevens binnen uw bedrijf
+          - "Analyse van klantgegevens voor marketingdoeleinden (\\emph{bijvoorbeeld prijsstelling,
            promotie, keuze van distributiekanalen.})"
       databeheer_data_inzette_welke_mate:
         question: "In welke mate heeft uw bedrijf informatie en data gedigitaliseerd om de (interne)
@@ -529,20 +514,20 @@ questionnaire:
       gedrag vertonen door hun omgeving te analyseren en --met een zekere mate van zelfstandigheid--
       acties te ondernemen om bepaalde doelen te bereiken."
       items:
-       it1:
+        it1:
           title: "Systemen voor kunstmatige intelligentie kunnen puur op software zijn gebaseerd,
                    voorbeelden zijn:"
           items:
-          - "virtual agents/assistants (chatbots) gebaseerd op natuurlijke taalverwerking;"
-          - "spraak- en gezichtsherkenningssystemen gebaseerd op computerzicht- of
+            - "virtual agents/assistants (chatbots) gebaseerd op natuurlijke taalverwerking;"
+            - "spraak- en gezichtsherkenningssystemen gebaseerd op computerzicht- of
              spraakherkenningssystemen;"
-          - "machine vertalingssoftware;"
-          - "data-analyse op basis van bijvoorbeeld machine learning;"
-       it2:
+            - "machine vertalingssoftware;"
+            - "data-analyse op basis van bijvoorbeeld machine learning;"
+        it2:
           title: "of ingebed in apparaten, bijvoorbeeld:"
           items:
-          - zelfstandige robots voor autonome magazijnsystemen of productie-assemblagewerkzaamheden;
-          - zelfstandige drones voor autonome productiebewaking of pakketafhandeling, enz.
+            - zelfstandige robots voor autonome magazijnsystemen of productie-assemblagewerkzaamheden;
+            - zelfstandige drones voor autonome productiebewaking of pakketafhandeling, enz.
     questions:
       ai_gebruikt:
         question: Welke van de onderstaande AI-technologieën gebruikt uw bedrijf?
@@ -553,23 +538,23 @@ questionnaire:
           goto: "quest:ai_ooit_beschouwd"
         type: group
         groups:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         choicelines:
-        - "Technologieën die een analyse van geschreven taal uitvoeren
+          - "Technologieën die een analyse van geschreven taal uitvoeren
               (\\emph{textmining})"
-        - "Technologieën die gesproken taal omzetten in machinaal leesbare vorm
+          - "Technologieën die gesproken taal omzetten in machinaal leesbare vorm
               (\\emph{spraakherkenning})."
-        - "Technologieën die gesproken of geschreven taal genereren
+          - "Technologieën die gesproken of geschreven taal genereren
               (\\emph{Natural-Language Generation})."
-        - "Technologieën die objecten of personen identificeren op basis van afbeeldingen
+          - "Technologieën die objecten of personen identificeren op basis van afbeeldingen
               (afbeelding herkenning, beeldverwerking)."
-        - "\\emph{Machine-learning} (zoals \\emph{deep-learning} methodieken) voor data-analyse"
-        - "Technologieën die verschillende werkstromen automatiseren of helpen bij het nemen
+          - "\\emph{Machine-learning} (zoals \\emph{deep-learning} methodieken) voor data-analyse"
+          - "Technologieën die verschillende werkstromen automatiseren of helpen bij het nemen
            van beslissingen
               (op kunstmatige intelligentie gebaseerde software voor robotgestuurde
               procesautomatisering)."
-        - "Technologieën die fysieke beweging van machines mogelijk maken  door middel van
+          - "Technologieën die fysieke beweging van machines mogelijk maken  door middel van
            autonoom genomen beslissingen op basis van observatie van de omgeving
               (autonome robots, zelfrijdende voertuigen, autonome drones)."
       ai_doel:
@@ -579,45 +564,45 @@ questionnaire:
           refers_to: F2
         type: group
         groups:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         choicelines:
-        - "voor marketing of verkoop
+          - "voor marketing of verkoop
            \\explanation{-- \\emph{chatbots} op basis van natuurlijke taalverwerking voor
              klantenondersteuning}
            \\explanation{-- klantprofilering, prijsoptimalisatie, gepersonaliseerde
              marketingaanbiedingen, marktanalyse op basis van machine learning.}"
-        - "voor productieprocessen
+          - "voor productieprocessen
            \\explanation{-- voorspellend onderhoud op basis van machine learning}
            \\explanation{-- tools om producten te classificeren of defecten in producten op te sporen
            op basis van computer visie}
            \\explanation{-- autonome drones voor productietoezicht, beveiligings- of
            inspectietaken}
            \\explanation{-- assemblagewerkzaamheden uitgevoerd door bijvoorbeeld autonome robots.}"
-        - "voor organisatie van administratieve processen in het bedrijf
+          - "voor organisatie van administratieve processen in het bedrijf
            \\explanation{-- zakelijke virtuele assistenten op basis van machine learning en/of
              natuurlijk taalverwerking}
            \\explanation{-- conversie van spraak naar tekst op basis van spraakherkenning voor het
              opstellen van documenten}
            \\explanation{-- geautomatiseerde planning of planning op basis van machine learning}
            \\explanation{-- machinevertaling}"
-        - "voor bestuur van bedrijven
+          - "voor bestuur van bedrijven
            \\explanation{-- machine learning om gegevens te analyseren en te helpen bij het doen
              van investeringen of andere beslissingen}
            \\explanation{-- verkoop- of zakelijke prognoses op basis van machine learning}
            \\explanation{-- risicobeoordeling op basis van bijv. machine learning.}"
-        - "voor logistiek
+          - "voor logistiek
            \\explanation{-- autonome robots voor pick-and-pack-oplossingen in magazijnen}
            \\explanation{-- routeoptimalisatie op basis van machine learning}
            \\explanation{-- autonome robots voor pakketverzending, tracering, distributie en
              sortering}
            \\explanation{-- autonome drones voor bijvooreeld pakketbezorging.}"
-        - "voor ICT-beveiliging
+          - "voor ICT-beveiliging
            \\explanation{-- gezichtsherkenning op basis van computervisie voor authenticatie van
              ICT-gebruikers}
            \\explanation{-- detectie en preventie van cyberaanvallen op basis van bijv. machine
              learning.}"
-        - "voor humanresourcesmanagement of -werving
+          - "voor humanresourcesmanagement of -werving
            \\explanation{-- screening van voorselectie van kandidaten, automatisering van werving
             op basis van machine learning}
            \\explanation{-- werknemersprofilering of prestatieanalyse op basis van machine learning}
@@ -630,19 +615,19 @@ questionnaire:
           refers_to: F3
         type: group
         groups:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         info:
           above: true
           title: "\\supscript{$\\ast$}Eigen werknemers inclusief werknemers van een moeder-,
                   dochter- of zustermaatschappij"
         choicelines:
-        - "Software of systemen zijn ontwikkeld door eigen werknemers\\supscript{$\\ast$}"
-        - "Commerciële software of systemen zijn aangepast door eigen medewerkers\\supscript{$\\ast$}"
-        - "Open-source software of systemen zijn aangepast door eigen medewerkers\\supscript{$\\ast$}"
-        - "Commerciële software of gebruiksklare systemen aangeschaft, inclusief voorbeelden waar
+          - "Software of systemen zijn ontwikkeld door eigen werknemers\\supscript{$\\ast$}"
+          - "Commerciële software of systemen zijn aangepast door eigen medewerkers\\supscript{$\\ast$}"
+          - "Open-source software of systemen zijn aangepast door eigen medewerkers\\supscript{$\\ast$}"
+          - "Commerciële software of gebruiksklare systemen aangeschaft, inclusief voorbeelden waar
            het al in een gekocht artikel of systeem was verwerkt"
-        - "Externe leveranciers werden ingehuurd om ze te ontwikkelen of aan te passen"
+          - "Externe leveranciers werden ingehuurd om ze te ontwikkelen of aan te passen"
       ai_ooit_beschouwd:
         question: "Heeft uw onderneming ooit overwogen om één van bovenstaande kunstmatige
         intelligentie technologieën te gebruiken "
@@ -655,8 +640,8 @@ questionnaire:
           refers_to: F4
         type: choices
         choices:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         filter:
           condition: Nee
           goto: "mod:ict_veiligheid"
@@ -667,18 +652,18 @@ questionnaire:
           refers_to: F5
         type: group
         groups:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         choicelines:
-        - "Kosten zijn te hoog"
-        - "Gebrek aan relevante ervaring in bedrijf"
-        - "Incompatibiliteit met bestaande apparatuur, software of systemen"
-        - "Moeilijkheden met beschikbaarheid of kwaliteit van de benodigde gegevens"
-        - "Bezorgdheid over schending van gegevensbescherming en privacy"
-        - "Onduidelijkheid over de juridische gevolgen zoals aansprakelijkheid bij schade ja
+          - "Kosten zijn te hoog"
+          - "Gebrek aan relevante ervaring in bedrijf"
+          - "Incompatibiliteit met bestaande apparatuur, software of systemen"
+          - "Moeilijkheden met beschikbaarheid of kwaliteit van de benodigde gegevens"
+          - "Bezorgdheid over schending van gegevensbescherming en privacy"
+          - "Onduidelijkheid over de juridische gevolgen zoals aansprakelijkheid bij schade ja
            veroorzaakt door het gebruik van kunstmatige intelligentie"
-        - "Ethische overwegingen"
-        - "Kunstmatige intelligentie technologieën zijn niet nuttig voor de onderneming"
+          - "Ethische overwegingen"
+          - "Kunstmatige intelligentie technologieën zijn niet nuttig voor de onderneming"
   ict_veiligheid:
     title: ICT-veiligheid
     add_this: true
@@ -693,41 +678,41 @@ questionnaire:
         question: Gebruikt uw bedrijf de volgende ICT-veiligheidsmaatregelen?
         type: group
         groups:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         choicelines:
-        - "Antivirussoftware
+          - "Antivirussoftware
            \\explanation{Gratis en/of betaald}."
-        - "Beleid voor sterke wachtwoorden
+          - "Beleid voor sterke wachtwoorden
               \\explanation{Wachtwoorden die ten minste acht gemengde karakters hebben, die
               veranderd moeten worden na een bepaalde periode en/of naar aanleiding van bijvoorbeeld
               een ICT-veiligheidsincident, en die versleuteld worden verstuurd en opgeslagen.}"
-        - "Up-to-date houden van de software en het besturingssysteem"
-        - "Identificatie en authenticatie van gebruikers via software of hardware tokens om
+          - "Up-to-date houden van de software en het besturingssysteem"
+          - "Identificatie en authenticatie van gebruikers via software of hardware tokens om
            toegang te krijgen tot de ICT-systemen (oftewel twee-factor authenticatie)
               \\explanation{Bijvoorbeeld via smartcards, USB-beveiligingssleutels of mobiele
               telefoons (eenmalige inlogcodes via SMS of app).}"
-        - "Versleutelingstechnieken (encryptie) van data, documenten of e-mails"
-        - "Op een andere fysieke  locatie (reserve)gegevens bewaren (offsite data-backup)
+          - "Versleutelingstechnieken (encryptie) van data, documenten of e-mails"
+          - "Op een andere fysieke  locatie (reserve)gegevens bewaren (offsite data-backup)
               \\explanation{Opslag in de cloud telt ook mee.}"
-        - "Netwerk access control
+          - "Netwerk access control
               \\explanation{Alleen apparaten die voldoen aan bepaalde eisen krijgen toegang tot het
                bedrijfsnetwerk, bijvoorbeeld alleen  apparaten die de laatste update van een
                besturingssysteem hebben geïnstalleerd}"
-        - "Virtual private network (VPN) bij internetgebruik buiten het bedrijf
+          - "Virtual private network (VPN) bij internetgebruik buiten het bedrijf
               \\explanation{Een VPN zorgt ervoor dat alle internetverkeer tussen de gebruiker en de
               VPN-server wordt versleuteld. Daardoor kan het verkeer niet worden afgeluisterd, en kan
               de inhoud van bezochte websites niet worden gemanipuleerd door kwaadwillenden (bijv.
               man-in-the-middle-aanvallen).}"
-        - "Logbestanden opslaan om incidenten achteraf te analyseren"
-        - "Methodes om de ICT-veiligheid in uwe bedrijf te kunnen beoordelen, zoals de
+          - "Logbestanden opslaan om incidenten achteraf te analyseren"
+          - "Methodes om de ICT-veiligheid in uwe bedrijf te kunnen beoordelen, zoals de
            veiligheidsmaatregelen laten controleren door derden, of tests
            uitvoeren
               \\explanation{Bijvoorbeeld penetration testing (pen test), red teaming, 'ethisch
               hacken', back-up systemen testen of gesimuleerde ICT-veiligheidsincidenten zoals
               nep-phishing-emails versturen. Dergelijke tests worden uitgevoerd om op een veilige
               manier kwetsbaarheden in ICT-systemen op te sporen.}"
-        - "Risicoanalyses
+          - "Risicoanalyses
               \\explanation{Periodiek beoordelen wat de kans is dat uw bedrijf wordt getroffen door
               een incident, en wat daarvan de mogelijke gevolgen zijn.}"
       ict_veiligheid_door_wie_uitgevoerd:
@@ -737,15 +722,15 @@ questionnaire:
           \\explanation{Laat het upgraden van pre-package software buiten beschouwing.}"
         type: group
         groups:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         choicelines:
-        - "Eigen personeel
+          - "Eigen personeel
             \\explanation{Inclusief het personeel  van moeder-, dochter-, of zustermaatschappijen}"
-        - Externe leveranciers
-        - Niet van toepassing
+          - Externe leveranciers
+          - Niet van toepassing
       ict_veiligheid_incidenten_extern:
-        question:  "Hoe vaak kwamen onderstaande ICT-veiligheidsincidenten door een aanval van
+        question: "Hoe vaak kwamen onderstaande ICT-veiligheidsincidenten door een aanval van
                     buitenaf in 2020 voor in uw bedrijf?"
         info:
           title: "Indien bij alle antwoorden 'Niet voorgekomen' ingevuld $\\rightarrow$ ga naar
@@ -764,7 +749,7 @@ questionnaire:
            of door ongeoorloofde elektronische toegang"
           - "Onthulling van vertrouwelijke elektronische gegevens door inbraak, pharming of phishing"
       ict_veiligheid_kosten_extern:
-        question:  "Hoe hoog waren de totale kosten van dit soort incidenten ten gevolge van een
+        question: "Hoe hoog waren de totale kosten van dit soort incidenten ten gevolge van een
                     aanval van buitenaf voor uw bedrijf in 2020?
                     \\explanation{Interne ICT-veiligheidsincidenten worden veroorzaakt door
                     \\emph{interne} storingen of door toedoen van het eigen personeel; dus
@@ -784,7 +769,7 @@ questionnaire:
            door ongeoorloofde elektronische toegang"
           - "Onthulling van vertrouwelijke elektronische gegevens door inbraak, pharming of phishing"
       ict_veiligheid_kosten_perc_extern:
-        question:  "Hoe hoog waren kosten van ICT-veiligheidsincidenten door een aanval van
+        question: "Hoe hoog waren kosten van ICT-veiligheidsincidenten door een aanval van
                     buitenaf  in 2020 voor in uw bedrijf als percentage van de totale  omzet in
                     2020?"
         type: choices
@@ -800,7 +785,7 @@ questionnaire:
           title: "Opmerking voor DVZ: omzet vragen niet verplicht. Niet ingevuld beschouwen we
           als onbekend"
       ict_veiligheid_incidenten:
-        question:  "Hoe vaak kwamen onderstaande ICT-veiligheidsincidenten door een interne storing
+        question: "Hoe vaak kwamen onderstaande ICT-veiligheidsincidenten door een interne storing
                     of door toedoen van eigen personeel  in 2020 voor in uw bedrijf?
                     \\explanation{Interne ICT-veiligheidsincidenten worden veroorzaakt door
                     \\emph{interne} storingen of door toedoen van het eigen personeel; dus
@@ -823,7 +808,7 @@ questionnaire:
           - "Onthulling van vertrouwelijke elektronische gegevens door acties van eigen personeel,
            opzettelijk of per ongeluk"
       ict_veiligheid_kosten:
-        question:  "Hoe hoog waren de totale kosten van de interne incidenten voor uw bedrijf in
+        question: "Hoe hoog waren de totale kosten van de interne incidenten voor uw bedrijf in
                     2020?
                     \\explanation{Interne ICT-veiligheidsincidenten worden veroorzaakt door
                     \\emph{interne} storingen of door toedoen van het eigen personeel; dus
@@ -844,7 +829,7 @@ questionnaire:
           - "Onthulling van vertrouwelijke elektronische gegevens door acties van eigen personeel,
            opzettelijk of per ongeluk"
       ict_veiligheid_kosten_perc:
-        question:  "Hoe hoog waren kosten van ICT-veiligheidsincidenten door een interne storing
+        question: "Hoe hoog waren kosten van ICT-veiligheidsincidenten door een interne storing
                     of door toedoen van eigen personeel  in 2020 voor in uw bedrijf als
                     percentage van de totale  omzet in 2020?
                     \\explanation{Interne ICT-veiligheidsincidenten worden veroorzaakt door
@@ -878,8 +863,8 @@ questionnaire:
            verbonden samenwerkingsverbanden op het gebied van cyberweerbaarheid?"
         type: choices
         choices:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         filter:
           condition: Nee
           goto: "quest:ict_veiligheid_dtc_actief_op_zoek"
@@ -890,16 +875,16 @@ questionnaire:
           hoe uw bedrijf cyberweerbaar wordt?"
         type: choices
         choices:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         dtc: true
         zzp: true
       ict_veiligheid_dtc_actief_op_zoek:
         question: Bent u actief op zoek naar meldingen over cyberbedreigingen?
         type: choices
         choices:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         dtc: true
         zzp: true
   iot:
@@ -911,19 +896,19 @@ questionnaire:
       systemen verzamelen gegevens en wisselen gegevens uit en kunnen via internet gemonitord of
       bediend worden."
       items:
-       it1:
+        it1:
           title: "Voorbeelden zijn:"
           items:
-          - "Slimme thermostaten, slimme lampen of slimme meters;"
-          - "Radio Frequentie Identificatie (RFID) of Internet Protocol (IP) tags gelinkt aan
+            - "Slimme thermostaten, slimme lampen of slimme meters;"
+            - "Radio Frequentie Identificatie (RFID) of Internet Protocol (IP) tags gelinkt aan
              producten of objecten om deze te kunnen volgen;"
-          - "Sensoren voor het monitoren van de bewegingen of onderhoudsbehoefte van voertuigen
+            - "Sensoren voor het monitoren van de bewegingen of onderhoudsbehoefte van voertuigen
              via het internet."
-       it2:
+        it2:
           title: "Eenvoudige detectie sensoren niet meenemen zoals beweging-, geluid-, temperatuur-
            en rook-sensoren en RFID tags die niet gemonitord of (op afstand) gecontrolleerd
            kunnen worden via interenet."
-       it3:
+        it3:
           title: "IoT apparaten maken gebruik van verschillende types van netwerk verbindingen zoals
             WAN, WiFi, LAN, Bluetooth, ZigBee, Virutal Private Networkls (VPN)"
     questions:
@@ -934,8 +919,8 @@ questionnaire:
           \\explanation{Laat computers, smartphones en printer buiten beschouwing}"
         type: choices
         choices:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         filter:
           condition: Nee
           goto: "mod:ict_veiligheid"
@@ -952,37 +937,37 @@ questionnaire:
           - Ja
           - Nee
         choicelines:
-        - "Slimme meters, slimme lampen of slimme thermostaten voor de optimalisatie van het
+          - "Slimme meters, slimme lampen of slimme thermostaten voor de optimalisatie van het
            energieverbruik op uw bedrijventerrein (zoals magazijn, productieafdeling of
            distributiecentrum)"
-        - "Slimme alarm systemen, slime rookmelders, deursloten, bewaking camera's om uw
+          - "Slimme alarm systemen, slime rookmelders, deursloten, bewaking camera's om uw
            bedrijfsterrein te beveiligen."
-        - "Sensoren, RFID of IP tags of op internet aangesloten camera's ter verbetering van de
+          - "Sensoren, RFID of IP tags of op internet aangesloten camera's ter verbetering van de
            dienstverlening aan de klant."
-        - "Bewegings- of onderhoudssensoren om het onderhoud aan voertuigen of machines te
+          - "Bewegings- of onderhoudssensoren om het onderhoud aan voertuigen of machines te
            optimaliseren."
-        - "Sensoren of RFID tags om het productieproces te monitoren/controleren dan wel te
+          - "Sensoren of RFID tags om het productieproces te monitoren/controleren dan wel te
            automatiseren."
-        - "Sensoren of RFID tags om het logistiek management van producten of voertuigen in
+          - "Sensoren of RFID tags om het logistiek management van producten of voertuigen in
            magazijnbeheer te monitoren/controleren."
-        - "Andere IoT-systemen of -apparaten"
+          - "Andere IoT-systemen of -apparaten"
   facturen:
-    add_this: true
+    add_this: false
     title: Facturen (elektronisch en papier)
     info:
-      title:  Er zijn twee soorten elektronische facturen
+      title: Er zijn twee soorten elektronische facturen
       items:
         voor_automatische_verwerking:
           title: E-facturen geschikt voor automatische verwerking
           items:
-          - "Voorbeelden: Electronic Data Interchange (EDI), XML, UBL"
-          - "Worden ofwel direct uitgewisseld door elektronische systemen van bedrijven
+            - "Voorbeelden: Electronic Data Interchange (EDI), XML, UBL"
+            - "Worden ofwel direct uitgewisseld door elektronische systemen van bedrijven
              onderling, of via elektronische systemen van dienstverleners zoals \\emph{Billing
              Service Provides}"
         niet_voor_automatische_verwerking:
           title: Facturen in elektronische vorm \emph{niet} geschikt voor automatische verwerking
           items:
-          - "Voorbeelden: Factuur in e-mail of als e-mailbijlagen in de vorm van een PDF-bestand"
+            - "Voorbeelden: Factuur in e-mail of als e-mailbijlagen in de vorm van een PDF-bestand"
     questions:
       facturen_verzonden_naar_wie:
         section:
@@ -993,12 +978,12 @@ questionnaire:
           condition: Als zowel 'Andere bedrijven' als 'Overheden' 'Nee'
           goto: "mod:ecommerce"
         groups:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         choicelines:
-        - Andere bedrijven
-        - Overheden
-        - Consumenten
+          - Andere bedrijven
+          - Overheden
+          - Consumenten
       facturen_verzonden_percentages_naar_wie:
         question: "Hoeveel procent van alle facturen heeft uw bedrijf in 2020 verzonden:
           \\explanation{Een schatting volstaat}"
@@ -1010,6 +995,50 @@ questionnaire:
           - "Uitsluitend in papieren vorm"
         info:
           title: Het totaal van \textbf{a}, \textbf{b} en \textbf{c} moet 100\% zijn
+  covid_19:
+    add_this: true
+    zzp: false
+    title: Effect van de Covid-19 pandemie
+    questions:
+      telewerk_toename:
+        question: "Had uw bedrijf tijdens 2020"
+        type: group
+        group_width: 0.05\textwidth
+        groups:
+          - Ja
+          - Nee
+          - N.v.t
+        choicelines:
+          - "Een toename van het percentage van het aantal werkzame  personen in het bedrijf met
+             toegang tot hun \\emph{bedrijfsemail} van buiten de bedrijfsvestiging?"
+          - "Een toename van het percentage van het aantal werkzame  personen in het bedrijf met
+             toegang tot software of documenten op het ICT systeem van het bedrijf,
+             \\emph{behalve e-mail}, van buiten de bedrijfsvestiging?"
+          - "Een toename van het aantal online vergaderingen via bijvoorbeeld Skype, Zoom,
+             MS Teams, etc.?"
+      telewerk_toename_oorzaak:
+        question: "Tot op welke hoogte waren deze veranderingen het gevolg van de Covid-19
+                   pandemie?"
+        type: group
+        group_width: 0.1\textwidth
+        groups:
+          - Volledig
+          - Gedeeltelijk
+          - Totaal niet
+        choicelines:
+          - "Toegang van buitenaf tot bedrijfsemail
+             \\textcolor{red}{{(alleen als vraag \\ref{quest:telewerk_toename}\\textbf{a} is 'Ja')}}"
+          - "Toegang van buitenaf tot ICT-systemen van het bedrijf
+             \\emph{met uitzondering van bedrijfsemail}
+             \\textcolor{red}{(alleen als vraag \\ref{quest:telewerk_toename}\\textbf{b} is 'Ja')}"
+          - "Aantal online vergaderingen
+             \\textcolor{red}{(alleen als vraag \\ref{quest:telewerk_toename}\\textbf{c} is 'Ja')}"
+      covid_ecommerce:
+        question: "Is uw bedrijf in 2020 door de covid-19 pandemie meer goederen of diensten via
+                   internet gaan verkopen (via een website of app, een platform of een EDI
+                   systeem)?
+                   \\explanation{Als uw bedrijf hiermee begonnen is telt dit ook mee.}"
+        type: choices
   ecommerce:
     add_this: true
     title: "E-commerce"
@@ -1026,13 +1055,13 @@ questionnaire:
         info:
           title: Omschrijving E-commerce
           items:
-          - "E-commerce is de aan- of verkoop van goederen of diensten via computernetwerken met
+            - "E-commerce is de aan- of verkoop van goederen of diensten via computernetwerken met
              een methode die speciaal ontworpen is voor het verzenden of ontvangen van
              bestellingen/orders."
-          - "Handgetypte e-mail telt dus niet mee."
-          - "De bestellingen/orders vinden plaats via deze methodes maar het betalen ervan hoeft
+            - "Handgetypte e-mail telt dus niet mee."
+            - "De bestellingen/orders vinden plaats via deze methodes maar het betalen ervan hoeft
              niet online te gebeuren."
-          - "E-commerce kan plaatsvinden via een website/app of via EDI
+            - "E-commerce kan plaatsvinden via een website/app of via EDI
              (\\emph{Electronic Data Interchange}). Met EDI wordt hier bedoeld: het zenden of
              ontvangen van informatie in een afgesproken format dat automatische verwerking
              mogelijk maakt, bijvoorbeeld EDIFACT, XML, UBL, XBRL"
@@ -1041,7 +1070,7 @@ questionnaire:
           title: "Omzet via website en apps"
         question: Heeft uw bedrijf in 2020 orders ontvangen voor goederen of diensten via een website of app?
         info:
-          title:  "$^\\dagger$Het gaat hier om verkopen via een online winkel (webshop), via
+          title: "$^\\dagger$Het gaat hier om verkopen via een online winkel (webshop), via
            webformulieren op een website of extranet, of via een \\emph{app}. \\textbf{Ook
            meetellen}: orders die uw bedrijf heeft ontvangen via een website of app die niet van uw
            bedrijf is, bijvoorbeeld een platform zoals booking.com, bol.com, marktplaats.nl e.d..
@@ -1066,14 +1095,14 @@ questionnaire:
           title: "Omzet via online platforms"
           info:
             items:
-            - "In deze sectie wordt een onderscheid gemaakt tussen  de omzet behaald via uw
+              - "In deze sectie wordt een onderscheid gemaakt tussen  de omzet behaald via uw
                \\emph{eigen} website of app en de website of app van een \\emph{ander} bedrijf, ook
                wel aangeduid als \\emph{online platform}."
-            - "Online platforms brengen aanbieders van goederen en diensten in contact  met
+              - "Online platforms brengen aanbieders van goederen en diensten in contact  met
                (potentiële) klanten en  ondersteunen eventueel transacties."
-            - "Voorbeelden van online platforms zijn booking.com, bol.com, thuisbezorgd.nl,
+              - "Voorbeelden van online platforms zijn booking.com, bol.com, thuisbezorgd.nl,
                kieskeurig.nl, werkspot.nl, etc"
-            - "Een website of app in eigen beheer wordt dus \\emph{niet} gezien als online platform"
+              - "Een website of app in eigen beheer wordt dus \\emph{niet} gezien als online platform"
         question: "Hoeveel procent van de in 2020 via een website of app behaalde omzet betrof verkoop via:"
         eurostat:
           refers_to: B1 en B3
@@ -1082,8 +1111,8 @@ questionnaire:
           condition: Als bij \textbf{b} 0\% ingevuld
           goto: "quest:ecommerce_web_orders_omzetw_per_doelgroep"
         quantity_label:
-        - "Website of app van uw \\emph{eigen} bedrijf"
-        - "Een website of app van een \\emph{ander} bedrijf, oftewel een online
+          - "Website of app van uw \\emph{eigen} bedrijf"
+          - "Een website of app van een \\emph{ander} bedrijf, oftewel een online
            platform
              \\explanation{voorbeelden zijn booking.com, bol.com, thuisbezorgd.nl, kieskeurig.nl,
              werkspot.nl}"
@@ -1099,9 +1128,9 @@ questionnaire:
         type: choices
         group_width: 0.05\textwidth
         choices:
-        - Via één
-        - Via twee
-        - Via drie of meer
+          - Via één
+          - Via twee
+          - Via drie of meer
       ecommerce_web_helft_omzet_uit_een:
         question: Kwam meer dan de helft van de omzet van marktplaatsen in 2020 van slechts één platform?
         type: choices
@@ -1111,10 +1140,10 @@ questionnaire:
         alleengrotebedrijven: true
         question: "Hoeveel procent van de in 2020 via een website of app behaalde omzet betrof verkoop aan:"
         quantity_label:
-        - Bedrijven
-        - Overheidsorganisaties
-        - Nederlandse consumenten
-        - Buitenlandse consumenten
+          - Bedrijven
+          - Overheidsorganisaties
+          - Nederlandse consumenten
+          - Buitenlandse consumenten
         eurostat:
           refers_to: B6
           count: 2  # in eurostat vragen ze alleen B2C en B2B+B2G samen
@@ -1124,16 +1153,16 @@ questionnaire:
         alleengrotebedrijven: true
         question: "Hoeveel procent van de in 2020 via een website of app behaalde omzet betrof verkoop aan klanten in:"
         quantity_label:
-        - Nederland
-        - Andere EU-landen
-        - Niet EU-landen
+          - Nederland
+          - Andere EU-landen
+          - Niet EU-landen
         eurostat:
           refers_to: B7 en B8
           count: 2  # in eurostat vragen ze dat minstens twee van a), b) of c) met "ja" worden beantwoord anders check filter voor B9
         info:
           title: Het totaal van \textbf{a} t/m \textbf{c} moet 100\% zijn
           items:
-          - "Andere EU-landen: België, Bulgarije, Cyprus, Denemarken, Duitsland, Estland, Finland,
+            - "Andere EU-landen: België, Bulgarije, Cyprus, Denemarken, Duitsland, Estland, Finland,
              Frankrijk, Griekenland, Hongarije, Ierland, Italië, Kroatië, Letland, Litouwen,
              Luxemburg, Malta, Oostenrijk, Polen, Portugal, Roemenië, Slovenië, Slowakije, Spanje,
              Tsjechië, Zweden."
@@ -1148,32 +1177,32 @@ questionnaire:
           refers_to: B9
         type: group
         groups:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         choicelines:
-        - Hoge kosten voor het bezorgen of retourneren van producten bij de verkoop aan andere EU-landen
-        - Moeilijkheden bij het oplossen van klachten en geschillen bij de verkoop aan andere EU-landen
-        - Labels/etiketten van producten aanpassen voor verkoop aan andere EU-landen
-        - Onvoldoende kennis van andere talen om te communiceren met klanten in andere EU-landen
-        - Beperkingen opgelegd door uw zakenpartners om te mogen verkopen aan andere specifieke EU-landen  #EVLT "specifieke" i.v.m. Brexit
-        - Moeilijkheden bij het verrekenen van BTW-systeem in EU-landen, zoals onzekerheid over BTW-handelingen bij verschillende landen
+          - Hoge kosten voor het bezorgen of retourneren van producten bij de verkoop aan andere EU-landen
+          - Moeilijkheden bij het oplossen van klachten en geschillen bij de verkoop aan andere EU-landen
+          - Labels/etiketten van producten aanpassen voor verkoop aan andere EU-landen
+          - Onvoldoende kennis van andere talen om te communiceren met klanten in andere EU-landen
+          - Beperkingen opgelegd door uw zakenpartners om te mogen verkopen aan andere specifieke EU-landen  #EVLT "specifieke" i.v.m. Brexit
+          - Moeilijkheden bij het verrekenen van BTW-systeem in EU-landen, zoals onzekerheid over BTW-handelingen bij verschillende landen
       ecommerce_omzet_via_edi_gehad:
         section:
           title: Omzet via EDI
           info:
             title: Met EDI (Elektronic Data Interchange) wordt hier bedoeld
             items:
-            - "Informatie zenden of ontvangen in een afgesproken format dat automatische
+              - "Informatie zenden of ontvangen in een afgesproken format dat automatische
                verwerking mogelijk maakt, bijvoorbeeld EDIFACT, XML, UBL, en XBRL."
-            - "Inkopen via handgetypte e-mails tellen \\emph{niet} mee."
+              - "Inkopen via handgetypte e-mails tellen \\emph{niet} mee."
         question: "Heeft uw bedrijf in 2020 orders ontvangen voor goederen of diensten via EDI?"
         eurostat:
           refers_to: B10
         quantity_label:
         type: choices
         choices:
-        - Ja
-        - Nee
+          - Ja
+          - Nee
         filter:
           condition: Nee
           goto: "mod:contactgegevens"
@@ -1190,13 +1219,13 @@ questionnaire:
         eurostat:
           refers_to: B12
         quantity_label:
-        - Nederland
-        - Andere EU-landen
-        - Niet EU-landen
+          - Nederland
+          - Andere EU-landen
+          - Niet EU-landen
         info:
           title: Een schatting volstaat
           items:
-          - "Andere EU-landen: België, Bulgarije, Cyprus, Denemarken, Duitsland, Estland, Finland,
+            - "Andere EU-landen: België, Bulgarije, Cyprus, Denemarken, Duitsland, Estland, Finland,
              Frankrijk, Griekenland, Hongarije, Ierland, Italië, Kroatië, Letland, Litouwen,
              Luxemburg, Malta, Oostenrijk, Polen, Portugal, Roemenië, Slovenië, Slowakije, Spanje,
              Tsjechië, Zweden."
@@ -1217,8 +1246,8 @@ questionnaire:
       contact:
         question: Contactdetails
         quantity_label:
-        - e-mailadres
-        - telefoonnummer
+          - e-mailadres
+          - telefoonnummer
       opmerkingen:
         question: Opmerkingen
         type: textbox
