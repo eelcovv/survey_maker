@@ -685,11 +685,8 @@ class SurveyDocument(Document):
                 color_local, color_key = self.get_color_first_match(question_properties)
             else:
                 color_local, color_key = module_color_name, module_color_key
-            if exclude_question:
-                if color_key == self.main_color and question_properties.get(color_key, True):
-                    logger.debug(f"adding main color question {key}  {color_key}")
-                else:
-                    logger.debug(f"skipping {key}")
+            if exclude_question and not question_properties.get(color_key):
+                    logger.debug(f"skipping {key} due to exclude")
                     continue
 
             # if a section title field is given, start a new section title at this question
