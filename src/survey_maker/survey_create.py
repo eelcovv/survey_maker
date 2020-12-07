@@ -124,7 +124,8 @@ def setup_logging(write_log_to_file=False,
     # so we can control the output
     _logger = merge_loggers(_logger, "cbs_utils")
     _logger = merge_loggers(_logger, "survey_maker.engine", logger_level_to_merge=log_level)
-    _logger = merge_loggers(_logger, "survey_maker.survey_document", logger_level_to_merge=log_level)
+    _logger = merge_loggers(_logger, "survey_maker.survey_document",
+                            logger_level_to_merge=log_level)
 
     _logger.info("{:10s}: {}".format("Running", sys.argv))
     _logger.info("{:10s}: {}".format("Version", __version__))
@@ -311,6 +312,10 @@ def main(args_in):
                 output_file = "_".join([output_file, re.sub("-.*", "", survey_branch)])
                 if survey_version is not None:
                     survey_version = survey_branch + "-" + survey_version
+
+        if survey_version is not None:
+            version = re.sub("^-", "", re.sub(survey_branch,  "", survey_version))
+            output_file = "_".join([output_file, "v" + re.sub("-.*", "", version)])
 
         if not args.no_date:
             date = preamble.get("date")
