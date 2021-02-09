@@ -27,12 +27,15 @@ from subprocess import Popen, PIPE
 import logging
 import argparse
 
+TOOLS_DIR = "\\\\cbsp.nl\\Productie\\secundair\\DecentraleTools\\Output\\CBS_Python"
+
 parser = argparse.ArgumentParser("Install the python executable of the surver_maker")
 parser.add_argument("--debug", help="Give debug info", dest="log_level", default=logging.INFO, const=logging.DEBUG,
                     action="store_const")
 parser.add_argument("--app_name", help="Name of the application", default="surver_maker")
-parser.add_argument("--destination", help="Destination where the app is installed",
-                    default="\\\\cbsp.nl\\Productie\\secundair\\DecentraleTools\\Output\\CBS_Python\\Python3.6")
+parser.add_argument("--destination", help="Destination where the app is installed", default=TOOLS_DIR)
+parser.add_argument("--python_version", help="Version of python to install for",
+                    default="Python3.8", choices={"Python3.6", "Python3.8"})
 parser.add_argument("--update", help="App date a previous installed version", default="-U", const="-U",
                     action="store_const")
 parser.add_argument("--no_update", help="Do not update a previous installed version", const="", dest="update",
@@ -46,7 +49,7 @@ logger = logging.getLogger(__name__)
 
 python_exe = Path(sys.executable)
 pip_exe = python_exe.parent / Path("Scripts") / Path("pip.exe")
-destination = Path(args.destination)
+destination = Path(args.destination) / Path(args.python_version)
 if not destination.exists():
     raise FileNotFoundError(f"Could not find destination location {destination}")
 
