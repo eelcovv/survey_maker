@@ -258,6 +258,7 @@ class SurveyDocument(Document):
                 add_info_items = info_items
             else:
                 add_info_items = dict(items=list())
+            added_items = False
             if info_items_per_color is not None:
                 try:
                     info_for_color = info_items_per_color[self.main_color]
@@ -269,7 +270,8 @@ class SurveyDocument(Document):
                     else:
                         items = info_for_color["items"]
                     add_info_items["items"].extend(items)
-            if add_info_items:
+                    added_items = True
+            if added_items:
                 self.append(VSpace(NoEscape(r"\parskip")))
                 self.append(ModuleSection([NoEscape("Toelichting vragen"), "toelichting"]))
                 self.add_info(add_info_items, fontsize="normalsize")
