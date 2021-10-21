@@ -253,6 +253,7 @@ def main(args_in):
     logger.info(message)
     # read the yaml file and put the whole structure into a dictionary: *settings*
     logger.info("Reading settings file {}".format(args.survey_settings))
+    logger.debug("Current location: {}".format(os.getcwd()))
     with open(args.survey_settings, "r", encoding="utf-8") as stream:
         settings = yaml.load(stream=stream, Loader=yamlloader.ordereddict.CLoader)
 
