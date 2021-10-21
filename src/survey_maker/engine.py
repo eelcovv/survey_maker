@@ -40,6 +40,7 @@ class SurveyMaker(object):
                  n_compile=1,
                  silent=True,
                  compiler="xelatex",
+                 compiler_args=None,
                  clean=True,
                  survey_version=None,
                  dvz_references=None,
@@ -101,13 +102,14 @@ class SurveyMaker(object):
                     # labels right
                     clean_latex = False
 
-                logger.info("Writing Survey to {}.pdf ({}/{})".format(
-                    self.output_file.name, cnt + 1, n_compile))
+                logger.info("Writing Survey to {}.pdf using {} {} ({}/{})".format(
+                    self.output_file.name, compiler,compiler_args, cnt + 1, n_compile))
 
                 self.document.generate_pdf(filepath=self.output_file.name,
                                            clean_tex=False,
                                            clean=clean_latex,
                                            compiler=compiler,
+                                           compiler_args=compiler_args,
                                            silent=silent
                                            )
         else:

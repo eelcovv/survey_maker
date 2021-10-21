@@ -49,6 +49,12 @@ def _parse_the_command_line_arguments(args):
                         default=logging.INFO)
     parser.add_argument('-v', '--verbose', help="Be verbose", action="store_const",
                         dest="log_level", const=logging.INFO)
+    parser.add_argument('--use_latexmk', help="Use latexmk to compile", action="store_true",
+                        default=True)
+    parser.add_argument('--not_latexmk', help="Do not use latexmk to compile",
+                        action="store_false", dest='use_latexmk')
+    parser.add_argument('--compiler', help="Compiler to use", default="xelatex")
+    parser.add_argument('--compiler_args', help="Compiler arguments")
     parser.add_argument('--no_silent', help="Do not suppress the latex output",
                         action="store_false", dest="silent")
     parser.add_argument('--silent', help="Suppress the latex output",
@@ -283,10 +289,21 @@ def main(args_in):
 
     output_file = os.path.splitext(args.survey_settings)[0]
 
-    if args.twice:
-        n_compile = 2
+    compiler_args = None
+    if args.use_latexmk:
+        compiler = "latexmk"
+        if args.compiler == "xelatex":
+            compiler_args = ["-xelatex"]
+
     else:
-        n_compile = 1
+        compiler = args.compiler
+
+    n_compile = 1
+    if args.twice:
+        if args.use_latexmk:
+            logger.warning("Twice is not used for latexmk compiler")
+        else:
+            n_compile = 2
 
     # create the KvKUrl object, but first move to the working directory, so everything we do
     # is with respect to this directory
@@ -342,6 +359,8 @@ def main(args_in):
             pdf=args.pdf,
             info_items=info_items,
             info_items_per_color=info_items_per_color,
+            compiler=compiler,
+            compiler_args=compiler_args,
             n_compile=n_compile,
             silent=args.silent,
             clean=args.clean,
