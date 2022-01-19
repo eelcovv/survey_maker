@@ -680,7 +680,6 @@ class SurveyDocument(Document):
             increase_counter = question_properties.get("increase_counter")
 
             exclude_question = question_properties.get("exclude")
-            logger.info("Adding question {}".format(key))
             # dit stuk is nodig om te kijken of de exclude vlag gegeven is. We slaan deze sectie
             # dan over, tenzij de color key gelijk is aan de main color
             if module_color_key is None:
@@ -688,8 +687,16 @@ class SurveyDocument(Document):
             else:
                 color_local, color_key = module_color_name, module_color_key
             if exclude_question and not question_properties.get(color_key):
-                    logger.debug(f"skipping {key} due to exclude")
-                    continue
+                logger.debug(f"skipping {key} due to exclude")
+                continue
+
+            # als de color_local als veld in de properties gegeven is en op false staat (default is
+            # True) dan slaan we deze vraag over
+            if self.prune_colors and not question_properties.get(color_key, True):
+                logger.debug("Skip question {}".format(key))
+                continue
+
+            logger.info("Adding question {}".format(key))
 
             # if a section title field is given, start a new section title at this question
             section = question_properties.get("section")
