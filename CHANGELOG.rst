@@ -2,6 +2,11 @@
 Changelog
 =========
 
+Version 1.9.1
+=============
+- Nu met latexmk te compileren
+- Een nieuwe commandline optie --english om de defaults choices in het Engels te doen
+
 Version 1.8.7
 =============
 - Mogelijkheid om goto referentie als dict in te voeren zodat je hem van de kleur af kan laten
