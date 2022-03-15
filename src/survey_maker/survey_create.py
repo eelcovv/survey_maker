@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Utility to create a survey
 
@@ -7,28 +6,28 @@ Usage:
 
 """
 
-import sys
-
 import argparse
+import collections
 import logging
 import os
-import pandas as pd
 import re
 import subprocess
+import sys
+from pathlib import Path
+
+import pandas as pd
 import yaml
 import yamlloader
-import collections
 
-from cbs_utils.misc import (create_logger, merge_loggers, Chdir, make_directory)
 from survey_maker.engine import SurveyMaker
+from survey_maker.utils import Chdir
 
 try:
     from survey_maker import __version__
 except ModuleNotFoundError:
     __version__ = "unknown"
 
-# set up global logger
-logger: logging.Logger = None
+logger = logging.getLogger()
 
 
 def _parse_the_command_line_arguments(args):
@@ -100,47 +99,13 @@ def _parse_the_command_line_arguments(args):
                         help="Do not use the git version name to the version")
     parser.add_argument("--no_date", action="store_true",
                         help="Do not add a date to the document")
+    parser.add_argument("--english", action="store_true",
+                        help="Use English defaults")
 
     # parse the command line
     parsed_arguments = parser.parse_args(args)
 
     return parsed_arguments, parser
-
-
-def setup_logging(write_log_to_file=False,
-                  log_file_base="log",
-                  log_level_file=logging.INFO,
-                  log_level=None,
-                  ):
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    # Initialise the logging system
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    if write_log_to_file:
-        # http://stackoverflow.com/questions/29087297/
-        # is-there-a-way-to-change-the-filemode-for-a-logger-object-that-is-not-configured
-        sys.stderr = open(log_file_base + ".err", 'w')
-    else:
-        log_file_base = None
-
-    _logger = create_logger(file_log_level=log_level_file,
-                            console_log_level=log_level,
-                            console_log_format_long=True,
-                            log_file=log_file_base)
-
-    # with this call we merge the settings of our logger with the logger in the cbs_utils logger
-    # so we can control the output
-    _logger = merge_loggers(_logger, "cbs_utils")
-    _logger = merge_loggers(_logger, "survey_maker.engine", logger_level_to_merge=log_level)
-    _logger = merge_loggers(_logger, "survey_maker.survey_document",
-                            logger_level_to_merge=log_level)
-
-    _logger.info("{:10s}: {}".format("Running", sys.argv))
-    _logger.info("{:10s}: {}".format("Version", __version__))
-    _logger.info("{:10s}: {}".format("Directory", os.getcwd()))
-    _logger.debug("Debug message")
-
-    return _logger
 
 
 def get_version(default_version=None):
@@ -234,15 +199,7 @@ def reorganize_colors(colorize_questions, main_color):
 def main(args_in):
     args, parser = _parse_the_command_line_arguments(args_in)
 
-    # with the global statement line we make sure to change the global variable at the top
-    # when setting up the logger
-    global logger
-    logger = setup_logging(
-        write_log_to_file=args.write_log_to_file,
-        log_file_base=args.log_file_base,
-        log_level_file=args.log_level_file,
-        log_level=args.log_level,
-    )
+    logger.setLevel(args.log_level)
 
     script_name = os.path.basename(sys.argv[0])
     start_time = pd.to_datetime("now")
@@ -312,7 +269,7 @@ def main(args_in):
     # is with respect to this directory
     with Chdir(working_directory) as _:
         # make the directories in case they do not exist yet
-        make_directory(output_directory)
+        Path(output_directory).mkdir(exist_ok=True)
 
         if not args.no_git_version:
             survey_version = preamble.get("version")
@@ -334,7 +291,7 @@ def main(args_in):
                     survey_version = survey_branch + "-" + survey_version
 
         if survey_version is not None:
-            version = re.sub("^-", "", re.sub(survey_branch,  "", survey_version))
+            version = re.sub("^-", "", re.sub(survey_branch, "", survey_version))
             output_file = "_".join([output_file, "v" + re.sub("-.*", "", version)])
 
         if not args.no_date:

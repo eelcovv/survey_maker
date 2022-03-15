@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import collections
+import logging
 import string
 import time
 
@@ -7,7 +8,6 @@ from pylatex import (Document, Section, Command)
 from pylatex.package import Package
 from pylatex.utils import NoEscape
 
-from cbs_utils.misc import get_logger
 from survey_maker.latex_classes import *
 
 QUESTION_TYPES = ["quantity", "choices", "group", "textbox", "range", "rangegroup"]
@@ -19,7 +19,7 @@ COUNT_QUST_TOTAL_KEY = "questions_incl_choices"
 
 DVZ_KEY = "dvz"
 
-logger = get_logger(__name__)
+logger = logging.getLogger()
 
 
 def get_goto_reference(goto, main_color=None):
@@ -97,7 +97,8 @@ class SurveyDocument(Document):
                  review_references=False,
                  dvz_references=False,
                  use_cbs_font=True,
-                 draft=False
+                 draft=False,
+                 english=False
                  ):
 
         if document_options is None:
@@ -127,6 +128,11 @@ class SurveyDocument(Document):
         self.summary_title = summary_title
         self.review_references = review_references
         self.dvz_references = dvz_references
+
+        if english:
+            self.default_choices = ["Yes", "No"]
+        else:
+            self.default_choices = ["Ja", "Nee"]
 
         # this part comes from the cbsreport class to make sure we have the same font
         # more importantly, under windows it allows to have a proper euro font
@@ -963,7 +969,8 @@ class SurveyDocument(Document):
                         self.add_info(dvz)
                 if info is not None and above:
                     self.add_info(info)
-                self.add_choice_question(key, choices, filter_prop)
+                self.add_choice_question(key, choices, filter_prop,
+                                         default_choices=self.default_choices)
 
         elif question_type == "group":
             logger.debug("Adding a group question")
@@ -1263,7 +1270,7 @@ class SurveyDocument(Document):
 
         return redirect_str
 
-    def add_choice_question(self, key, choices=None, filter_prop=None):
+    def add_choice_question(self, key, choices=None, filter_prop=None, default_choices=None):
         """
         Add a question with choices
 
@@ -1275,15 +1282,20 @@ class SurveyDocument(Document):
             If None, assume Nee/Ja.
         filter_prop: dict or None
             If not None, defines the properties to filter a question
+        default_choices: list or None
+            Default choices
 
         """
         if choices is None:
-            choice_labels = ["Ja", "Nee"]
+            if default_choices is None:
+                choice_labels = ["Ja", "Nee"]
+            else:
+                choice_labels = default_choices
         else:
             choice_labels = choices
 
         for cnt, choice in enumerate(choice_labels):
-            redirection_str = self.get_redirection_string_for_filter(filter_prop, choice, 
+            redirection_str = self.get_redirection_string_for_filter(filter_prop, choice,
                                                                      self.main_color)
             ch_str = choice + redirection_str
 

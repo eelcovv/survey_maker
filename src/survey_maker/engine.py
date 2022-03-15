@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from pathlib import Path
 from shutil import copy2
+import logging
 from pkgutil import get_data
 
-from cbs_utils.misc import get_logger
 from survey_maker.survey_document import SurveyDocument
 
 try:
@@ -17,7 +17,7 @@ __author__ = "Eelco van Vliet"
 __copyright__ = "CBS"
 __license__ = "mit"
 
-logger = get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class SurveyMaker(object):

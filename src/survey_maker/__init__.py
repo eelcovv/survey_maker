@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from pkg_resources import get_distribution, DistributionNotFound
 
 try:
@@ -9,3 +11,6 @@ except DistributionNotFound:
     __version__ = 'unknown'
 finally:
     del get_distribution, DistributionNotFound
+
+console_format = '%(levelname)-8s [%(filename)s:%(lineno)4d] %(message)s'
+logging.basicConfig(format=console_format, level=logging.WARNING)
