@@ -285,6 +285,8 @@ def main(args_in):
                 # no branch name in input file, try to get it from the git repo
                 survey_branch = get_branch()
             if survey_branch is not None:
+                # underscores give problems in latex, so replace with dash
+                survey_branch = survey_branch.replace("_", "-")
                 # only add the branch name if we have o ne
                 output_file = "_".join([output_file, re.sub("-.*", "", survey_branch)])
                 if survey_version is not None:
