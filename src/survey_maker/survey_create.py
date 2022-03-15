@@ -333,7 +333,9 @@ def main(args_in):
             use_cbs_font=args.use_cbs_font,
             draft=args.draft,
             add_summary=add_summary,
-            summary_title=summary_title
+            summary_title=summary_title,
+            english=args.english
+
         )
         logger.info("Done. Goodbye...")
 

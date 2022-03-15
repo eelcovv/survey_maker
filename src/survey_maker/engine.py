@@ -51,7 +51,8 @@ class SurveyMaker(object):
                  use_cbs_font=True,
                  draft=False,
                  add_summary=True,
-                 summary_title="Summary"
+                 summary_title="Summary",
+                 english=False
                  ):
 
         logger.info("Starting Survey Maker")
@@ -87,7 +88,8 @@ class SurveyMaker(object):
             use_cbs_font=use_cbs_font,
             draft=draft,
             add_summary=add_summary,
-            summary_title=summary_title
+            summary_title=summary_title,
+            english=english
         )
 
         if pdf:
