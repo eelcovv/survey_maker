@@ -1255,11 +1255,11 @@ class SurveyDocument(Document):
                 goto = get_goto_reference(goto_properties, main_color)
                 ref_cat = goto.split(":")[0]
                 if ref_cat == "quest":
-                    category = "vraag"
+                    category = self.labels.vraag
                 elif ref_cat == "mod":
-                    category = "module"
+                    category = self.labels.module
                 elif ref_cat == "modsec":
-                    category = "module sectie"
+                    category = self.labels.module_sectie
                 else:
                     category = None
 
