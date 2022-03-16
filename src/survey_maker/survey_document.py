@@ -9,6 +9,7 @@ from pylatex.package import Package
 from pylatex.utils import NoEscape
 
 from survey_maker.latex_classes import *
+from survey_maker.labels import DocumentLabels
 
 QUESTION_TYPES = ["quantity", "choices", "group", "textbox", "range", "rangegroup"]
 SPECIAL_KEYS = ("fontsize", "above")
@@ -101,9 +102,14 @@ class SurveyDocument(Document):
                  english=False
                  ):
 
+        if english:
+            self.labels = DocumentLabels(language="english")
+        else:
+            self.labels = DocumentLabels(language="dutch")
+
         if document_options is None:
             # take the default options if they are not passed to the class
-            document_options = ["dutch", "final", "oneside", "a4paper"]
+            document_options = [self.labels.language, "final", "oneside", "a4paper"]
 
         # with this trick we can preceed the documentclass command with the PassOptionsToPackage
         # command such that we can add some more color definitions to xcolor.
@@ -128,11 +134,6 @@ class SurveyDocument(Document):
         self.summary_title = summary_title
         self.review_references = review_references
         self.dvz_references = dvz_references
-
-        if english:
-            self.default_choices = ["Yes", "No"]
-        else:
-            self.default_choices = ["Ja", "Nee"]
 
         # this part comes from the cbsreport class to make sure we have the same font
         # more importantly, under windows it allows to have a proper euro font
@@ -227,7 +228,8 @@ class SurveyDocument(Document):
         self.preamble.append(Command(
             # this line changes the title of the table of contents
             NoEscape(r"addto\captionsdutch{\renewcommand{\contentsname}{\Large\textbf{"
-                     r"Modules Vragenlijst}}}")))
+                     f"{self.labels.modules_vragenlijst}"
+                     r"}}}")))
 
         self.preamble.append(Command(NoEscape(r"definecolor{cbsblauw}{RGB}{39, 29, 108}")))
         self.preamble.append(Command(NoEscape(r"definecolor{cbslichtblauw}{RGB}{0, 161, 205}")))
@@ -279,7 +281,8 @@ class SurveyDocument(Document):
                     added_items = True
             if added_items:
                 self.append(VSpace(NoEscape(r"\parskip")))
-                self.append(ModuleSection([NoEscape("Toelichting vragen"), "toelichting"]))
+                self.append(ModuleSection([NoEscape(f"{self.labels.toelichting_vragen}"),
+                                           "toelichting"]))
                 self.add_info(add_info_items, fontsize="normalsize")
 
             # write the explanations per colorize item
@@ -666,7 +669,9 @@ class SurveyDocument(Document):
                     # remove all underscores for mod: reference
                     goto = re.sub("_", "", goto)
                 ref_str = f"{module_color_label}" + \
-                          " $\\rightarrow$ Ga naar \\textbf{\\ref{" + \
+                          " $\\rightarrow$ " \
+                          f"{self.labels.ga_naar} " \
+                          "\\textbf{\\ref{" + \
                           goto + "}}"
                 with self.create(InfoEnvironment()):
                     self.append(Command("normalsize", NoEscape(ref_str)))
@@ -727,7 +732,9 @@ class SurveyDocument(Document):
                             goto = re.sub("_", "", goto)
                         if label is not None:
                             ref_str = f"{label}" + \
-                                      " $\\rightarrow$ Ga naar \\textbf{\\ref{" + goto + "}}"
+                                      " $\\rightarrow$ " \
+                                      f"{self.labels.ga_naar} " \
+                                      "\\textbf{\\ref{" + goto + "}}"
                     break
 
                 title = section["title"]
@@ -969,8 +976,7 @@ class SurveyDocument(Document):
                         self.add_info(dvz)
                 if info is not None and above:
                     self.add_info(info)
-                self.add_choice_question(key, choices, filter_prop,
-                                         default_choices=self.default_choices)
+                self.add_choice_question(key, choices, filter_prop)
 
         elif question_type == "group":
             logger.debug("Adding a group question")
@@ -1227,8 +1233,7 @@ class SurveyDocument(Document):
         else:
             raise AssertionError("Only valid for str, dict or list")
 
-    @staticmethod
-    def get_redirection_string_for_filter(filter_prop, choice=None, main_color=None):
+    def get_redirection_string_for_filter(self, filter_prop, choice=None, main_color=None):
         """
         In case we have a choice in the filter prop, return a redirection string
 
@@ -1263,14 +1268,17 @@ class SurveyDocument(Document):
                     goto = re.sub("_", "", goto)
 
                 if category is not None:
-                    redirect_str = "$\\rightarrow$ Ga naar " + category + " \\ref{" + goto + "}"
+                    redirect_str = "$\\rightarrow$ " \
+                                   f"{self.labels.ga_naar} " \
+                                   + category + " \\ref{" + goto + "}"
                 else:
                     # in case we can not find a sensible fit, add the whole goto string
-                    redirect_str = "$\\rightarrow$ Ga naar " + goto
+                    redirect_str = "$\\rightarrow$ " \
+                                   f"{self.labels.ga_naar} " + goto
 
         return redirect_str
 
-    def add_choice_question(self, key, choices=None, filter_prop=None, default_choices=None):
+    def add_choice_question(self, key, choices=None, filter_prop=None):
         """
         Add a question with choices
 
@@ -1282,15 +1290,10 @@ class SurveyDocument(Document):
             If None, assume Nee/Ja.
         filter_prop: dict or None
             If not None, defines the properties to filter a question
-        default_choices: list or None
-            Default choices
 
         """
         if choices is None:
-            if default_choices is None:
-                choice_labels = ["Ja", "Nee"]
-            else:
-                choice_labels = default_choices
+            choice_labels = self.labels.default_choices
         else:
             choice_labels = choices
 
