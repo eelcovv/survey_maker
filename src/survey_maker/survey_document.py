@@ -443,11 +443,11 @@ class SurveyDocument(Document):
         """
 
         if key == COUNT_QUST_KEY:
-            name = "Vragen Alleen Main"
+            name = self.labels.vragen_alleen_main
         elif key == COUNT_QUST_TOTAL_KEY:
-            name = "Alle Vragen"
+            name = self.labels.alle_vragen
         elif key == COUNT_MODULES_KEY:
-            name = "Modules"
+            name = self.labels.modules
         else:
             colorize_prop = self.colorize_properties[key]
             try:
