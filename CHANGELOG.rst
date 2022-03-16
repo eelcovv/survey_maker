@@ -7,6 +7,7 @@ Version 1.9.2
 - Nu met latexmk te compileren
 - Een nieuwe commandline optie --english om de defaults choices in het Engels te doen
 - Alle labels in questionnaire via DocumentLabels om vertalingen mee te kunnen geven
+- Make file example toegevoegd
 
 Version 1.8.7
 =============

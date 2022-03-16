@@ -58,5 +58,6 @@ MANIFEST
 *.bundle
 !docs/presentations/presentatie_survey_maker_intro.pdf
 examples/small_example.pdf
+!examples/Makefile
 !src/survey_maker/code128.tex
 out
