@@ -316,7 +316,7 @@ class SurveyDocument(Document):
 
             if have_any_color:
                 self.append(VSpace(NoEscape(r"\parskip")))
-                self.append(ModuleSection([NoEscape("Toelichting kleuren"), "kleuren"]))
+                self.append(ModuleSection([NoEscape(self.labels.toelichting_kleuren), "kleuren"]))
                 with self.create(Itemize()):
                     for col_key, col_prop in self.colorize_properties.items():
                         if not self.process_this_colorize(col_prop):
@@ -349,7 +349,7 @@ class SurveyDocument(Document):
         Create two latex tables with all the count of the modules and questions
         """
 
-        self.append(ModuleSection([NoEscape("Globaal aantal vragen"), "global"]))
+        self.append(ModuleSection([NoEscape(self.labels.globaal_aantal_vragen), "global"]))
         self.append(Command("newline"))
 
         with self.create(Tabular(arguments="ll")):
@@ -381,7 +381,7 @@ class SurveyDocument(Document):
 
         self.append(Command("newline"))
 
-        self.append(ModuleSection([NoEscape("Aantal vragen per module"), "permodule"]))
+        self.append(ModuleSection([NoEscape(self.labels.aantal_vragen_per_module), "permodule"]))
         self.append(Command("newline"))
         # minus 2 because we do not report the modules and not the main questions
         n_categories = len(list(self.counts.keys())) - 2
