@@ -2,7 +2,7 @@
 Changelog
 =========
 
-Version 1.9.2
+Version 1.9.3
 =============
 - Nu met latexmk te compileren
 - Een nieuwe commandline optie --english om de defaults choices in het Engels te doen
