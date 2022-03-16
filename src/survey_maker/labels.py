@@ -31,7 +31,7 @@ class DocumentLabels:
         self.module_sectie = "module sectie"
 
     def set_labels_english(self):
-        self.toelichting_vragen = "Toelichting vragen"
+        self.toelichting_vragen = "Explanation questions"
         self.default_choices = ["Yes", "No"]
         self.modules_vragenlijst = "Modules Questionnaire"
         self.ga_naar = "Go to"
