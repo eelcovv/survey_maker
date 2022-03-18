@@ -19,6 +19,8 @@ class DocumentLabels:
         self.vragen_alleen_main = None
         self.alle_vragen = None
         self.modules = None
+        self.category = None
+        self.aantal = None
 
         if self.language == "dutch":
             self.set_labels_dutch()
@@ -41,6 +43,8 @@ class DocumentLabels:
         self.vragen_alleen_main = "Vragen alleen main"
         self.alle_vragen = "Alle vragen"
         self.modules = "Modules"
+        self.category = "Categorie"
+        self.aantal = "Aantal"
 
     def set_labels_english(self):
         self.toelichting_vragen = "Explanation questions"
@@ -56,3 +60,5 @@ class DocumentLabels:
         self.vragen_alleen_main = "Questions Main only"
         self.alle_vragen = "All questions"
         self.modules = "Modules"
+        self.category = "Category"
+        self.aantal = "Number"

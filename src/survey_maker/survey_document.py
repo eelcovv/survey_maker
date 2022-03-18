@@ -354,7 +354,11 @@ class SurveyDocument(Document):
 
         with self.create(Tabular(arguments="ll")):
             self.append(Command("toprule"))
-            self.append(r"\textbf{Grootheid}&\textbf{Aantal}\\")
+            self.append(r"\textbf{"
+                        f"{self.labels.category}"
+                        r"}&\textbf{"
+                        f"{self.labels.aantal}"
+                        r"}\\")
             self.append(Command("midrule"))
             for key, count in self.counts.items():
                 if key == COUNT_QUST_KEY:
