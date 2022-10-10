@@ -2,6 +2,10 @@
 Changelog
 =========
 
+Version 1.9.4
+=============
+- Update foor pyscaffold versie 4.2.1
+
 Version 1.9.3
 =============
 - Nu met latexmk te compileren
