@@ -5,6 +5,7 @@ Changelog
 Version 1.9.4
 =============
 - Update foor pyscaffold versie 4.2.1
+- Timestamp gebruikt om tijd op te vragen
 
 Version 1.9.3
 =============
