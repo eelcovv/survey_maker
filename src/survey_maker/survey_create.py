@@ -196,10 +196,22 @@ def reorganize_colors(colorize_questions, main_color):
     return new_colorize_order
 
 
+def setup_logging(loglevel):
+    """Setup basic logging
+
+    Args:
+      loglevel (int): minimum loglevel for emitting messages
+    """
+    logformat = "%(levelname)-8s [%(filename)s:%(lineno)4d] %(message)s"
+    logging.basicConfig(
+        level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S"
+    )
+
+
 def main(args_in):
     args, parser = _parse_the_command_line_arguments(args_in)
 
-    logger.setLevel(args.log_level)
+    setup_logging(loglevel=args.log_level)
 
     script_name = os.path.basename(sys.argv[0])
     start_time = pd.Timestamp.now()
