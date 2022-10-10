@@ -202,7 +202,7 @@ def main(args_in):
     logger.setLevel(args.log_level)
 
     script_name = os.path.basename(sys.argv[0])
-    start_time = pd.to_datetime("now")
+    start_time = pd.Timestamp.now()
     message = "Start {script} (v: {version}) at {start_time}:\n{cmd}".format(script=script_name,
                                                                              version=__version__,
                                                                              start_time=start_time,
