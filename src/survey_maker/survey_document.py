@@ -81,7 +81,7 @@ class SurveyDocument(Document):
 
     def __init__(self,
                  title="Default Title",
-                 author="TheAuthor",
+                 author=None,
                  survey_version=None,
                  survey_date=None,
                  hyphenation=None,
@@ -176,7 +176,8 @@ class SurveyDocument(Document):
             date_and_version += "{}".format(survey_version)
 
         self.preamble.append(Command("title", title))
-        self.preamble.append(Command("author", NoEscape(author)))
+        if author is not None:
+            self.preamble.append(Command("author", NoEscape(author)))
         self.preamble.append(Command("date", NoEscape(date_and_version)))
         self.preamble.append(Package("booktabs"))
         self.preamble.append(Package("tocloft"))
