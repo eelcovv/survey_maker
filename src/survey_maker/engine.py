@@ -52,7 +52,8 @@ class SurveyMaker(object):
                  draft=False,
                  add_summary=True,
                  summary_title="Summary",
-                 english=False
+                 english=False,
+                 no_author=False
                  ):
 
         logger.info("Starting Survey Maker")
@@ -72,10 +73,15 @@ class SurveyMaker(object):
             else:
                 logger.debug("Latex sty {} already present in {}".format(sty_file, dest_style_file))
 
+        if no_author:
+            author = None
+        else:
+            author = preamble.get("author")
+
         self.document = SurveyDocument(
             questionnaire=questionnaire,
             title=preamble.get("title"),
-            author=preamble.get("author"),
+            author=author,
             hyphenation=hyphenation,
             survey_version=survey_version,
             survey_date=survey_date,

@@ -101,6 +101,8 @@ def _parse_the_command_line_arguments(args):
                         help="Do not add a date to the document")
     parser.add_argument("--english", action="store_true",
                         help="Use English defaults")
+    parser.add_argument("--no_author", action="store_true",
+                        help="Do not print out the author in the pdf file")
 
     # parse the command line
     parsed_arguments = parser.parse_args(args)
@@ -323,7 +325,7 @@ def main(args_in):
         if args.color:
             output_file += ("_" + args.color)
 
-        # create the object and do you thing
+        # create the object and do your thing
         SurveyMaker(
             output_directory=output_directory,
             output_file=output_file,
@@ -348,7 +350,8 @@ def main(args_in):
             draft=args.draft,
             add_summary=add_summary,
             summary_title=summary_title,
-            english=args.english
+            english=args.english,
+            no_author=args.no_author
 
         )
         logger.info("Done. Goodbye...")
