@@ -2,6 +2,10 @@
 Changelog
 =========
 
+Version 1.9.5
+=============
+- no_author optie toegevoegd om ook zonder auteurs een pdf te maken
+
 Version 1.9.4
 =============
 - Update foor pyscaffold versie 4.2.1
