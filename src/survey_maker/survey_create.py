@@ -15,9 +15,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-import pandas as pd
 import yaml
 import yamlloader
+from datetime import datetime
 
 from survey_maker.engine import SurveyMaker
 from survey_maker.utils import Chdir
@@ -34,75 +34,178 @@ def _parse_the_command_line_arguments(args):
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # parse the command line to set some options2
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    parser = argparse.ArgumentParser(description='Create a survey  from a yaml file',
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description="Create a survey  from a yaml file",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
 
     # set the verbosity level command line arguments
     # mandatory arguments
-    parser.add_argument("survey_settings", action="store",
-                        help="The yaml survey input file")
-    parser.add_argument("--version", help="Show the current version", action="version",
-                        version=f"{__version__}")
-    parser.add_argument('-d', '--debug', help="Print lots of debugging statements",
-                        action="store_const", dest="log_level", const=logging.DEBUG,
-                        default=logging.INFO)
-    parser.add_argument('-v', '--verbose', help="Be verbose", action="store_const",
-                        dest="log_level", const=logging.INFO)
-    parser.add_argument('--use_latexmk', help="Use latexmk to compile", action="store_true",
-                        default=True)
-    parser.add_argument('--not_latexmk', help="Do not use latexmk to compile",
-                        action="store_false", dest='use_latexmk')
-    parser.add_argument('--compiler', help="Compiler to use", default="xelatex")
-    parser.add_argument('--compiler_args', help="Compiler arguments")
-    parser.add_argument('--no_silent', help="Do not suppress the latex output",
-                        action="store_false", dest="silent")
-    parser.add_argument('--silent', help="Suppress the latex output",
-                        action="store_true", default=True)
-    parser.add_argument('-q', '--quiet', help="Be quiet: no output", action="store_const",
-                        dest="log_level", const=logging.WARNING)
-    parser.add_argument("--write_log_to_file", action="store_true",
-                        help="Write the logging information to file")
-    parser.add_argument("--log_file_base", default="log", help="Default name of the logging output")
-    parser.add_argument('--log_file_debug', help="Be very verbose to file", action="store_const",
-                        dest="log_level_file", const=logging.DEBUG)
-    parser.add_argument('--log_file_verbose', help="Be verbose to file", action="store_const",
-                        dest="log_level_file", const=logging.INFO, default=logging.INFO)
-    parser.add_argument('--log_file_quiet', help="Be quiet: no output to file",
-                        action="store_const", dest="log_level_file", const=logging.WARNING)
-    parser.add_argument("--pdf", action="store_true", help="Create the pdf output", default=True)
-    parser.add_argument("--no_pdf", action="store_false", help="Do not create the pdf output",
-                        dest="pdf")
-    parser.add_argument("--twice", action="store_true", help="Compile two times for the labels")
-    parser.add_argument("--clean", action="store_true",
-                        help="Clean the latex temp files after processing")
-    parser.add_argument("--no_clean", action="store_false", dest="clean",
-                        help="Do not clean the latex temp files after processing")
-    parser.add_argument("--review_references", action="store_true",
-                        help="Add the references to the original questions for review purpose only")
-    parser.add_argument("--prune_colors", action="store_true",
-                        help="Only add the questions of the defined colors")
-    parser.add_argument("--dvz_references", action="store_true", help="Add the remarks to DVZ")
-    parser.add_argument("--use_cbs_font", action="store_true", default=True,
-                        help="Use the cbs font to allow for the euro symbol")
-    parser.add_argument("--no_use_cbs_font", action="store_false", dest="use_cbs_font",
-                        help="Do not use the cbs font to allow for the euro symbol")
-    parser.add_argument("--draft", action="store_true",
-                        help="Add a draft stamp to the document. Doesn not work at cbs yet")
-    parser.add_argument("--color",
-                        help="Define the key of the colorize items which should be treated as"
-                             "main color. If this is not given, the first item is taken")
-    parser.add_argument("--no_color",
-                        help="Turn of the color  defined by this key")
-    parser.add_argument("--no_git_branch", action="store_true",
-                        help="Do not add the git branch name to the version")
-    parser.add_argument("--no_git_version", action="store_true",
-                        help="Do not use the git version name to the version")
-    parser.add_argument("--no_date", action="store_true",
-                        help="Do not add a date to the document")
-    parser.add_argument("--english", action="store_true",
-                        help="Use English defaults")
-    parser.add_argument("--no_author", action="store_true",
-                        help="Do not print out the author in the pdf file")
+    parser.add_argument(
+        "survey_settings", action="store", help="The yaml survey input file"
+    )
+    parser.add_argument(
+        "--version",
+        help="Show the current version",
+        action="version",
+        version=f"{__version__}",
+    )
+    parser.add_argument(
+        "-d",
+        "--debug",
+        help="Print lots of debugging statements",
+        action="store_const",
+        dest="log_level",
+        const=logging.DEBUG,
+        default=logging.INFO,
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        help="Be verbose",
+        action="store_const",
+        dest="log_level",
+        const=logging.INFO,
+    )
+    parser.add_argument(
+        "--use_latexmk",
+        help="Use latexmk to compile",
+        action="store_true",
+        default=True,
+    )
+    parser.add_argument(
+        "--not_latexmk",
+        help="Do not use latexmk to compile",
+        action="store_false",
+        dest="use_latexmk",
+    )
+    parser.add_argument("--compiler", help="Compiler to use", default="xelatex")
+    parser.add_argument("--compiler_args", help="Compiler arguments")
+    parser.add_argument(
+        "--no_silent",
+        help="Do not suppress the latex output",
+        action="store_false",
+        dest="silent",
+    )
+    parser.add_argument(
+        "--silent", help="Suppress the latex output", action="store_true", default=True
+    )
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        help="Be quiet: no output",
+        action="store_const",
+        dest="log_level",
+        const=logging.WARNING,
+    )
+    parser.add_argument(
+        "--write_log_to_file",
+        action="store_true",
+        help="Write the logging information to file",
+    )
+    parser.add_argument(
+        "--log_file_base", default="log", help="Default name of the logging output"
+    )
+    parser.add_argument(
+        "--log_file_debug",
+        help="Be very verbose to file",
+        action="store_const",
+        dest="log_level_file",
+        const=logging.DEBUG,
+    )
+    parser.add_argument(
+        "--log_file_verbose",
+        help="Be verbose to file",
+        action="store_const",
+        dest="log_level_file",
+        const=logging.INFO,
+        default=logging.INFO,
+    )
+    parser.add_argument(
+        "--log_file_quiet",
+        help="Be quiet: no output to file",
+        action="store_const",
+        dest="log_level_file",
+        const=logging.WARNING,
+    )
+    parser.add_argument(
+        "--pdf", action="store_true", help="Create the pdf output", default=True
+    )
+    parser.add_argument(
+        "--no_pdf",
+        action="store_false",
+        help="Do not create the pdf output",
+        dest="pdf",
+    )
+    parser.add_argument(
+        "--twice", action="store_true", help="Compile two times for the labels"
+    )
+    parser.add_argument(
+        "--clean",
+        action="store_true",
+        help="Clean the latex temp files after processing",
+    )
+    parser.add_argument(
+        "--no_clean",
+        action="store_false",
+        dest="clean",
+        help="Do not clean the latex temp files after processing",
+    )
+    parser.add_argument(
+        "--review_references",
+        action="store_true",
+        help="Add the references to the original questions for review purpose only",
+    )
+    parser.add_argument(
+        "--prune_colors",
+        action="store_true",
+        help="Only add the questions of the defined colors",
+    )
+    parser.add_argument(
+        "--dvz_references", action="store_true", help="Add the remarks to DVZ"
+    )
+    parser.add_argument(
+        "--use_cbs_font",
+        action="store_true",
+        default=True,
+        help="Use the cbs font to allow for the euro symbol",
+    )
+    parser.add_argument(
+        "--no_use_cbs_font",
+        action="store_false",
+        dest="use_cbs_font",
+        help="Do not use the cbs font to allow for the euro symbol",
+    )
+    parser.add_argument(
+        "--draft",
+        action="store_true",
+        help="Add a draft stamp to the document. Doesn not work at cbs yet",
+    )
+    parser.add_argument(
+        "--color",
+        help="Define the key of the colorize items which should be treated as"
+        "main color. If this is not given, the first item is taken",
+    )
+    parser.add_argument("--no_color", help="Turn of the color  defined by this key")
+    parser.add_argument(
+        "--no_git_branch",
+        action="store_true",
+        help="Do not add the git branch name to the version",
+    )
+    parser.add_argument(
+        "--no_git_version",
+        action="store_true",
+        help="Do not use the git version name to the version",
+    )
+    parser.add_argument(
+        "--no_date", action="store_true", help="Do not add a date to the document"
+    )
+    parser.add_argument("--english", action="store_true", help="Use English defaults")
+    parser.add_argument(
+        "--no_author",
+        action="store_true",
+        help="Do not print out the author in the pdf file",
+    )
 
     # parse the command line
     parsed_arguments = parser.parse_args(args)
@@ -119,11 +222,14 @@ def get_version(default_version=None):
     str:
         current git version
     """
-    process = subprocess.Popen(["git", "describe", "--tags"],
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(
+        ["git", "describe", "--tags"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     stat1, stat2 = process.communicate()
     if stat1.decode() == "":
-        logger.info("No git version found in questionnaire folder. Is it under git control?")
+        logger.info(
+            "No git version found in questionnaire folder. Is it under git control?"
+        )
         survey_version = default_version
         logger.info("Overruling with version in yaml file: {}".format(survey_version))
     else:
@@ -147,8 +253,9 @@ def get_branch(default_branch=None):
     str:
         current branch version
     """
-    process = subprocess.Popen(["git", "branch", "--no-color"],
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(
+        ["git", "branch", "--no-color"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     stat1, stat2 = process.communicate()
     git_branch = stat1.decode().strip()
     branch_list = git_branch.split("\n")
@@ -156,7 +263,9 @@ def get_branch(default_branch=None):
     survey_branch = default_branch
 
     if not branch_list:
-        logger.info("No git version found in questionnaire folder. Is it under git control?")
+        logger.info(
+            "No git version found in questionnaire folder. Is it under git control?"
+        )
         logger.info("Overruling with version in yaml file: {}".format(survey_branch))
     else:
         for branch in branch_list:
@@ -181,8 +290,10 @@ def reorganize_colors(colorize_questions, main_color):
     try:
         color_properties = colorize_questions[main_color]
     except KeyError:
-        raise ValueError("Color '{}' was not defined in the colorize properties.\nPlease pick "
-                         "one of: {}".format(main_color, list(colorize_questions.keys())))
+        raise ValueError(
+            "Color '{}' was not defined in the colorize properties.\nPlease pick "
+            "one of: {}".format(main_color, list(colorize_questions.keys()))
+        )
     else:
         logger.debug("Adding colorize {}".format(main_color))
         new_colorize_order[main_color] = color_properties
@@ -216,11 +327,10 @@ def main(args_in):
     setup_logging(loglevel=args.log_level)
 
     script_name = os.path.basename(sys.argv[0])
-    start_time = pd.Timestamp.now()
-    message = "Start {script} (v: {version}) at {start_time}:\n{cmd}".format(script=script_name,
-                                                                             version=__version__,
-                                                                             start_time=start_time,
-                                                                             cmd=sys.argv[:])
+    start_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    message = "Start {script} (v: {version}) at {start_time}:\n{cmd}".format(
+        script=script_name, version=__version__, start_time=start_time, cmd=sys.argv[:]
+    )
     logger.info(message)
     # read the yaml file and put the whole structure into a dictionary: *settings*
     logger.info("Reading settings file {}".format(args.survey_settings))
@@ -242,8 +352,10 @@ def main(args_in):
         try:
             colorize_questions[args.no_color]["add_this"] = False
         except KeyError as err:
-            logger.warning(f"Could not find definition of color you are trying to turn of: "
-                           f"{args.no_color}")
+            logger.warning(
+                f"Could not find definition of color you are trying to turn of: "
+                f"{args.no_color}"
+            )
             raise KeyError(err)
 
     hyphenation = general.get("hyphenation")
@@ -323,7 +435,7 @@ def main(args_in):
             output_file += "_dvz"
 
         if args.color:
-            output_file += ("_" + args.color)
+            output_file += "_" + args.color
 
         # create the object and do your thing
         SurveyMaker(
@@ -351,17 +463,15 @@ def main(args_in):
             add_summary=add_summary,
             summary_title=summary_title,
             english=args.english,
-            no_author=args.no_author
-
+            no_author=args.no_author,
         )
         logger.info("Done. Goodbye...")
 
 
 def _run():
-    """Entry point for console_scripts
-    """
+    """Entry point for console_scripts"""
     main(sys.argv[1:])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     _run()
